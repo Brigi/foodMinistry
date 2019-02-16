@@ -8,4 +8,12 @@ package org.food.ministry.model;
  *
  */
 public class ShoppingList extends AFoodStorage {
+
+    /**
+     * Constructor setting essential member variables
+     * @param id The unique id of this shopping list
+     */
+    public ShoppingList(long id) {
+        super(id);
+    }
 }

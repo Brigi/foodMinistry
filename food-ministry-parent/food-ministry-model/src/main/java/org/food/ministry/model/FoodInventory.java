@@ -7,4 +7,12 @@ package org.food.ministry.model;
  *
  */
 public class FoodInventory extends AFoodStorage {
+
+    /**
+     * Constructor setting essential member variables
+     * @param id The unique id of this food storage
+     */
+    public FoodInventory(long id) {
+        super(id);
+    }
 }

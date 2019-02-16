@@ -4,6 +4,7 @@ import org.food.ministry.actors.messages.IMessage;
 import org.food.ministry.actors.user.messages.DelegateMessage;
 import org.food.ministry.actors.user.messages.LoginMessage;
 import org.food.ministry.actors.user.messages.LoginResultMessage;
+import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,7 +42,7 @@ public class TestUserActor {
       LoginResultMessage loginResultMessage = getLoginResultMessage(firstResultMessage, secondResultMessage);
       DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
       
-      Assert.assertEquals("No Error.", loginResultMessage.getErrorMessage());
+      Assert.assertEquals(Constants.NO_ERROR_MESSAGE, loginResultMessage.getErrorMessage());
       Assert.assertEquals(loginResultMessage.getOriginId(), delegateResultMessage.getOriginId());
       Assert.assertTrue(delegateResultMessage.getOriginId() > 0);
     }

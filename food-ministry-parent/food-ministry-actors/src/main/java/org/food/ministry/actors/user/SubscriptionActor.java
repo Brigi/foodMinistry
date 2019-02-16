@@ -3,6 +3,7 @@ package org.food.ministry.actors.user;
 import org.food.ministry.actors.user.messages.LoginMessage;
 import org.food.ministry.actors.user.messages.LoginResultMessage;
 import org.food.ministry.actors.user.messages.SubscribeMessage;
+import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 
 import akka.actor.AbstractActor;
@@ -52,7 +53,7 @@ public class SubscriptionActor extends AbstractActor {
         LOGGER.info("Subscribing in user {}", subscriptionMessage.getUsername());
         try {
             // Do subscription
-            getSender().tell(new LoginResultMessage(IDGenerator.getUniqueID(), subscriptionMessage.getId(), true, "No Error."), getSelf());
+            getSender().tell(new LoginResultMessage(IDGenerator.getUniqueID(), subscriptionMessage.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
         } catch(Exception e) {
             getSender().tell(new LoginResultMessage(IDGenerator.getUniqueID(), subscriptionMessage.getId(), false, "Login failed: " + e.getMessage()), getSelf());
         }

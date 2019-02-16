@@ -13,7 +13,7 @@ import org.food.ministry.model.exception.IngredientNotFoundException;
  * @since 16.02.2019
  *
  */
-public class IngredientsPool {
+public class IngredientsPool extends PersistenceObject {
 
     /**
      * A set of all available ingredients
@@ -22,8 +22,10 @@ public class IngredientsPool {
     
     /**
      * Default constructor initializing member variables
+     * @param id The unique id of this ingredients pool
      */
-    public IngredientsPool() {
+    public IngredientsPool(long id) {
+        super(id);
         this.ingredients = new HashSet<Ingredient>();
     }
     

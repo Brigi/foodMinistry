@@ -9,7 +9,7 @@ import java.util.Set;
  * @since 16.02.2019
  *
  */
-public class User {
+public class User extends PersistenceObject {
 
     /**
      * The email address of the user
@@ -28,10 +28,12 @@ public class User {
     
     /**
      * Constructor setting essential member variables of the user
+     * @param id The unique id of the user
      * @param emailAddress The email address of the user
      * @param name The name of the user
      */
-    public User(String emailAddress, String name) {
+    public User(long id, String emailAddress, String name) {
+        super(id);
         this.emailAddress = emailAddress;
         this.name = name;
         this.households = new HashSet<Household>();

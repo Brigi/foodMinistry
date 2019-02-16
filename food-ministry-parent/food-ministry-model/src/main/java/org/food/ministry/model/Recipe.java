@@ -9,7 +9,7 @@ import java.util.Map;
  * @since 16.02.2019
  *
  */
-public class Recipe {
+public class Recipe extends PersistenceObject {
 
     /**
      * The name of the recipe
@@ -28,11 +28,13 @@ public class Recipe {
     
     /**
      * Constructor initializing the essential elements of a recipe
+     * @param id The unique id of the recipe
      * @param name The name of the recipe
      * @param ingredients A map containing the ingredients needed associated with the quantity
      * @param description A description of this recipe
      */
-    public Recipe(String name, Map<Ingredient, Float> ingredients, String description) {
+    public Recipe(long id, String name, Map<Ingredient, Float> ingredients, String description) {
+        super(id);
         this.name = name;
         this.ingredients = ingredients;
         this.description = description;

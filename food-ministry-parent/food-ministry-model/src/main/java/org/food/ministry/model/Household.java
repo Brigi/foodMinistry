@@ -13,7 +13,7 @@ import java.util.Set;
  * @since 16.02.2019
  *
  */
-public class Household {
+public class Household extends PersistenceObject {
 
     /**
      * The name of the household. This might be needed to differ between several
@@ -46,11 +46,12 @@ public class Household {
      * be associated.
      * @param name The name of this household
      */
-    public Household(String name) {
+    public Household(long id, FoodInventory foodInventory, ShoppingList shoppingList, IngredientsPool ingredientsPool, String name) {
+        super(id);
         this.name = name;
-        this.foodInventory = new FoodInventory();
-        this.shoppingList = new ShoppingList();
-        this.ingredientsPool = new IngredientsPool();
+        this.foodInventory = foodInventory;
+        this.shoppingList = shoppingList;
+        this.ingredientsPool = ingredientsPool;
         this.recipes = new HashSet<>();
     }
 

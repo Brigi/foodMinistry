@@ -2,6 +2,7 @@ package org.food.ministry.model;
 
 import org.food.ministry.model.exception.IngredientNotFoundException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -10,12 +11,18 @@ public class TestIngredientsPool {
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+    
+    private IngredientsPool ingredientsPool;
+    
+    @Before
+    public void startUp() {
+        ingredientsPool = new IngredientsPool(0);
+    }
 
     @Test
     public void testAddIngredient() throws IngredientNotFoundException {
         final String ingredientName = "Zucchini";
-        IngredientsPool ingredientsPool = new IngredientsPool();
-        Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
+        Ingredient ingredient = new Ingredient(0, ingredientName, Unit.NONE, false);
         ingredientsPool.addIngredient(ingredient);
         Assert.assertEquals(ingredientName, ingredientsPool.getIngredient(ingredientName).getName());
     }
@@ -23,8 +30,7 @@ public class TestIngredientsPool {
     @Test
     public void testAddExistingIngredient() throws IngredientNotFoundException {
         final String ingredientName = "Zucchini";
-        IngredientsPool ingredientsPool = new IngredientsPool();
-        Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
+        Ingredient ingredient = new Ingredient(0, ingredientName, Unit.NONE, false);
         ingredientsPool.addIngredient(ingredient);
         ingredientsPool.addIngredient(ingredient);
         Assert.assertEquals(ingredientName, ingredientsPool.getIngredient(ingredientName).getName());
@@ -34,8 +40,7 @@ public class TestIngredientsPool {
     @Test
     public void testRemoveIngredient() {
         final String ingredientName = "Zucchini";
-        IngredientsPool ingredientsPool = new IngredientsPool();
-        Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
+        Ingredient ingredient = new Ingredient(0, ingredientName, Unit.NONE, false);
         ingredientsPool.addIngredient(ingredient);
         ingredientsPool.removeIngredient(ingredient);
         Assert.assertTrue(ingredientsPool.getIngredients().isEmpty());
@@ -44,8 +49,7 @@ public class TestIngredientsPool {
     @Test
     public void testRemoveNonExistingIngredient() {
         final String ingredientName = "Zucchini";
-        IngredientsPool ingredientsPool = new IngredientsPool();
-        Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
+        Ingredient ingredient = new Ingredient(0, ingredientName, Unit.NONE, false);
         ingredientsPool.removeIngredient(ingredient);
         Assert.assertTrue(ingredientsPool.getIngredients().isEmpty());
     }
@@ -55,7 +59,6 @@ public class TestIngredientsPool {
         thrown.expect(IngredientNotFoundException.class);
         thrown.expectMessage("The ingredient 'Zucchini' was not found!");
         final String ingredientName = "Zucchini";
-        IngredientsPool ingredientsPool = new IngredientsPool();
         ingredientsPool.getIngredient(ingredientName);
     }
     
@@ -63,7 +66,6 @@ public class TestIngredientsPool {
     public void testNull() throws IngredientNotFoundException {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("Can't search for ingredient given as 'null'");
-        IngredientsPool ingredientsPool = new IngredientsPool();
         ingredientsPool.getIngredient(null);
     }
 }

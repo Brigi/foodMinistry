@@ -2,6 +2,7 @@ package org.food.ministry.actors.user;
 
 import org.food.ministry.actors.user.messages.LoginMessage;
 import org.food.ministry.actors.user.messages.LoginResultMessage;
+import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 
 import akka.actor.AbstractActor;
@@ -51,7 +52,7 @@ public class LoginActor extends AbstractActor {
         LOGGER.info("Logging in user {}", loginMessage.getUsername());
         try {
             // Do login
-            getSender().tell(new LoginResultMessage(IDGenerator.getUniqueID(), loginMessage.getId(), true, "No Error."), getSelf());
+            getSender().tell(new LoginResultMessage(IDGenerator.getUniqueID(), loginMessage.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
         } catch(Exception e) {
             getSender().tell(new LoginResultMessage(IDGenerator.getUniqueID(), loginMessage.getId(), false, "Login failed: " + e.getMessage()), getSelf());
         }

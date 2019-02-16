@@ -9,7 +9,7 @@ import java.text.MessageFormat;
  * @since 16.02.2019
  *
  */
-public class Ingredient {
+public class Ingredient extends PersistenceObject {
 
     /**
      * The name of the ingredient
@@ -28,12 +28,14 @@ public class Ingredient {
 
     /**
      * Constructor initializing the essential member variables
+     * @param id The unique id of this ingredient
      * @param name The name of this ingredient
      * @param unit The unit in which this ingredient gets measured
      * @param isBasic Determines, if this ingredient is a basic ingredient. 
      *  Basic ingredients don't get added to the shopping list if needed by a recipe.
      */
-    public Ingredient(String name, Unit unit, boolean isBasic) {
+    public Ingredient(long id, String name, Unit unit, boolean isBasic) {
+        super(id);
         this.name = name;
         this.unit = unit;
         this.isBasic = isBasic;
@@ -98,7 +100,7 @@ public class Ingredient {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + (isBasic ? 1231 : 1237);
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((unit == null) ? 0 : unit.hashCode());
@@ -109,7 +111,7 @@ public class Ingredient {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (!super.equals(obj))
             return false;
         if (getClass() != obj.getClass())
             return false;
@@ -124,5 +126,5 @@ public class Ingredient {
         if (unit != other.unit)
             return false;
         return true;
-    }    
+    }
 }

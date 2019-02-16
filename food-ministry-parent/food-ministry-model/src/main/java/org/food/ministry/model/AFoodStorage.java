@@ -16,7 +16,7 @@ import org.food.ministry.model.util.Util;
  * @since 16.02.2019
  *
  */
-public abstract class AFoodStorage {
+public abstract class AFoodStorage extends PersistenceObject {
 
     /**
      * A map containing {@link Ingredient}s with their quantity
@@ -24,9 +24,11 @@ public abstract class AFoodStorage {
     private Map<Ingredient, Float> ingredients;
     
     /**
-     * Default construcotr initializing member variables
+     * Default constructor initializing member variables
+     * @param id The unique if of this food storage 
      */
-    public AFoodStorage() {
+    public AFoodStorage(long id) {
+        super(id);
         this.ingredients = new HashMap<>();
     }
     

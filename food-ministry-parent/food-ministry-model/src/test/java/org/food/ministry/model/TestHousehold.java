@@ -5,70 +5,71 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestHousehold {
 
+    private static final String HOUSEHOLD_NAME = "My Household";
+    
+    private Household household;
+    
+    @Before
+    public void startUp() {
+        FoodInventory foodInventory = new FoodInventory(0);
+        ShoppingList shoppingList = new ShoppingList(0);
+        IngredientsPool ingredientsPool = new IngredientsPool(0);
+        household = new Household(0, foodInventory, shoppingList, ingredientsPool, HOUSEHOLD_NAME);
+    }
+    
     @Test
     public void testGetName() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Assert.assertEquals(name, household.getName());
+        Assert.assertEquals(HOUSEHOLD_NAME, household.getName());
     }
     
     @Test
     public void testSetName() {
-        final String name = "My Household";
-        Household household = new Household("Something different");
-        household.setName(name);
-        Assert.assertEquals(name, household.getName());
+        FoodInventory foodInventory = new FoodInventory(0);
+        ShoppingList shoppingList = new ShoppingList(0);
+        IngredientsPool ingredientsPool = new IngredientsPool(0);
+        Household household = new Household(0, foodInventory, shoppingList, ingredientsPool, "Something different");
+        household.setName(HOUSEHOLD_NAME);
+        Assert.assertEquals(HOUSEHOLD_NAME, household.getName());
     }
     
     @Test
     public void testFoodInventoryNotNull() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Assert.assertNotNull(name, household.getFoodInventory());
+        Assert.assertNotNull(HOUSEHOLD_NAME, household.getFoodInventory());
     }
     
     @Test
     public void testIngredientsPoolNotNull() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Assert.assertNotNull(name, household.getIngredientsPool());
+        Assert.assertNotNull(HOUSEHOLD_NAME, household.getIngredientsPool());
     }
     
     @Test
     public void testSetIngredientsPool() {
-        final String name = "My Household";
-        Household household = new Household(name);
         IngredientsPool defaultPool = household.getIngredientsPool();
-        household.setIngredientsPool(new IngredientsPool());
+        household.setIngredientsPool(new IngredientsPool(1));
         Assert.assertNotEquals(defaultPool, household.getIngredientsPool());
     }
     
     @Test
     public void testShoppingListNotNull() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Assert.assertNotNull(name, household.getShoppingList());
+        Assert.assertNotNull(household.getShoppingList());
     }
     
     @Test
     public void testAddRecipe() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Recipe recipe = new Recipe("Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
+        Recipe recipe = new Recipe(0, "Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
         household.addRecipe(recipe);
         Assert.assertEquals(1, household.getRecipes().size());
     }
     
     @Test
     public void testAddRecipes() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Recipe recipe1 = new Recipe("Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
-        Recipe recipe2 = new Recipe("Schnitzel with French Fries", new HashMap<Ingredient, Float>(), "Yummy!");
+        Recipe recipe1 = new Recipe(0, "Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
+        Recipe recipe2 = new Recipe(1, "Schnitzel with French Fries", new HashMap<Ingredient, Float>(), "Yummy!");
         Set<Recipe> recipes = new HashSet<>();
         recipes.add(recipe1);
         recipes.add(recipe2);
@@ -78,9 +79,7 @@ public class TestHousehold {
     
     @Test
     public void testRemoveRecipe() {
-        final String name = "My Household";
-        Household household = new Household(name);
-        Recipe recipe = new Recipe("Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
+        Recipe recipe = new Recipe(0, "Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
         household.addRecipe(recipe);
         household.removeRecipe(recipe);
         Assert.assertEquals(0, household.getRecipes().size());
