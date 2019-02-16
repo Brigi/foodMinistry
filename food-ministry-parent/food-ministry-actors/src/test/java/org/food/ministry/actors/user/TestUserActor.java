@@ -1,7 +1,6 @@
 package org.food.ministry.actors.user;
 
-import org.food.ministry.actors.IMessage;
-import org.food.ministry.actors.factory.IDGeneratorActor;
+import org.food.ministry.actors.messages.IMessage;
 import org.food.ministry.actors.user.messages.DelegateMessage;
 import org.food.ministry.actors.user.messages.LoginMessage;
 import org.food.ministry.actors.user.messages.LoginResultMessage;
@@ -16,15 +15,13 @@ import akka.actor.ActorSystem;
 import akka.testkit.TestProbe;
 
 public class TestUserActor {
-    
 
     private static ActorSystem system;
     
     @BeforeClass
     public static void before() {
         system = ActorSystem.create("user-system");
-        ActorRef generatorActorRef = system.actorOf(IDGeneratorActor.props(), "generator-actor");
-        IDGenerator.initializeGeneratorActor(generatorActorRef);
+        IDGenerator.initializeGeneratorActor(system);
     }
     
     @AfterClass
@@ -37,7 +34,7 @@ public class TestUserActor {
       TestProbe probe = new TestProbe(system);
       ActorRef userActor = system.actorOf(UserActor.props(), "user-actor");
       
-      userActor.tell(new LoginMessage(IDGenerator.getNextID(), "Name", "email@address.com", "1234"), probe.ref());
+      userActor.tell(new LoginMessage(IDGenerator.getUniqueID(), "MyName", "email@address.com", "1234"), probe.ref());
       IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
       IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
       

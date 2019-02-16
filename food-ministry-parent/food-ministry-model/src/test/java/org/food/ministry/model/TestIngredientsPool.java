@@ -21,11 +21,31 @@ public class TestIngredientsPool {
     }
     
     @Test
+    public void testAddExistingIngredient() throws IngredientNotFoundException {
+        final String ingredientName = "Zucchini";
+        IngredientsPool ingredientsPool = new IngredientsPool();
+        Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
+        ingredientsPool.addIngredient(ingredient);
+        ingredientsPool.addIngredient(ingredient);
+        Assert.assertEquals(ingredientName, ingredientsPool.getIngredient(ingredientName).getName());
+        Assert.assertEquals(1, ingredientsPool.getIngredients().size());
+    }
+    
+    @Test
     public void testRemoveIngredient() {
         final String ingredientName = "Zucchini";
         IngredientsPool ingredientsPool = new IngredientsPool();
         Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
         ingredientsPool.addIngredient(ingredient);
+        ingredientsPool.removeIngredient(ingredient);
+        Assert.assertTrue(ingredientsPool.getIngredients().isEmpty());
+    }
+    
+    @Test
+    public void testRemoveNonExistingIngredient() {
+        final String ingredientName = "Zucchini";
+        IngredientsPool ingredientsPool = new IngredientsPool();
+        Ingredient ingredient = new Ingredient(ingredientName, Unit.NONE, false);
         ingredientsPool.removeIngredient(ingredient);
         Assert.assertTrue(ingredientsPool.getIngredients().isEmpty());
     }
