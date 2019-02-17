@@ -6,15 +6,17 @@ public abstract class PersistenceObject {
      * The unique id of the user
      */
     private long id;
-    
+
     /**
      * Constructor setting the unique id of a persisted object
-     * @param id A unique id for the kind of object
+     * 
+     * @param id
+     *            A unique id for the kind of object
      */
     public PersistenceObject(long id) {
         this.id = id;
     }
-    
+
     /**
      * Gets the id of the persisted object
      * 
@@ -34,14 +36,14 @@ public abstract class PersistenceObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if(this == obj)
             return true;
-        if (obj == null)
+        if(obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if(getClass() != obj.getClass())
             return false;
         PersistenceObject other = (PersistenceObject) obj;
-        if (id != other.id)
+        if(id != other.id)
             return false;
         return true;
     }

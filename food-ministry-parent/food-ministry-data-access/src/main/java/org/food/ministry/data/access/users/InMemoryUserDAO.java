@@ -8,27 +8,24 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.food.ministry.data.access.exceptions.DataAccessException;
-import org.food.ministry.model.Household;
 import org.food.ministry.model.User;
 
 public class InMemoryUserDAO implements UserDAO {
 
-    private Map<Long, User> users = new HashMap<>();    
-    
+    private Map<Long, User> users = new HashMap<>();
+
     @Override
     public User get(long id) {
         return users.get(id);
     }
-    
+
     @Override
     public User getUser(String emailAddress) throws DataAccessException {
-        List<User> correctUsers = users.values().parallelStream()
-                .filter(element -> element.getEmailAddress().equals(emailAddress))
-                .collect(Collectors.toList());
+        List<User> correctUsers = users.values().parallelStream().filter(element -> element.getEmailAddress().equals(emailAddress)).collect(Collectors.toList());
         if(correctUsers.size() == 0) {
             throw new DataAccessException(MessageFormat.format(NO_USER_WITH_EMAIL_ADDRESS_FOUND_MESSAGE, emailAddress));
         }
-        
+
         return correctUsers.get(0);
     }
 
@@ -48,21 +45,29 @@ public class InMemoryUserDAO implements UserDAO {
         if(foundUsers.size() != 1) {
             throw new DataAccessException(MessageFormat.format(INSUFFICIENT_AMOUNT_MESSAGE, foundUsers.size()));
         }
-        User householdToUpdate = foundUsers.get(0);
-        householdToUpdate.setName(user.getName());
-        householdToUpdate.setEmailAddress(user.getEmailAddress());
+        User userToUpdate = foundUsers.get(0);
+        userToUpdate.setName(user.getName());
+        userToUpdate.setEmailAddress(user.getEmailAddress());
     }
 
     @Override
     public void delete(User user) throws DataAccessException {
-        List<Long> correctUsers = users.entrySet().parallelStream()
-                .filter(element -> element.getValue().equals(user))
-                .map(entry -> entry.getKey())
-                .collect(Collectors.toList());
+        List<Long> correctUsers = users.entrySet().parallelStream().filter(element -> element.getValue().equals(user)).map(entry -> entry.getKey()).collect(Collectors.toList());
         if(correctUsers.size() == 0) {
             throw new DataAccessException(MessageFormat.format(NO_USER_FOUND_MESSAGE, user.getName()));
         }
-        
+
         users.remove(correctUsers.get(0));
+    }
+
+    @Override
+    public boolean doesIdExist(long id) throws DataAccessException {
+        return users.containsKey(id);
+    }
+
+    @Override
+    public boolean doesEmailAddressExist(String emailAddress) throws DataAccessException {
+        long amountOfEmailAddresses = users.values().parallelStream().filter(element -> emailAddress.equals(element.getEmailAddress())).collect(Collectors.counting());
+        return amountOfEmailAddresses > 0;
     }
 }

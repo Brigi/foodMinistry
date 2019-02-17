@@ -15,7 +15,10 @@ import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 
 /**
- * This class simplifies the retrieving of IDs for messages by storing a reference to a {@link IDGeneratorActor}, which gets asked synchronously for unique IDs.  
+ * This class simplifies the retrieving of IDs for messages by storing a
+ * reference to a {@link IDGeneratorActor}, which gets asked synchronously for
+ * unique IDs.
+ * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
  *
@@ -26,20 +29,23 @@ public class IDGenerator {
      * A reference to the {@link IDGeneratorActor}
      */
     private static ActorRef generatorActor;
-    
+
     /**
      * Initializes the actor for a unique ID generation.
-     * @param actorSystem The actor system in which the ID generator should be generated.
+     * 
+     * @param actorSystem
+     *            The actor system in which the ID generator should be generated.
      */
     public static void initializeGeneratorActor(ActorSystem actorSystem) {
         generatorActor = actorSystem.actorOf(IDGeneratorActor.props(), "generator-actor");
     }
-    
+
     /**
      * Gets the a unique ID from the actor for unique ID generation
+     * 
      * @return A unique ID
      */
-    public static int getUniqueID() {
+    public static long getRandomID() {
         if(generatorActor == null) {
             return 0;
         }
@@ -47,7 +53,7 @@ public class IDGenerator {
         UniqueIDResultMessage result;
         try {
             result = (UniqueIDResultMessage) Await.result(nextIdFuture, Duration.create(150, TimeUnit.MILLISECONDS));
-        } catch (Exception e) {
+        } catch(Exception e) {
             return 0;
         }
         return result.getNextId();

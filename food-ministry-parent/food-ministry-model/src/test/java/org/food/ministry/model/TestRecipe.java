@@ -16,7 +16,7 @@ public class TestRecipe {
         Assert.assertEquals(name, recipe.getName());
         Assert.assertEquals(description, recipe.getDescription());
     }
-    
+
     @Test
     public void testSetNameAndDescription() {
         final String name = "Al forno";
@@ -27,7 +27,7 @@ public class TestRecipe {
         Assert.assertEquals(name, recipe.getName());
         Assert.assertEquals(description, recipe.getDescription());
     }
-    
+
     @Test
     public void testGetIngredients() {
         Map<Ingredient, Float> ingredients = new HashMap<>();
@@ -46,7 +46,7 @@ public class TestRecipe {
         Assert.assertTrue(ingredientsToTest.containsKey(tomatoSauce));
         Assert.assertTrue(ingredientsToTest.containsKey(salt));
     }
-    
+
     @Test
     public void testSetIngredients() {
         Recipe recipe = new Recipe(0, "Al forno", null, "A very tasty noodle recipe.");

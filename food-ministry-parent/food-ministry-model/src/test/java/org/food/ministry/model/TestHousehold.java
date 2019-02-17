@@ -11,9 +11,9 @@ import org.junit.Test;
 public class TestHousehold {
 
     private static final String HOUSEHOLD_NAME = "My Household";
-    
+
     private Household household;
-    
+
     @Before
     public void startUp() {
         FoodInventory foodInventory = new FoodInventory(0);
@@ -21,12 +21,12 @@ public class TestHousehold {
         IngredientsPool ingredientsPool = new IngredientsPool(0);
         household = new Household(0, foodInventory, shoppingList, ingredientsPool, HOUSEHOLD_NAME);
     }
-    
+
     @Test
     public void testGetName() {
         Assert.assertEquals(HOUSEHOLD_NAME, household.getName());
     }
-    
+
     @Test
     public void testSetName() {
         FoodInventory foodInventory = new FoodInventory(0);
@@ -36,36 +36,36 @@ public class TestHousehold {
         household.setName(HOUSEHOLD_NAME);
         Assert.assertEquals(HOUSEHOLD_NAME, household.getName());
     }
-    
+
     @Test
     public void testFoodInventoryNotNull() {
         Assert.assertNotNull(HOUSEHOLD_NAME, household.getFoodInventory());
     }
-    
+
     @Test
     public void testIngredientsPoolNotNull() {
         Assert.assertNotNull(HOUSEHOLD_NAME, household.getIngredientsPool());
     }
-    
+
     @Test
     public void testSetIngredientsPool() {
         IngredientsPool defaultPool = household.getIngredientsPool();
         household.setIngredientsPool(new IngredientsPool(1));
         Assert.assertNotEquals(defaultPool, household.getIngredientsPool());
     }
-    
+
     @Test
     public void testShoppingListNotNull() {
         Assert.assertNotNull(household.getShoppingList());
     }
-    
+
     @Test
     public void testAddRecipe() {
         Recipe recipe = new Recipe(0, "Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
         household.addRecipe(recipe);
         Assert.assertEquals(1, household.getRecipes().size());
     }
-    
+
     @Test
     public void testAddRecipes() {
         Recipe recipe1 = new Recipe(0, "Al forno", new HashMap<Ingredient, Float>(), "Tasty!");
@@ -76,7 +76,7 @@ public class TestHousehold {
         household.addRecipes(recipes);
         Assert.assertEquals(2, household.getRecipes().size());
     }
-    
+
     @Test
     public void testRemoveRecipe() {
         Recipe recipe = new Recipe(0, "Al forno", new HashMap<Ingredient, Float>(), "Tasty!");

@@ -13,7 +13,7 @@ import org.food.ministry.model.Household;
 public class InMemoryHousehold implements HouseholdDAO {
 
     private Map<Long, Household> households = new HashMap<>();
-    
+
     @Override
     public Household get(long id) throws DataAccessException {
         return households.get(id);
@@ -42,7 +42,16 @@ public class InMemoryHousehold implements HouseholdDAO {
 
     @Override
     public void delete(Household household) throws DataAccessException {
-        // TODO Auto-generated method stub
-        
+        List<Long> ids = households.entrySet().parallelStream().filter(element -> element.getValue().equals(household)).map(element -> element.getKey())
+                .collect(Collectors.toList());
+        if(ids.size() != 1) {
+            throw new DataAccessException(MessageFormat.format(INSUFFICIENT_AMOUNT_MESSAGE, ids.size()));
+        }
+        households.remove(ids.get(0));
     }
- }
+
+    @Override
+    public boolean doesIdExist(long id) throws DataAccessException {
+        return households.containsKey(id);
+    }
+}

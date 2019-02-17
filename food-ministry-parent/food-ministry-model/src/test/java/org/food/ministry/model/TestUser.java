@@ -1,33 +1,44 @@
 package org.food.ministry.model;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestUser {
 
-    @Test
-    public void testGetNameAndEmailAddress() {
-        final String name = "My Name";
-        final String email = "name@provider.com";
-        User user = new User(0, email, name);
-        Assert.assertEquals(name, user.getName());
-        Assert.assertEquals(email, user.getEmailAddress());
+    private static String NAME = "My Name";
+    private static String EMAIL_ADDRESS = "name@provider.com";
+    private static String PASSWORD = "password";
+
+    private User user;
+
+    @Before
+    public void startUp() {
+        user = new User(0, EMAIL_ADDRESS, NAME, PASSWORD);
     }
-    
+
     @Test
-    public void testSetNameAndEmailAddress() {
-        final String name = "My Name";
-        final String email = "name@provider.com";
-        User user = new User(0, "some@mail.com", "Some Name");
+    public void testGetNameAndEmailAddressAndPassword() {
+        Assert.assertEquals(NAME, user.getName());
+        Assert.assertEquals(EMAIL_ADDRESS, user.getEmailAddress());
+        Assert.assertEquals(PASSWORD, user.getPassword());
+    }
+
+    @Test
+    public void testSetNameAndEmailAddressAndPassword() {
+        final String name = "My Other Name";
+        final String email = "name@otherProvider.com";
+        final String password = "otherPassword";
         user.setName(name);
         user.setEmailAddress(email);
+        user.setPassword(password);
         Assert.assertEquals(name, user.getName());
         Assert.assertEquals(email, user.getEmailAddress());
+        Assert.assertEquals(password, user.getPassword());
     }
-    
+
     @Test
     public void testAddHousehold() {
-        User user = new User(0, "My Name", "name@provider.com");
         FoodInventory foodInventory = new FoodInventory(0);
         ShoppingList shoppingList = new ShoppingList(0);
         IngredientsPool ingredientsPool = new IngredientsPool(0);
@@ -35,10 +46,9 @@ public class TestUser {
         user.addHousehold(household);
         Assert.assertEquals(1, user.getHouseholds().size());
     }
-    
+
     @Test
     public void testRemoveHousehold() {
-        User user = new User(0, "My Name", "name@provider.com");
         FoodInventory foodInventory = new FoodInventory(0);
         ShoppingList shoppingList = new ShoppingList(0);
         IngredientsPool ingredientsPool = new IngredientsPool(0);
