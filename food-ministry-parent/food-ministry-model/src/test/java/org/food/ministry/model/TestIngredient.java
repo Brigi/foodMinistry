@@ -4,6 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestIngredient {
+    
+    @Test
+    public void testGetId() {
+        final String ingredientName = "Cucumber";
+        final Unit ingredientUnit = Unit.NONE;
+        Ingredient ingredient = new Ingredient(0, ingredientName, ingredientUnit, false);
+        Assert.assertEquals(0, ingredient.getId());
+    }
 
     @Test
     public void testGetNameAndUnit() {
@@ -94,7 +102,62 @@ public class TestIngredient {
         Ingredient salt2 = new Ingredient(1, "Salt", Unit.TEASPOON, true);
         Assert.assertFalse(salt1.equals(salt2));
     }
+    
+    @Test
+    public void testIdentityHashCode() {
+        Ingredient zucchini = new Ingredient(0, "Zucchini", Unit.NONE, false);
+        Assert.assertEquals(zucchini.hashCode(), zucchini.hashCode());
+    }
 
+    @Test
+    public void testEqualHashCode() {
+        Ingredient zucchini1 = new Ingredient(0, "Zucchini", Unit.NONE, false);
+        Ingredient zucchini2 = new Ingredient(0, "Zucchini", Unit.NONE, false);
+        Assert.assertEquals(zucchini1.hashCode(), zucchini2.hashCode());
+    }
+
+    @Test
+    public void testUnequalHashcodeTrueWithNullName() {
+        Ingredient noIngredient1 = new Ingredient(0, null, Unit.NONE, false);
+        Ingredient noIngredient2 = new Ingredient(0, null, Unit.NONE, false);
+        Assert.assertEquals(noIngredient1.hashCode(), noIngredient2.hashCode());
+    }
+
+    @Test
+    public void testUnequalHashcodeWrongName() {
+        Ingredient zucchini = new Ingredient(0, "Zucchini", Unit.NONE, false);
+        Ingredient tomate = new Ingredient(0, "Tomato", Unit.NONE, false);
+        Assert.assertNotEquals(zucchini.hashCode(), tomate.hashCode());
+    }
+
+    @Test
+    public void testUnequalHashcodeWrongNameWithNull() {
+        Ingredient noIngredient = new Ingredient(0, null, null, false);
+        Ingredient tomate = new Ingredient(0, "Tomato", Unit.NONE, false);
+        Assert.assertNotEquals(noIngredient.hashCode(), tomate.hashCode());
+    }
+
+    @Test
+    public void testUnequalHashcodeWrongUnit() {
+        Ingredient zucchini1 = new Ingredient(0, "Zucchini", Unit.NONE, false);
+        Ingredient zucchini2 = new Ingredient(0, "Zucchini", Unit.KILOGRAMM, false);
+        Assert.assertNotEquals(zucchini1.hashCode(), zucchini2.hashCode());
+    }
+
+    @Test
+    public void testUnequalHashcodeWrongIsBasic() {
+        Ingredient salt1 = new Ingredient(0, "Salt", Unit.TEASPOON, false);
+        Ingredient salt2 = new Ingredient(0, "Salt", Unit.TEASPOON, true);
+        Assert.assertNotEquals(salt1.hashCode(), salt2.hashCode());
+    }
+
+    @Test
+    public void testUnequalHashcodeWrongId() {
+        Ingredient salt1 = new Ingredient(0, "Salt", Unit.TEASPOON, true);
+        Ingredient salt2 = new Ingredient(1, "Salt", Unit.TEASPOON, true);
+        Assert.assertNotEquals(salt1.hashCode(), salt2.hashCode());
+    }
+    
     @Test
     public void testEqualsNull() {
         Ingredient zucchini = new Ingredient(0, "Zucchini", Unit.NONE, false);

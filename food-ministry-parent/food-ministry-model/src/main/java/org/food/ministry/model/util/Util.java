@@ -11,7 +11,10 @@ import org.food.ministry.model.Ingredient;
  * @since 16.02.2019
  *
  */
-public abstract class Util {
+public final class Util {
+
+    private Util() {
+        /* No constructor needed as this a static class only */}
 
     /**
      * Adds the given ingredient with the given quantity to the given map. If the

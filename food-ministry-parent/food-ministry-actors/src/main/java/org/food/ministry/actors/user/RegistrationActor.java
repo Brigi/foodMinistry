@@ -57,8 +57,8 @@ public class RegistrationActor extends AbstractActor {
     /**
      * Accepts a {@link RegisterMessage} and tries to process the registration of
      * the user with the given information from the message. Afterwards a
-     * {@link RegisterResultMessage} is send back to the requesting actor
-     * containing the results.
+     * {@link RegisterResultMessage} is send back to the requesting actor containing
+     * the results.
      */
     @Override
     public Receive createReceive() {
@@ -83,8 +83,7 @@ public class RegistrationActor extends AbstractActor {
         try {
             if(userDao.doesEmailAddressExist(emailAddress)) {
                 LOGGER.info("Registration of user {} failed due to already existing email address", userName);
-                getSender().tell(new RegisterResultMessage(IDGenerator.getRandomID(), registerMessage.getId(), false, Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE),
-                        getSelf());
+                getSender().tell(new RegisterResultMessage(IDGenerator.getRandomID(), registerMessage.getId(), false, Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE), getSelf());
             }
             long id = UtilFunctions.generateUniqueId(userDao, LOGGER);
             userDao.save(new User(id, emailAddress, userName, password));

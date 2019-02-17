@@ -23,7 +23,10 @@ import scala.concurrent.duration.Duration;
  * @since 16.02.2019
  *
  */
-public class IDGenerator {
+public final class IDGenerator {
+
+    private IDGenerator() {
+        /* No constructor needed as this a static class only */}
 
     /**
      * A reference to the {@link IDGeneratorActor}

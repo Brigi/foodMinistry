@@ -7,7 +7,10 @@ package org.food.ministry.actors.util;
  * @since 16.02.2019
  *
  */
-public class Constants {
+public final class Constants {
+
+    private Constants() {
+        /* No constructor needed as this a static class only */}
 
     /**
      * Message for indicating that there was no error during processing

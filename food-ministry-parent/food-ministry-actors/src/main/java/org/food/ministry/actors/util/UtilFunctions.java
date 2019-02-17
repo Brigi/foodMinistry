@@ -15,7 +15,7 @@ import akka.event.LoggingAdapter;
  * @since 17.02.2019
  *
  */
-public abstract class UtilFunctions {
+public final class UtilFunctions {
 
     private UtilFunctions() {
         /* No constructor needed as this a static class only */}

@@ -23,6 +23,11 @@ public class TestHousehold {
     }
 
     @Test
+    public void testGetId() {
+        Assert.assertEquals(0, household.getId());
+    }
+    
+    @Test
     public void testGetName() {
         Assert.assertEquals(HOUSEHOLD_NAME, household.getName());
     }

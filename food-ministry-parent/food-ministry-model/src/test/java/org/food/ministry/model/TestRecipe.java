@@ -7,6 +7,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestRecipe {
+    
+    @Test
+    public void testGetId() {
+        final String name = "Al forno";
+        final String description = "A very tasty noodle recipe.";
+        Recipe recipe = new Recipe(0, name, new HashMap<Ingredient, Float>(), description);
+        Assert.assertEquals(0, recipe.getId());
+    }
 
     @Test
     public void testGetNameAndDescription() {

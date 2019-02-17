@@ -34,13 +34,19 @@ public abstract class TestBaseUserDAO {
     public void testSaveUser() throws DataAccessException {
         testUserDao.save(testUser);
     }
+    
+    @Test
+    public void testGet() throws DataAccessException {
+        testUserDao.save(testUser);
+        Assert.assertEquals(testUser, testUserDao.get(testUser.getId()));
+    }
 
     @Test
     public void testGetUser() throws DataAccessException {
         testUserDao.save(testUser);
         Assert.assertEquals(testUser, testUserDao.getUser(EMAIL_ADDRESS));
     }
-
+    
     @Test
     public void testUpdateUser() throws DataAccessException {
         final String newEmailAddress = "new@mail.com";
@@ -50,6 +56,16 @@ public abstract class TestBaseUserDAO {
         Assert.assertEquals(testUser, testUserDao.getUser(newEmailAddress));
     }
 
+    @Test
+    public void testUpdateWithMultipleUserContained() throws DataAccessException {
+        final String newEmailAddress = "new@mail.com";
+        testUserDao.save(testUser);
+        testUserDao.save(new User(1, "other@mail.com", "OtherName", "otherPassword"));
+        testUser.setEmailAddress(newEmailAddress);
+        testUserDao.update(testUser);
+        Assert.assertEquals(testUser, testUserDao.getUser(newEmailAddress));
+    }
+    
     @Test
     public void testDeleteUser() throws DataAccessException {
         testUserDao.save(testUser);
@@ -82,10 +98,24 @@ public abstract class TestBaseUserDAO {
     }
 
     @Test
+    public void testGetNonExistingID() throws DataAccessException {
+        expectedException.expect(DataAccessException.class);
+        expectedException.expectMessage(MessageFormat.format(UserDAO.NO_ID_FOUND_MESSAGE, 0));
+        testUserDao.get(0);
+    }
+    
+    @Test
     public void testGetNonExistingUser() throws DataAccessException {
         expectedException.expect(DataAccessException.class);
         expectedException.expectMessage(MessageFormat.format(UserDAO.NO_USER_WITH_EMAIL_ADDRESS_FOUND_MESSAGE, EMAIL_ADDRESS));
         testUserDao.getUser(EMAIL_ADDRESS);
+    }
+    
+    @Test
+    public void testUpdateNonExistingUser() throws DataAccessException {
+        expectedException.expect(DataAccessException.class);
+        expectedException.expectMessage(MessageFormat.format(UserDAO.INSUFFICIENT_AMOUNT_MESSAGE, 0));
+        testUserDao.update(testUser);
     }
 
     @Test

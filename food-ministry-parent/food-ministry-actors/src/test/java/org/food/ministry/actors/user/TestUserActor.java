@@ -22,6 +22,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -146,7 +147,7 @@ public class TestUserActor {
         Assert.assertFalse(registrationResultMessage.isSuccessful());
         Assert.assertEquals(Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE, registrationResultMessage.getErrorMessage());
     }
-    
+
     @Test
     public void testUserRegistrationWithDataAccessException() throws DataAccessException {
         Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).save(ArgumentMatchers.any());
@@ -159,6 +160,45 @@ public class TestUserActor {
         Assert.assertFalse(registrationResultMessage.isSuccessful());
         Assert.assertEquals(MessageFormat.format("Registration of user {0} failed: {1}", USER_NAME, CORRUPTED_DATA_SOURCE_MESSAGE), registrationResultMessage.getErrorMessage());
     }
+    
+    // --------------- User Registration and login section ---------------
+    
+    @Test
+    public void testSuccessfulUserRegistrationAndLogin() throws DataAccessException {
+        Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
+        Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
+        UserContainer userContainer = new UserContainer();
+        Mockito.doAnswer(setRedirectedUserAnswer(userContainer)).when(userDao).save(ArgumentMatchers.any());
+        Mockito.when(userDao.getUser(EMAIL_ADDRESS)).then(getRedirectedUserAnswer(userContainer));        
+        
+        // Register User
+        userActor.tell(new RegisterMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        RegisterResultMessage registrationResultMessage = getRegistrationResultMessage(firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+
+        Assert.assertTrue(registrationResultMessage.isSuccessful());
+        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, registrationResultMessage.getErrorMessage());
+        Assert.assertEquals(registrationResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        
+        // Login User
+        userActor.tell(new LoginMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        firstResultMessage = probe.expectMsgClass(IMessage.class);
+        secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        LoginResultMessage loginResultMessage = getLoginResultMessage(firstResultMessage, secondResultMessage);
+        delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+
+        Assert.assertTrue(loginResultMessage.isSuccessful());
+        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, loginResultMessage.getErrorMessage());
+        Assert.assertEquals(loginResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+    }
+    
+    // --------------- Helper functions section ---------------
 
     private LoginResultMessage getLoginResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
         if(firstResultMessage instanceof LoginResultMessage) {
@@ -185,5 +225,31 @@ public class TestUserActor {
             return (DelegateMessage) secondResultMessage;
         }
         return null;
+    }
+    
+    private Answer<Object> setRedirectedUserAnswer(UserContainer userContainer) {
+        return (invocation) -> {
+            User user = (User) invocation.getArgument(0);
+            userContainer.setStoredUser(user);
+            return null;
+        };
+    }
+    
+    private Answer<User> getRedirectedUserAnswer(UserContainer userContainer) {
+        return (invocation) -> {
+            return userContainer.getStoredUser();
+        };
+    }
+    
+    private class UserContainer {
+        private User storedUser;
+
+        public User getStoredUser() {
+            return storedUser;
+        }
+
+        public void setStoredUser(User storedUser) {
+            this.storedUser = storedUser;
+        }
     }
 }

@@ -15,7 +15,10 @@ public class InMemoryUserDAO implements UserDAO {
     private Map<Long, User> users = new HashMap<>();
 
     @Override
-    public User get(long id) {
+    public User get(long id) throws DataAccessException {
+        if(!users.containsKey(id)) {
+            throw new DataAccessException(MessageFormat.format(NO_ID_FOUND_MESSAGE, id)); 
+        }
         return users.get(id);
     }
 
@@ -41,7 +44,9 @@ public class InMemoryUserDAO implements UserDAO {
 
     @Override
     public void update(User user) throws DataAccessException {
-        List<User> foundUsers = users.values().parallelStream().filter(element -> element.getId() == user.getId()).collect(Collectors.toList());
+        List<User> foundUsers = users.values().parallelStream()
+                .filter(element -> element.getId() == user.getId())
+                .collect(Collectors.toList());
         if(foundUsers.size() != 1) {
             throw new DataAccessException(MessageFormat.format(INSUFFICIENT_AMOUNT_MESSAGE, foundUsers.size()));
         }

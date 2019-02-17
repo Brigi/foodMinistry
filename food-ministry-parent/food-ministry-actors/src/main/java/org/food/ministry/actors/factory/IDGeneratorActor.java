@@ -60,6 +60,7 @@ public class IDGeneratorActor extends AbstractActor {
             mDigest = MessageDigest.getInstance("SHA1");
         } catch(NoSuchAlgorithmException e) {
             getSender().tell(new UniqueIDErrorMessage("The algorithm for the ID generation isn't supported anymore!"), getSelf());
+            return;
         }
         byte[] sha1Hash = mDigest.digest(longToByteArray(randomValueGenerator.nextLong()));
         getSender().tell(new UniqueIDResultMessage(byteArrayToLong(sha1Hash)), getSelf());
