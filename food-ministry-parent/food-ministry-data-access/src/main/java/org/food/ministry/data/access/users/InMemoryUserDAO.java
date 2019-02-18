@@ -10,6 +10,13 @@ import java.util.stream.Collectors;
 import org.food.ministry.data.access.exceptions.DataAccessException;
 import org.food.ministry.model.User;
 
+/**
+ * A data access object class, which handles the access to persisted {@link User} objects via an in-memory data structure. 
+ * This class is not meant to be used for production, but for testing only.
+ * @author Maximilian Briglmeier
+ * @since 18.02.2019
+ *
+ */
 public class InMemoryUserDAO implements UserDAO {
 
     private Map<Long, User> users = new HashMap<>();

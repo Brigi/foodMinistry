@@ -1,6 +1,4 @@
-package org.food.ministry.actors.user.messages;
-
-import org.food.ministry.actors.messages.IMessage;
+package org.food.ministry.actors.messages;
 
 /**
  * A message for delegating a request to another actor
@@ -9,16 +7,12 @@ import org.food.ministry.actors.messages.IMessage;
  * @since 16.02.2019
  *
  */
-public class DelegateMessage implements IMessage {
+public class DelegateMessage extends AMessage {
 
-    /**
-     * The ID of this message
-     */
-    private long id;
     /**
      * The ID of the original message
      */
-    private long originId;
+    private final long originId;
 
     /**
      * Constructor initializing the essential member variables
@@ -29,17 +23,8 @@ public class DelegateMessage implements IMessage {
      *            The ID of the original message
      */
     public DelegateMessage(long id, long originId) {
-        this.id = id;
+        super(id);
         this.originId = originId;
-    }
-
-    /**
-     * Gets the ID of this message
-     * 
-     * @return The ID of this message
-     */
-    public long getId() {
-        return id;
     }
 
     /**

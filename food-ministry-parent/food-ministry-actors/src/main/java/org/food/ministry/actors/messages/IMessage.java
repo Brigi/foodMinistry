@@ -8,5 +8,5 @@ package org.food.ministry.actors.messages;
  *
  */
 public interface IMessage {
-
+    // marker interface
 }

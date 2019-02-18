@@ -80,9 +80,9 @@ public abstract class AFoodStorage extends PersistenceObject {
     }
 
     /**
-     * Retursn a comparator, which sorts {@link Ingredient}s by name
+     * Returns a comparator, which sorts {@link Ingredient}s by name
      * 
-     * @return a comparator, which sorts {@link Ingredient}s by name
+     * @return A comparator, which sorts {@link Ingredient}s by name
      */
     private Comparator<Ingredient> getIngredientComparator() {
         return new Comparator<Ingredient>() {

@@ -10,12 +10,15 @@ import java.util.stream.Collectors;
 import org.food.ministry.data.access.exceptions.DataAccessException;
 import org.food.ministry.model.Household;
 
-public class InMemoryHousehold implements HouseholdDAO {
+public class InMemoryHouseholdDAO implements HouseholdDAO {
 
     private Map<Long, Household> households = new HashMap<>();
 
     @Override
     public Household get(long id) throws DataAccessException {
+        if(!households.containsKey(id)) {
+            throw new DataAccessException(MessageFormat.format(NO_ID_FOUND_MESSAGE, id)); 
+        }
         return households.get(id);
     }
 
@@ -26,7 +29,7 @@ public class InMemoryHousehold implements HouseholdDAO {
 
     @Override
     public void save(Household household) throws DataAccessException {
-        households.put(Long.valueOf(household.hashCode()), household);
+        households.put(household.getId(), household);
     }
 
     @Override
@@ -44,8 +47,8 @@ public class InMemoryHousehold implements HouseholdDAO {
     public void delete(Household household) throws DataAccessException {
         List<Long> ids = households.entrySet().parallelStream().filter(element -> element.getValue().equals(household)).map(element -> element.getKey())
                 .collect(Collectors.toList());
-        if(ids.size() != 1) {
-            throw new DataAccessException(MessageFormat.format(INSUFFICIENT_AMOUNT_MESSAGE, ids.size()));
+        if(ids.size() == 0) {
+            throw new DataAccessException(MessageFormat.format(NO_HOUSEHOLD_FOUND_MESSAGE, household.getName()));
         }
         households.remove(ids.get(0));
     }

@@ -14,7 +14,7 @@ public class UniqueIDResultMessage implements IMessage {
     /**
      * The ID
      */
-    private long nextId;
+    private final long nextId;
 
     /**
      * Constructor setting the ID, which was requested before

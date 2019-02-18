@@ -1,4 +1,4 @@
-package org.food.ministry.data.access;
+package org.food.ministry.data.access.users;
 
 import java.text.MessageFormat;
 
@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public abstract class TestBaseUserDAO {
+public abstract class TestUserDAO {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

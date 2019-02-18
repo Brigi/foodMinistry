@@ -1,5 +1,6 @@
 package org.food.ministry.actors.user.messages;
 
+import org.food.ministry.actors.messages.AMessage;
 import org.food.ministry.actors.messages.IMessage;
 
 /**
@@ -10,24 +11,20 @@ import org.food.ministry.actors.messages.IMessage;
  * @since 16.02.2019
  *
  */
-public class AUserInfoMessage implements IMessage {
+public class AUserInfoMessage extends AMessage {
 
-    /**
-     * The ID of this message
-     */
-    private long id;
     /**
      * The name of the user requesting information
      */
-    private String username;
+    private final String username;
     /**
      * The email address of the user requesting information
      */
-    private String emailAddress;
+    private final String emailAddress;
     /**
      * The password of the user needed for user actions
      */
-    private String password;
+    private final String password;
 
     /**
      * Constructor initializing the message with essential member variables
@@ -42,21 +39,12 @@ public class AUserInfoMessage implements IMessage {
      *            The password of the user needed for user actions
      */
     public AUserInfoMessage(long id, String username, String emailAddress, String password) {
-        this.id = id;
+        super(id);
         this.username = username;
         this.emailAddress = emailAddress;
         this.password = password;
     }
-
-    /**
-     * Gets the ID of this message
-     * 
-     * @return
-     */
-    public long getId() {
-        return id;
-    }
-
+    
     /**
      * Gets the name of the user requesting information
      * 

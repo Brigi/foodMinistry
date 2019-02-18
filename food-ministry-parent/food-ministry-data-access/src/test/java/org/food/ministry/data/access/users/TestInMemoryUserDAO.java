@@ -1,9 +1,9 @@
-package org.food.ministry.data.access;
+package org.food.ministry.data.access.users;
 
 import org.food.ministry.data.access.users.InMemoryUserDAO;
 import org.food.ministry.data.access.users.UserDAO;
 
-public class TestInMemoryUserDAO extends TestBaseUserDAO {
+public class TestInMemoryUserDAO extends TestUserDAO {
 
     @Override
     protected UserDAO getUserDao() {

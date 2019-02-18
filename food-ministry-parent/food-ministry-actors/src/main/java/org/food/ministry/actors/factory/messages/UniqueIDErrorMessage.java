@@ -14,7 +14,7 @@ public class UniqueIDErrorMessage implements IMessage {
     /**
      * The error message
      */
-    private String errorMessage;
+    private final String errorMessage;
 
     /**
      * Constructor setting the error message

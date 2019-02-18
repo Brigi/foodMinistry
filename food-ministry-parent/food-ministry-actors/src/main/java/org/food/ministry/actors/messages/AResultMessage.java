@@ -7,24 +7,19 @@ package org.food.ministry.actors.messages;
  * @since 16.02.2019
  *
  */
-public class AResultMessage implements IMessage {
-
-    /**
-     * The ID of this message
-     */
-    private long id;
+public class AResultMessage extends AMessage {
     /**
      * The ID of the requesting message
      */
-    private long originId;
+    private final long originId;
     /**
      * Determines if the requesting message was successfully processed
      */
-    private boolean successful;
+    private final boolean successful;
     /**
      * Error message in case something went wrong
      */
-    private String errorMessage;
+    private final String errorMessage;
 
     /**
      * Constructor initializing the essential member variables
@@ -39,19 +34,10 @@ public class AResultMessage implements IMessage {
      *            Error message in case something went wrong
      */
     public AResultMessage(long id, long originId, boolean successful, String errorMessage) {
-        this.id = id;
+        super(id);
         this.originId = originId;
         this.successful = successful;
         this.errorMessage = errorMessage;
-    }
-
-    /**
-     * Gets the ID of this message
-     * 
-     * @return The ID of this message
-     */
-    public long getId() {
-        return id;
     }
 
     /**

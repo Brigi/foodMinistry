@@ -71,30 +71,30 @@ public class LoginActor extends AbstractActor {
      * Tries to login the user contained in provided the login message with the
      * contained credentials
      * 
-     * @param loginMessage
+     * @param message
      *            The login message containing all needed information for logging in
      *            a user
      */
-    private void doLogin(LoginMessage loginMessage) {
-        String userName = loginMessage.getUsername();
+    private void doLogin(LoginMessage message) {
+        String userName = message.getUsername();
         LOGGER.info("Logging in user {}", userName);
         try {
-            String emailAddress = loginMessage.getEmailAddress();
-            String password = loginMessage.getPassword();
+            String emailAddress = message.getEmailAddress();
+            String password = message.getPassword();
             LOGGER.info("Retrieving user data for user {}", userName);
             User user = userDao.getUser(emailAddress);
             if(user.getPassword().equals(password)) {
-                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), loginMessage.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
+                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
                 LOGGER.info("Successfully logged in user {}", userName);
             } else {
                 final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", userName, Constants.WRONG_CREDENTIALS_MESSAGE);
                 LOGGER.info(errorMessage);
-                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), loginMessage.getId(), false, Constants.WRONG_CREDENTIALS_MESSAGE), getSelf());
+                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, Constants.WRONG_CREDENTIALS_MESSAGE), getSelf());
             }
         } catch(Exception e) {
             final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", userName, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
-            getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), loginMessage.getId(), false, errorMessage), getSelf());
+            getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage), getSelf());
         }
     }
 
