@@ -41,7 +41,7 @@ public class Household extends PersistenceObject {
     /**
      * The recipes of this household
      */
-    private Set<Recipe> recipes;
+    private RecipesPool recipesPool;
 
     /**
      * Constructor initializing this class. It accepts a name to which this
@@ -50,13 +50,13 @@ public class Household extends PersistenceObject {
      * @param name
      *            The name of this household
      */
-    public Household(long id, FoodInventory foodInventory, ShoppingList shoppingList, IngredientsPool ingredientsPool, String name) {
+    public Household(long id, FoodInventory foodInventory, ShoppingList shoppingList, IngredientsPool ingredientsPool, RecipesPool recipesPool, String name) {
         super(id);
         this.name = name;
         this.foodInventory = foodInventory;
         this.shoppingList = shoppingList;
         this.ingredientsPool = ingredientsPool;
-        this.recipes = new HashSet<>();
+        this.recipesPool = recipesPool;
     }
 
     /**
@@ -96,47 +96,23 @@ public class Household extends PersistenceObject {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     /**
-     * Gets a set of recipes available in this household
-     * 
-     * @return A set of recipes available in this household
+     * Gets the recipes pool of this household
+     * @return The recipes pool of this household
      */
-    public Set<Recipe> getRecipes() {
-        return Collections.unmodifiableSet(recipes);
+    public RecipesPool getRecipesPool() {
+        return this.recipesPool;
     }
-
+    
     /**
-     * Adds the given recipes to the set of current recipes available in this
-     * household
+     * Sets the recipes pool of this household
      * 
-     * @param recipes
-     *            The set of recipes to add
+     * @param recipesPool
+     *            The recipes pool to set
      */
-    public void addRecipes(Set<Recipe> recipes) {
-        this.recipes.addAll(recipes);
-    }
-
-    /**
-     * Adds the given recipe to the set of current recipes available in this
-     * household
-     * 
-     * @param recipe
-     *            The recipe to add
-     */
-    public void addRecipe(Recipe recipe) {
-        this.recipes.add(recipe);
-    }
-
-    /**
-     * Removes the given recipes from the current set of recipes available in this
-     * household
-     * 
-     * @param recipe
-     *            The recipe to remove
-     */
-    public void removeRecipe(Recipe recipe) {
-        this.recipes.remove(recipe);
+    public void setRecipesPool(RecipesPool recipesPool) {
+        this.recipesPool = recipesPool;
     }
 
     /**

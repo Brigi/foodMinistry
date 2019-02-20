@@ -5,6 +5,7 @@ import org.food.ministry.actors.user.messages.AddHouseholdMessage;
 import org.food.ministry.actors.user.messages.GetHouseholdsMessage;
 import org.food.ministry.actors.user.messages.LoginMessage;
 import org.food.ministry.actors.user.messages.RegisterMessage;
+import org.food.ministry.actors.user.messages.RemoveHouseholdMessage;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.foodinventory.FoodInventoryDAO;
 import org.food.ministry.data.access.household.HouseholdDAO;
@@ -50,12 +51,17 @@ public class UserActor extends AbstractActor {
      * The actor child adding a household
      */
     private final ActorRef addHouseholdsChild;
+    /**
+     * The actor child removing a household
+     */
+    private final ActorRef removeHouseholdsChild;
 
     public UserActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, IngredientsPoolDAO ingredientsPoolDao) {
         loginChild = getContext().actorOf(LoginActor.props(userDao), "loginActor");
         registrationChild = getContext().actorOf(RegistrationActor.props(userDao), "registrationActor");
         getHouseholdsChild = getContext().actorOf(GetHouseholdsActor.props(userDao), "getHouseholdsActor");
         addHouseholdsChild = getContext().actorOf(AddHouseholdActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao), "addHouseholdActor");
+        removeHouseholdsChild = getContext().actorOf(RemoveHouseholdActor.props(userDao, householdDao), "removeHouseholdActor");
     }
 
     /**
@@ -78,6 +84,7 @@ public class UserActor extends AbstractActor {
         receiveBuilder.match(RegisterMessage.class, this::delegateToRegistrationActor);
         receiveBuilder.match(GetHouseholdsMessage.class, this::delegateToGetHouseholdsActor);
         receiveBuilder.match(AddHouseholdMessage.class, this::delegateToAddHouseholdActor);
+        receiveBuilder.match(RemoveHouseholdMessage.class, this::delegateToRemoveHouseholdActor);
 
         return receiveBuilder.build();
     }
@@ -131,6 +138,19 @@ public class UserActor extends AbstractActor {
     private void delegateToAddHouseholdActor(AddHouseholdMessage message) {
         LOGGER.info("Adding a household with message {}", message.getId());
         addHouseholdsChild.forward(message, getContext());
+        getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
+    }
+    
+    /**
+     * Forwards the {@link RemoveHouseholdMessage} to the child {@link RemoveHouseholdActor}
+     * for further processing
+     * 
+     * @param message
+     *            The message from the user to add a household
+     */
+    private void delegateToRemoveHouseholdActor(RemoveHouseholdMessage message) {
+        LOGGER.info("Removing household with message {}", message.getId());
+        removeHouseholdsChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
 }

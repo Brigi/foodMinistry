@@ -1,4 +1,4 @@
-package org.food.ministry.actors.household.messages;
+package org.food.ministry.actors.recipespool.messages;
 
 import java.util.Map;
 

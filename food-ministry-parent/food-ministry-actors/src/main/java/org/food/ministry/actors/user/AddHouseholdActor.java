@@ -1,11 +1,9 @@
 package org.food.ministry.actors.user;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 
 import org.food.ministry.actors.user.messages.AddHouseholdMessage;
 import org.food.ministry.actors.user.messages.AddHouseholdResultMessage;
-import org.food.ministry.actors.user.messages.GetHouseholdsResultMessage;
 import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.actors.util.UtilFunctions;
@@ -17,6 +15,7 @@ import org.food.ministry.data.access.users.UserDAO;
 import org.food.ministry.model.FoodInventory;
 import org.food.ministry.model.Household;
 import org.food.ministry.model.IngredientsPool;
+import org.food.ministry.model.RecipesPool;
 import org.food.ministry.model.ShoppingList;
 import org.food.ministry.model.User;
 
@@ -83,15 +82,16 @@ public class AddHouseholdActor extends AbstractActor {
             long foodInventoryId = UtilFunctions.generateUniqueId(foodInventoryDao, LOGGER);
             long shoppingListId = UtilFunctions.generateUniqueId(shoppingListDao, LOGGER);
             long ingredientsPoolId = UtilFunctions.generateUniqueId(ingredientsPoolDao, LOGGER);
+            long recipesPoolId = UtilFunctions.generateUniqueId(ingredientsPoolDao, LOGGER);
 
-            user.addHousehold(
-                    new Household(householdId, new FoodInventory(foodInventoryId), new ShoppingList(shoppingListId), new IngredientsPool(ingredientsPoolId), message.getName()));
+            user.addHousehold(new Household(householdId, new FoodInventory(foodInventoryId), new ShoppingList(shoppingListId), new IngredientsPool(ingredientsPoolId),
+                    new RecipesPool(recipesPoolId), message.getName()));
             userDao.update(user);
             AddHouseholdResultMessage resultMessage = new AddHouseholdResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE);
             getSender().tell(resultMessage, getSelf());
             LOGGER.info("Successfully added a household for user with id {}", userId);
         } catch(Exception e) {
-            final String errorMessage = MessageFormat.format("Getting households for user id {0} failed: {1}", userId, e.getMessage());
+            final String errorMessage = MessageFormat.format("Getting households for user with id {0} failed: {1}", userId, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
             getSender().tell(new AddHouseholdResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage), getSelf());
         }

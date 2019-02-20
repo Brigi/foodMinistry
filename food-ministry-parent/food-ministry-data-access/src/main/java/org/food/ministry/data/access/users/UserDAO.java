@@ -2,6 +2,7 @@ package org.food.ministry.data.access.users;
 
 import org.food.ministry.data.access.DAO;
 import org.food.ministry.data.access.exceptions.DataAccessException;
+import org.food.ministry.model.Household;
 import org.food.ministry.model.User;
 
 public interface UserDAO extends DAO<User> {
@@ -15,6 +16,8 @@ public interface UserDAO extends DAO<User> {
     public static final String INSUFFICIENT_AMOUNT_MESSAGE = "Insufficient amount of users found: {0}";
 
     User getUser(String emailAddress) throws DataAccessException;
+    
+    boolean isHouseholdUnreferenced(Household household) throws DataAccessException;
 
     boolean doesEmailAddressExist(String emailAddress) throws DataAccessException;
 }

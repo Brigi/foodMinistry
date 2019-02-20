@@ -47,7 +47,8 @@ public class TestUser {
         FoodInventory foodInventory = new FoodInventory(0);
         ShoppingList shoppingList = new ShoppingList(0);
         IngredientsPool ingredientsPool = new IngredientsPool(0);
-        Household household = new Household(0, foodInventory, shoppingList, ingredientsPool, "My Household");
+        RecipesPool recipesPool = new RecipesPool(0);
+        Household household = new Household(0, foodInventory, shoppingList, ingredientsPool, recipesPool, "My Household");
         user.addHousehold(household);
         Assert.assertEquals(1, user.getHouseholds().size());
     }
@@ -57,7 +58,8 @@ public class TestUser {
         FoodInventory foodInventory = new FoodInventory(0);
         ShoppingList shoppingList = new ShoppingList(0);
         IngredientsPool ingredientsPool = new IngredientsPool(0);
-        Household household = new Household(0, foodInventory, shoppingList, ingredientsPool, "My Household");
+        RecipesPool recipesPool = new RecipesPool(0);
+        Household household = new Household(0, foodInventory, shoppingList, ingredientsPool, recipesPool, "My Household");
         user.addHousehold(household);
         user.removeHousehold(household);
         Assert.assertEquals(0, user.getHouseholds().size());

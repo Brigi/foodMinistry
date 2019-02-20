@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.food.ministry.data.access.exceptions.DataAccessException;
+import org.food.ministry.model.Household;
 import org.food.ministry.model.User;
 
 /**
@@ -81,5 +82,14 @@ public class InMemoryUserDAO implements UserDAO {
     public boolean doesEmailAddressExist(String emailAddress) throws DataAccessException {
         long amountOfEmailAddresses = users.values().parallelStream().filter(element -> emailAddress.equals(element.getEmailAddress())).collect(Collectors.counting());
         return amountOfEmailAddresses > 0;
+    }
+
+    @Override
+    public boolean isHouseholdUnreferenced(Household household) throws DataAccessException {
+        return users.values()
+                .parallelStream()
+                .anyMatch(user -> user.getHouseholds()
+                        .parallelStream()
+                        .anyMatch(householdElement -> householdElement.equals(household)));
     }
 }

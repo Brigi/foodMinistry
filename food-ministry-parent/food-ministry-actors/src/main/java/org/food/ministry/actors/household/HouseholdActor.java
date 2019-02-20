@@ -1,9 +1,7 @@
 package org.food.ministry.actors.household;
 
-import org.food.ministry.actors.household.messages.GetRecipesMessage;
 import org.food.ministry.actors.messages.DelegateMessage;
-import org.food.ministry.actors.user.GetHouseholdsActor;
-import org.food.ministry.actors.user.messages.GetHouseholdsMessage;
+import org.food.ministry.actors.recipespool.messages.GetRecipesMessage;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.household.HouseholdDAO;
 
@@ -24,10 +22,10 @@ public class HouseholdActor extends AbstractActor {
     /**
      * The actor child for recipes handling
      */
-    private final ActorRef getRecipesChild;
+    private final ActorRef getRecipesPoolChild;
     
     public HouseholdActor(HouseholdDAO householdDao) {
-        getRecipesChild = getContext().actorOf(GetRecipesActor.props(householdDao), "getRecipesActor");
+        getRecipesPoolChild = getContext().actorOf(GetRecipesPoolActor.props(householdDao), "getRecipesPoolActor");
     }
     
     /**
@@ -48,8 +46,8 @@ public class HouseholdActor extends AbstractActor {
     }
     
     private void delegateToGetRecipesActor(GetRecipesMessage message) {
-        LOGGER.info("Getting recipes with message {}", message.getId());
-        getRecipesChild.forward(message, getContext());
+        LOGGER.info("Getting recipes pool with message {}", message.getId());
+        getRecipesPoolChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
 }

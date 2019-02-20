@@ -1,19 +1,18 @@
-package org.food.ministry.actors.household;
+package org.food.ministry.actors.recipespool;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.food.ministry.actors.household.messages.GetRecipesMessage;
-import org.food.ministry.actors.household.messages.GetRecipesResultMessage;
-import org.food.ministry.actors.user.messages.GetHouseholdsResultMessage;
+import org.food.ministry.actors.recipespool.messages.GetRecipesMessage;
+import org.food.ministry.actors.recipespool.messages.GetRecipesResultMessage;
 import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.actors.util.UtilFunctions;
-import org.food.ministry.data.access.household.HouseholdDAO;
-import org.food.ministry.model.Household;
+import org.food.ministry.data.access.recipespool.RecipesPoolDAO;
 import org.food.ministry.model.Recipe;
+import org.food.ministry.model.RecipesPool;
 
 import akka.actor.AbstractActor;
 import akka.actor.Props;
@@ -28,10 +27,10 @@ public class GetRecipesActor extends AbstractActor {
      */
     private final LoggingAdapter LOGGER = Logging.getLogger(getContext().getSystem(), this);
 
-    private HouseholdDAO householdDao;
+    private RecipesPoolDAO recipesPoolDao;
     
-    public GetRecipesActor(HouseholdDAO householdDao) {
-        this.householdDao = householdDao;
+    public GetRecipesActor(RecipesPoolDAO recipesPoolDao) {
+        this.recipesPoolDao = recipesPoolDao;
     }
     
     /**
@@ -39,8 +38,8 @@ public class GetRecipesActor extends AbstractActor {
      * 
      * @return The property for creating an actor of this class
      */
-    public static Props props(HouseholdDAO householdDao) {
-        return Props.create(GetRecipesActor.class, () -> new GetRecipesActor(householdDao));
+    public static Props props(RecipesPoolDAO recipesPoolDao) {
+        return Props.create(GetRecipesActor.class, () -> new GetRecipesActor(recipesPoolDao));
     }
     
     @Override
@@ -52,18 +51,17 @@ public class GetRecipesActor extends AbstractActor {
     }
 
     private void getRecipes(GetRecipesMessage message) {
-        long householdId = message.getHouseholdId();
-        LOGGER.info("Getting all recipes for household with id {}", householdId);
+        long recipesPoolId = message.getRecipesPoolId();
+        LOGGER.info("Getting all recipes of recipes pool with id {}", recipesPoolId);
         try {
-            Household household = householdDao.get(householdId);
-            Map<Long, String> recipes = household.getRecipes().parallelStream().collect(Collectors.toMap(Recipe::getId, Recipe::getName));
-
+            RecipesPool recipePool = recipesPoolDao.get(recipesPoolId);
+            Map<Long, String> recipes = recipePool.getRecipes().parallelStream().collect(Collectors.toMap(Recipe::getId, Recipe::getName));
             getSender().tell(new GetRecipesResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE, recipes), getSelf());
-            LOGGER.info("Successfully got recipes for household with id {}", householdId);
+            LOGGER.info("Successfully got all recipes of recipes pool with id {}", recipesPoolId);
         } catch(Exception e) {
-            final String errorMessage = MessageFormat.format("Adding a household for household id {0} failed: {1}", householdId, e.getMessage());
+            final String errorMessage = MessageFormat.format("Getting all recipes of recipes pool with id {0} failed: {1}", recipesPoolId, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
-            getSender().tell(new GetHouseholdsResultMessage(IDGenerator.getRandomID(), message.getId(), true, errorMessage, new HashMap<>()), getSelf());
+            getSender().tell(new GetRecipesResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage, new HashMap<>()), getSelf());
         }
     }
 }

@@ -3,7 +3,11 @@ package org.food.ministry.data.access.users;
 import java.text.MessageFormat;
 
 import org.food.ministry.data.access.exceptions.DataAccessException;
-import org.food.ministry.data.access.users.UserDAO;
+import org.food.ministry.model.FoodInventory;
+import org.food.ministry.model.Household;
+import org.food.ministry.model.IngredientsPool;
+import org.food.ministry.model.RecipesPool;
+import org.food.ministry.model.ShoppingList;
 import org.food.ministry.model.User;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +24,7 @@ public abstract class TestUserDAO {
     private static final String EMAIL_ADDRESS = "my@mail.com";
     private static final String PASSWORD = "password";
     private User testUser;
+    private Household testHousehold;
     private UserDAO testUserDao;
 
     protected abstract UserDAO getUserDao();
@@ -27,6 +32,7 @@ public abstract class TestUserDAO {
     @Before
     public void startUp() {
         testUser = new User(0, EMAIL_ADDRESS, USER_NAME, PASSWORD);
+        testHousehold = new Household(0, new FoodInventory(0), new ShoppingList(0), new IngredientsPool(0), new RecipesPool(0), "MyHousehold");
         testUserDao = getUserDao();
     }
 
@@ -95,6 +101,42 @@ public abstract class TestUserDAO {
     public void testDoesEmailAddressExistNegative() throws DataAccessException {
         testUserDao.save(testUser);
         Assert.assertFalse(testUserDao.doesEmailAddressExist("other@email.com"));
+    }
+    
+    @Test
+    public void testIsHouseholdReferenced() throws DataAccessException {
+        testUser.addHousehold(testHousehold);
+        testUserDao.save(testUser);
+        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
+    }
+    
+    @Test
+    public void testIsHouseholdNotReferencedInitially() throws DataAccessException {
+        testUserDao.save(testUser);
+        Assert.assertFalse(testUserDao.isHouseholdUnreferenced(testHousehold));
+    }
+    
+    @Test
+    public void testIsHouseholdNotReferencedAfterRemoving() throws DataAccessException {
+        testUser.addHousehold(testHousehold);
+        testUserDao.save(testUser);
+        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
+        testUser.removeHousehold(testHousehold);
+        testUserDao.update(testUser);
+        Assert.assertFalse(testUserDao.isHouseholdUnreferenced(testHousehold));
+    }
+    
+    @Test
+    public void testIsHouseholdReferencedAfterRemovingWithTwoUsers() throws DataAccessException {
+        User secondUser = new User(1, "other@mail.com", "OtherName", "pw");
+        testUser.addHousehold(testHousehold);
+        secondUser.addHousehold(testHousehold);
+        testUserDao.save(testUser);
+        testUserDao.save(secondUser);
+        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
+        testUser.removeHousehold(testHousehold);
+        testUserDao.update(testUser);
+        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
     }
 
     @Test

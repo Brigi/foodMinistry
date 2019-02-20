@@ -7,6 +7,7 @@ import org.food.ministry.data.access.exceptions.DataAccessException;
 import org.food.ministry.model.FoodInventory;
 import org.food.ministry.model.Household;
 import org.food.ministry.model.IngredientsPool;
+import org.food.ministry.model.RecipesPool;
 import org.food.ministry.model.ShoppingList;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,6 +24,7 @@ public abstract class TestHouseholdDAO {
     private static final FoodInventory FOOD_INVENTORY = new FoodInventory(0);
     private static final ShoppingList SHOPPING_LIST = new ShoppingList(0);
     private static final IngredientsPool INGREDIENTS_POOL = new IngredientsPool(0);
+    private static final RecipesPool RECIPES_POOL = new RecipesPool(0);
     private Household testHousehold;
     private HouseholdDAO testHouseholdDao;
 
@@ -30,7 +32,7 @@ public abstract class TestHouseholdDAO {
 
     @Before
     public void startUp() {
-        testHousehold = new Household(0, FOOD_INVENTORY, SHOPPING_LIST, INGREDIENTS_POOL, HOUSEHOLD_NAME);
+        testHousehold = new Household(0, FOOD_INVENTORY, SHOPPING_LIST, INGREDIENTS_POOL, RECIPES_POOL, HOUSEHOLD_NAME);
         testHouseholdDao = getHouseholdDao();
     }
 
@@ -60,7 +62,7 @@ public abstract class TestHouseholdDAO {
     public void testUpdateWithMultipleHouseholdsContained() throws DataAccessException {
         final String newName = "newHouseholdName";
         testHouseholdDao.save(testHousehold);
-        testHouseholdDao.save(new Household(1, new FoodInventory(1), new ShoppingList(1), new IngredientsPool(1), "otherHousehold"));
+        testHouseholdDao.save(new Household(1, new FoodInventory(1), new ShoppingList(1), new IngredientsPool(1), new RecipesPool(1), "otherHousehold"));
         testHousehold.setName(newName);
         testHouseholdDao.update(testHousehold);
         Collection<Household> households = testHouseholdDao.getAll();

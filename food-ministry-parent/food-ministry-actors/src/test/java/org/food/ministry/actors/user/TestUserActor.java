@@ -13,6 +13,8 @@ import org.food.ministry.actors.user.messages.LoginMessage;
 import org.food.ministry.actors.user.messages.LoginResultMessage;
 import org.food.ministry.actors.user.messages.RegisterMessage;
 import org.food.ministry.actors.user.messages.RegisterResultMessage;
+import org.food.ministry.actors.user.messages.RemoveHouseholdMessage;
+import org.food.ministry.actors.user.messages.RemoveHouseholdResultMessage;
 import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.exceptions.DataAccessException;
@@ -21,6 +23,11 @@ import org.food.ministry.data.access.household.HouseholdDAO;
 import org.food.ministry.data.access.ingredientspool.IngredientsPoolDAO;
 import org.food.ministry.data.access.shoppinglist.ShoppingListDAO;
 import org.food.ministry.data.access.users.UserDAO;
+import org.food.ministry.model.FoodInventory;
+import org.food.ministry.model.Household;
+import org.food.ministry.model.IngredientsPool;
+import org.food.ministry.model.RecipesPool;
+import org.food.ministry.model.ShoppingList;
 import org.food.ministry.model.User;
 import org.junit.After;
 import org.junit.Assert;
@@ -42,6 +49,7 @@ public class TestUserActor {
 
     private static final String CORRUPTED_DATA_SOURCE_MESSAGE = "Underlying data source not responding correctly";
     private static final long USER_ID = 0;
+    private static final long HOUSEHOLD_ID = 0;
     private static final String EMAIL_ADDRESS = "email@address.com";
     private static final String USER_NAME = "MyName";
     private static final String PASSWORD = "1234";
@@ -301,7 +309,65 @@ public class TestUserActor {
 
         Assert.assertFalse(addHouseholdsResultMessage.isSuccessful());
         Assert.assertEquals(requestId, addHouseholdsResultMessage.getOriginId());
-        Assert.assertEquals(MessageFormat.format("Getting households for user id {0} failed: {1}", USER_ID, CORRUPTED_DATA_SOURCE_MESSAGE), addHouseholdsResultMessage.getErrorMessage());
+        Assert.assertEquals(MessageFormat.format("Getting households for user with id {0} failed: {1}", USER_ID, CORRUPTED_DATA_SOURCE_MESSAGE), addHouseholdsResultMessage.getErrorMessage());
+    }
+    
+    @Test
+    public void testSuccessfulRemoveHousehold() throws DataAccessException {
+        User user = new User(USER_ID, EMAIL_ADDRESS, USER_NAME, PASSWORD);
+        Household household = new Household(HOUSEHOLD_ID, new FoodInventory(0), new ShoppingList(0), new IngredientsPool(0), new RecipesPool(0), HOUSEHOLD_NAME);
+        user.addHousehold(household);
+        Mockito.when(userDao.get(USER_ID)).thenReturn(user);
+        Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(household);
+        Mockito.when(userDao.isHouseholdUnreferenced(household)).thenReturn(true);
+        
+        userActor.tell(new RemoveHouseholdMessage(IDGenerator.getRandomID(), USER_ID, HOUSEHOLD_ID), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        RemoveHouseholdResultMessage removeHouseholdsResultMessage = getRemoveHouseholdResultMessage(firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+
+        Assert.assertTrue(removeHouseholdsResultMessage.isSuccessful());
+        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, removeHouseholdsResultMessage.getErrorMessage());
+        Assert.assertEquals(removeHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+    }
+    
+    @Test
+    public void testSuccessfulRemoveReferencedHousehold() throws DataAccessException {
+        User user = new User(USER_ID, EMAIL_ADDRESS, USER_NAME, PASSWORD);
+        Household household = new Household(HOUSEHOLD_ID, new FoodInventory(0), new ShoppingList(0), new IngredientsPool(0), new RecipesPool(0), HOUSEHOLD_NAME);
+        user.addHousehold(household);
+        Mockito.when(userDao.get(USER_ID)).thenReturn(user);
+        Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(household);
+        Mockito.when(userDao.isHouseholdUnreferenced(household)).thenReturn(false);
+        
+        userActor.tell(new RemoveHouseholdMessage(IDGenerator.getRandomID(), USER_ID, HOUSEHOLD_ID), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        RemoveHouseholdResultMessage removeHouseholdsResultMessage = getRemoveHouseholdResultMessage(firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+
+        Assert.assertTrue(removeHouseholdsResultMessage.isSuccessful());
+        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, removeHouseholdsResultMessage.getErrorMessage());
+        Assert.assertEquals(removeHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+    }
+    
+    @Test
+    public void testRemoveHouseholdWithDataAccessException() throws DataAccessException {
+        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
+        
+        long requestId = IDGenerator.getRandomID();
+        userActor.tell(new RemoveHouseholdMessage(requestId, USER_ID, HOUSEHOLD_ID), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        RemoveHouseholdResultMessage addHouseholdsResultMessage = getRemoveHouseholdResultMessage(firstResultMessage, secondResultMessage);
+
+        Assert.assertFalse(addHouseholdsResultMessage.isSuccessful());
+        Assert.assertEquals(requestId, addHouseholdsResultMessage.getOriginId());
+        Assert.assertEquals(MessageFormat.format("Deleting household with id {0} for user with id {1} failed: {2}", HOUSEHOLD_ID, USER_ID, CORRUPTED_DATA_SOURCE_MESSAGE), addHouseholdsResultMessage.getErrorMessage());
     }
     
     @Test
@@ -376,6 +442,15 @@ public class TestUserActor {
             return (AddHouseholdResultMessage) firstResultMessage;
         } else if(secondResultMessage instanceof AddHouseholdResultMessage) {
             return (AddHouseholdResultMessage) secondResultMessage;
+        }
+        return null;
+    }
+    
+    private RemoveHouseholdResultMessage getRemoveHouseholdResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
+        if(firstResultMessage instanceof RemoveHouseholdResultMessage) {
+            return (RemoveHouseholdResultMessage) firstResultMessage;
+        } else if(secondResultMessage instanceof RemoveHouseholdResultMessage) {
+            return (RemoveHouseholdResultMessage) secondResultMessage;
         }
         return null;
     }
