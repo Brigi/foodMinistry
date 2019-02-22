@@ -78,7 +78,7 @@ public class RecipesPoolActor extends AbstractActor {
         ReceiveBuilder receiveBuilder = receiveBuilder();
         receiveBuilder.match(GetRecipesMessage.class, this::delegateToGetRecipesActor);
         receiveBuilder.match(AddRecipeMessage.class, this::delegateToAddRecipeActor);
-        receiveBuilder.match(DeleteRecipeMessage.class, this::delegateToGetRecipesActor);
+        receiveBuilder.match(DeleteRecipeMessage.class, this::delegateToDeleteRecipeActor);
 
         return receiveBuilder.build();
     }
@@ -113,7 +113,7 @@ public class RecipesPoolActor extends AbstractActor {
      * 
      * @param message The message from the user to delete a recipe
      */
-    private void delegateToGetRecipesActor(DeleteRecipeMessage message) {
+    private void delegateToDeleteRecipeActor(DeleteRecipeMessage message) {
         LOGGER.info("Deleting a recipe with message {}", message.getId());
         deleteRecipeChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());

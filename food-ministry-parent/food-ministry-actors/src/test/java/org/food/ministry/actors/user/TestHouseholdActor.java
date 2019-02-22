@@ -1,28 +1,27 @@
 package org.food.ministry.actors.user;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.food.ministry.actors.household.HouseholdActor;
+import org.food.ministry.actors.household.messages.GetFoodInventoryMessage;
+import org.food.ministry.actors.household.messages.GetFoodInventoryResultMessage;
+import org.food.ministry.actors.household.messages.GetIngredientsPoolMessage;
+import org.food.ministry.actors.household.messages.GetIngredientsPoolResultMessage;
+import org.food.ministry.actors.household.messages.GetRecipesPoolMessage;
+import org.food.ministry.actors.household.messages.GetRecipesPoolResultMessage;
+import org.food.ministry.actors.household.messages.GetShoppingListMessage;
+import org.food.ministry.actors.household.messages.GetShoppingListResultMessage;
 import org.food.ministry.actors.messages.DelegateMessage;
 import org.food.ministry.actors.messages.IMessage;
-import org.food.ministry.actors.recipespool.RecipesPoolActor;
-import org.food.ministry.actors.recipespool.messages.AddRecipeMessage;
-import org.food.ministry.actors.recipespool.messages.AddRecipeResultMessage;
-import org.food.ministry.actors.recipespool.messages.DeleteRecipeMessage;
-import org.food.ministry.actors.recipespool.messages.DeleteRecipeResultMessage;
-import org.food.ministry.actors.recipespool.messages.GetRecipesMessage;
-import org.food.ministry.actors.recipespool.messages.GetRecipesResultMessage;
-import org.food.ministry.actors.util.Constants;
+import org.food.ministry.actors.user.util.MessageUtil;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.exceptions.DataAccessException;
-import org.food.ministry.data.access.ingredient.IngredientDAO;
-import org.food.ministry.data.access.recipe.RecipeDAO;
-import org.food.ministry.data.access.recipespool.RecipesPoolDAO;
-import org.food.ministry.model.Ingredient;
-import org.food.ministry.model.Recipe;
+import org.food.ministry.data.access.household.HouseholdDAO;
+import org.food.ministry.model.FoodInventory;
+import org.food.ministry.model.Household;
+import org.food.ministry.model.IngredientsPool;
 import org.food.ministry.model.RecipesPool;
-import org.food.ministry.model.Unit;
+import org.food.ministry.model.ShoppingList;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,19 +38,23 @@ import akka.testkit.TestProbe;
 @RunWith(MockitoJUnitRunner.class)
 public class TestHouseholdActor {
 
-    private static final String CORRUPTED_DATA_SOURCE_MESSAGE = "Underlying data source not responding correctly";
-    private static final long RECIPES_POOL_ID = 0;
+    private static final long HOUSEHOLD_ID = 0;
+    private static final String HOUSEHOLD_NAME = "MyHousehold";
+    private static final long FOOD_INVENTORY_ID = 1;
+    private static final long INGREDIENTS_POOL_ID = 2;
+    private static final long RECIPES_POOL_ID = 3;
+    private static final long SHOPPING_LIST_ID = 4;
 
     @Mock
-    private RecipesPoolDAO recipesPoolDao;
-    @Mock
-    private RecipeDAO recipeDao;
-    @Mock
-    private IngredientDAO ingredientDao;
+    private HouseholdDAO householdDao;
 
+    private Household testHousehold;
+    private FoodInventory testFoodInventory;
+    private IngredientsPool testIngredientsPool;
     private RecipesPool testRecipesPool;
+    private ShoppingList testShoppingList;
     private ActorSystem system;
-    private ActorRef recipesPoolActor;
+    private ActorRef householdActor;
     private TestProbe probe;
 
     @Before
@@ -59,8 +62,12 @@ public class TestHouseholdActor {
         system = ActorSystem.create("user-system");
         probe = new TestProbe(system);
         IDGenerator.initializeGeneratorActor(system);
-        recipesPoolActor = system.actorOf(RecipesPoolActor.props(recipesPoolDao, recipeDao, ingredientDao), "household-actor");
+        householdActor = system.actorOf(HouseholdActor.props(householdDao), "household-actor");
+        testFoodInventory = new FoodInventory(FOOD_INVENTORY_ID);
+        testShoppingList = new ShoppingList(SHOPPING_LIST_ID);
+        testIngredientsPool = new IngredientsPool(INGREDIENTS_POOL_ID);
         testRecipesPool = new RecipesPool(RECIPES_POOL_ID);
+        testHousehold = new Household(HOUSEHOLD_ID, testFoodInventory, testShoppingList, testIngredientsPool, testRecipesPool, HOUSEHOLD_NAME);
     }
 
     @After
@@ -68,199 +75,133 @@ public class TestHouseholdActor {
         system = null;
     }
 
-    // --------------- Recipes Pool section ---------------
+    // --------------- Household section ---------------
 
     @Test
-    public void testSuccessfulGetRecipesEmptyList() throws DataAccessException {
-        Mockito.when(recipesPoolDao.get(RECIPES_POOL_ID)).thenReturn(testRecipesPool);
+    public void testSuccessfulGetFoodInventory() throws DataAccessException {
+        Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(testHousehold);
 
         long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new GetRecipesMessage(messageId, RECIPES_POOL_ID), probe.ref());
+        householdActor.tell(new GetFoodInventoryMessage(messageId, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        GetRecipesResultMessage getRecipesResultMessage = getGetRecipesResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        GetFoodInventoryResultMessage getFoodInventoryResultMessage = MessageUtil.getMessageByClass(GetFoodInventoryResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(getRecipesResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, getRecipesResultMessage.getErrorMessage());
-        Assert.assertEquals(messageId, getRecipesResultMessage.getOriginId());
-        Assert.assertEquals(getRecipesResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(getRecipesResultMessage.getRecipesIdsWithName().isEmpty());
+        MessageUtil.checkNoErrorMessage(messageId, getFoodInventoryResultMessage, delegateResultMessage);
+        Assert.assertEquals(FOOD_INVENTORY_ID, getFoodInventoryResultMessage.getFoodInventoryId());
     }
 
     @Test
-    public void testSuccessfulGetRecipes() throws DataAccessException {
-        final long recipeId = 0;
-        final String recipeName = "MyRecipe";
-        testRecipesPool.addRecipe(new Recipe(recipeId, recipeName, new HashMap<>(), "MyDescription"));
-        Mockito.when(recipesPoolDao.get(RECIPES_POOL_ID)).thenReturn(testRecipesPool);
+    public void testGetFoodInventoryWithDataAccessException() throws DataAccessException {
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(householdDao).get(HOUSEHOLD_ID);
 
         long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new GetRecipesMessage(messageId, RECIPES_POOL_ID), probe.ref());
+        householdActor.tell(new GetFoodInventoryMessage(messageId, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        GetRecipesResultMessage getRecipesResultMessage = getGetRecipesResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        GetFoodInventoryResultMessage getIngredientsPoolResultMessage = MessageUtil.getMessageByClass(GetFoodInventoryResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(getRecipesResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, getRecipesResultMessage.getErrorMessage());
-        Assert.assertEquals(messageId, getRecipesResultMessage.getOriginId());
-        Assert.assertEquals(getRecipesResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Map<Long, String> recipes = getRecipesResultMessage.getRecipesIdsWithName();
-        Assert.assertEquals(1, recipes.size());
-        Assert.assertTrue(recipes.containsKey(recipeId));
-        Assert.assertEquals(recipeName, recipes.get(recipeId));
+        String expectedErrorMessage = MessageFormat.format("Getting the food inventory of household with id {0} failed: {1}", HOUSEHOLD_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, getIngredientsPoolResultMessage, delegateMessage);
+    }
+    
+    @Test
+    public void testSuccessfulGetIngredientsPool() throws DataAccessException {
+        Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(testHousehold);
+
+        long messageId = IDGenerator.getRandomID();
+        householdActor.tell(new GetIngredientsPoolMessage(messageId, HOUSEHOLD_ID), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        GetIngredientsPoolResultMessage getIngredientsPoolResultMessage = MessageUtil.getMessageByClass(GetIngredientsPoolResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
+
+        MessageUtil.checkNoErrorMessage(messageId, getIngredientsPoolResultMessage, delegateResultMessage);
+        Assert.assertEquals(INGREDIENTS_POOL_ID, getIngredientsPoolResultMessage.getIngredientsPoolId());
     }
 
     @Test
-    public void testGetRecipesWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(recipesPoolDao).get(RECIPES_POOL_ID);
+    public void testGetIngredientsPoolWithDataAccessException() throws DataAccessException {
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(householdDao).get(HOUSEHOLD_ID);
 
         long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new GetRecipesMessage(messageId, RECIPES_POOL_ID), probe.ref());
+        householdActor.tell(new GetIngredientsPoolMessage(messageId, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        GetRecipesResultMessage getRecipesResultMessage = getGetRecipesResultMessage(firstResultMessage, secondResultMessage);
+        GetIngredientsPoolResultMessage getIngredientsPoolResultMessage = MessageUtil.getMessageByClass(GetIngredientsPoolResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertFalse(getRecipesResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Getting all recipes of recipes pool with id {0} failed: {1}", RECIPES_POOL_ID, CORRUPTED_DATA_SOURCE_MESSAGE),
-                getRecipesResultMessage.getErrorMessage());
+        String expectedErrorMessage = MessageFormat.format("Getting the ingredients pool of household with id {0} failed: {1}", HOUSEHOLD_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, getIngredientsPoolResultMessage, delegateMessage);
+    }
+    
+    @Test
+    public void testSuccessfulGetRecipesPool() throws DataAccessException {
+        Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(testHousehold);
+
+        long messageId = IDGenerator.getRandomID();
+        householdActor.tell(new GetRecipesPoolMessage(messageId, HOUSEHOLD_ID), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        GetRecipesPoolResultMessage getRecipesPoolResultMessage = MessageUtil.getMessageByClass(GetRecipesPoolResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
+
+        MessageUtil.checkNoErrorMessage(messageId, getRecipesPoolResultMessage, delegateResultMessage);
+        Assert.assertEquals(RECIPES_POOL_ID, getRecipesPoolResultMessage.getRecipesPoolId());
     }
 
     @Test
-    public void testSuccessfulAddRecipeWithoutIngredients() throws DataAccessException {
-        Mockito.when(recipesPoolDao.get(RECIPES_POOL_ID)).thenReturn(testRecipesPool);
+    public void testGetRecipesPoolWithDataAccessException() throws DataAccessException {
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(householdDao).get(HOUSEHOLD_ID);
 
         long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new AddRecipeMessage(messageId, RECIPES_POOL_ID, "MyRecipe", new HashMap<>(), "MyDescription"), probe.ref());
+        householdActor.tell(new GetRecipesPoolMessage(messageId, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        AddRecipeResultMessage addRecipeResultMessage = getAddRecipeResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        GetRecipesPoolResultMessage getRecipesPoolResultMessage = MessageUtil.getMessageByClass(GetRecipesPoolResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(addRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, addRecipeResultMessage.getErrorMessage());
-        Assert.assertEquals(messageId, addRecipeResultMessage.getOriginId());
-        Assert.assertEquals(addRecipeResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+        String expectedErrorMessage = MessageFormat.format("Getting the recipes pool of household with id {0} failed: {1}", HOUSEHOLD_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, getRecipesPoolResultMessage, delegateMessage);
+    }
+    
+    @Test
+    public void testSuccessfulGetShoppingList() throws DataAccessException {
+        Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(testHousehold);
+
+        long messageId = IDGenerator.getRandomID();
+        householdActor.tell(new GetShoppingListMessage(messageId, HOUSEHOLD_ID), probe.ref());
+        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
+        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
+
+        GetShoppingListResultMessage getShoppingListResultMessage = MessageUtil.getMessageByClass(GetShoppingListResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
+
+        MessageUtil.checkNoErrorMessage(messageId, getShoppingListResultMessage, delegateResultMessage);
+        Assert.assertEquals(SHOPPING_LIST_ID, getShoppingListResultMessage.getShoppingListId());
     }
 
     @Test
-    public void testSuccessfulAddRecipeWithIngredients() throws DataAccessException {
-        Ingredient tomato = new Ingredient(0, "Tomato", Unit.NONE, false);
-        Ingredient salt = new Ingredient(1, "Salt", Unit.TEASPOON, false);
-        Map<Long, Float> ingredientsMap = new HashMap<>();
-        ingredientsMap.put(tomato.getId(), 1f);
-        ingredientsMap.put(salt.getId(), 0.5f);
-        Mockito.when(recipesPoolDao.get(RECIPES_POOL_ID)).thenReturn(testRecipesPool);
-        Mockito.when(ingredientDao.get(tomato.getId())).thenReturn(tomato);
-        Mockito.when(ingredientDao.get(salt.getId())).thenReturn(salt);
+    public void testGetShoppingListWithDataAccessException() throws DataAccessException {
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(householdDao).get(HOUSEHOLD_ID);
 
         long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new AddRecipeMessage(messageId, RECIPES_POOL_ID, "MyRecipe", ingredientsMap, "MyDescription"), probe.ref());
+        householdActor.tell(new GetShoppingListMessage(messageId, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        AddRecipeResultMessage addRecipeResultMessage = getAddRecipeResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        GetShoppingListResultMessage getShoppingListResultMessage = MessageUtil.getMessageByClass(GetShoppingListResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(addRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, addRecipeResultMessage.getErrorMessage());
-        Assert.assertEquals(messageId, addRecipeResultMessage.getOriginId());
-        Assert.assertEquals(addRecipeResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-    }
-
-    @Test
-    public void testSuccessfulAddRecipeWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(recipesPoolDao).get(RECIPES_POOL_ID);
-
-        long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new AddRecipeMessage(messageId, RECIPES_POOL_ID, "MyRecipe", new HashMap<>(), "MyDescription"), probe.ref());
-        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
-        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
-
-        AddRecipeResultMessage addRecipeResultMessage = getAddRecipeResultMessage(firstResultMessage, secondResultMessage);
-
-        Assert.assertFalse(addRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Adding a recipe to recipes pool id {0} failed: {1}", RECIPES_POOL_ID, CORRUPTED_DATA_SOURCE_MESSAGE),
-                addRecipeResultMessage.getErrorMessage());
-    }
-
-    @Test
-    public void testSuccessfulDeleteRecipe() throws DataAccessException {
-        Recipe recipe = new Recipe(0, "MyRecipe", new HashMap<>(), "MyDescription");
-        Mockito.when(recipesPoolDao.get(RECIPES_POOL_ID)).thenReturn(testRecipesPool);
-        Mockito.when(recipeDao.get(recipe.getId())).thenReturn(recipe);
-
-        long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new DeleteRecipeMessage(messageId, RECIPES_POOL_ID, recipe.getId()), probe.ref());
-        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
-        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
-
-        DeleteRecipeResultMessage deleteRecipeResultMessage = getDeleteRecipeResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
-
-        Assert.assertTrue(deleteRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, deleteRecipeResultMessage.getErrorMessage());
-        Assert.assertEquals(messageId, deleteRecipeResultMessage.getOriginId());
-        Assert.assertEquals(deleteRecipeResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-    }
-
-    @Test
-    public void testDeleteRecipeWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(recipesPoolDao).get(RECIPES_POOL_ID);
-        final long recipeId = 0;
-
-        long messageId = IDGenerator.getRandomID();
-        recipesPoolActor.tell(new DeleteRecipeMessage(messageId, RECIPES_POOL_ID, recipeId), probe.ref());
-        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
-        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
-
-        DeleteRecipeResultMessage deleteRecipeResultMessage = getDeleteRecipeResultMessage(firstResultMessage, secondResultMessage);
-
-        Assert.assertFalse(deleteRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Deleting of recipe with {0} from recipes pool with id {1} failed: {2}", RECIPES_POOL_ID, recipeId, CORRUPTED_DATA_SOURCE_MESSAGE),
-                deleteRecipeResultMessage.getErrorMessage());
-    }
-
-    // --------------- Helper functions section ---------------
-
-    private GetRecipesResultMessage getGetRecipesResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof GetRecipesResultMessage) {
-            return (GetRecipesResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof GetRecipesResultMessage) {
-            return (GetRecipesResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private AddRecipeResultMessage getAddRecipeResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof AddRecipeResultMessage) {
-            return (AddRecipeResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof AddRecipeResultMessage) {
-            return (AddRecipeResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private DeleteRecipeResultMessage getDeleteRecipeResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof DeleteRecipeResultMessage) {
-            return (DeleteRecipeResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof DeleteRecipeResultMessage) {
-            return (DeleteRecipeResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private DelegateMessage getDelegateMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof DelegateMessage) {
-            return (DelegateMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof DelegateMessage) {
-            return (DelegateMessage) secondResultMessage;
-        }
-        return null;
+        String expectedErrorMessage = MessageFormat.format("Getting the shopping list of household with id {0} failed: {1}", HOUSEHOLD_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, getShoppingListResultMessage, delegateMessage);
     }
 }

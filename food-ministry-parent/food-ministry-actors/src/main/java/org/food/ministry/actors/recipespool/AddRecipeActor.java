@@ -112,7 +112,7 @@ public class AddRecipeActor extends AbstractActor {
             getSender().tell(new AddRecipeResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
             LOGGER.info("Successfully added a recipe with id {} to recipes pool with id {}", recipeId, recipesPoolId);
         } catch(Exception e) {
-            final String errorMessage = MessageFormat.format("Adding a recipe to recipes pool id {0} failed: {1}", recipesPoolId, e.getMessage());
+            final String errorMessage = MessageFormat.format("Adding a recipe to recipes pool with id {0} failed: {1}", recipesPoolId, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
             getSender().tell(new AddRecipeResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage), getSelf());
         }

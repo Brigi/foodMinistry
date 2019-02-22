@@ -32,7 +32,22 @@ public class HouseholdActor extends AbstractActor {
     /**
      * The actor child for recipes pool handling
      */
+    private final ActorRef getFoodInventoryChild;
+    
+    /**
+     * The actor child for recipes pool handling
+     */
+    private final ActorRef getIngredientsPoolChild;
+    
+    /**
+     * The actor child for recipes pool handling
+     */
     private final ActorRef getRecipesPoolChild;
+    
+    /**
+     * The actor child for recipes pool handling
+     */
+    private final ActorRef getShoppingListChild;
 
     /**
      * Constructor initializing all child actors
@@ -40,7 +55,10 @@ public class HouseholdActor extends AbstractActor {
      * @param householdDao The data access object for households
      */
     public HouseholdActor(HouseholdDAO householdDao) {
+        getFoodInventoryChild = getContext().actorOf(GetFoodInventoryActor.props(householdDao), "getFoodInventoryActor");
+        getIngredientsPoolChild = getContext().actorOf(GetIngredientsPoolActor.props(householdDao), "getIngredientsPoolActor");
         getRecipesPoolChild = getContext().actorOf(GetRecipesPoolActor.props(householdDao), "getRecipesPoolActor");
+        getShoppingListChild = getContext().actorOf(GetShoppingListActor.props(householdDao), "getShoppingListActor");
     }
 
     /**
@@ -77,7 +95,7 @@ public class HouseholdActor extends AbstractActor {
      */
     private void delegateToGetFoodInventoryActor(GetFoodInventoryMessage message) {
         LOGGER.info("Getting food inventory with message {}", message.getId());
-        getRecipesPoolChild.forward(message, getContext());
+        getFoodInventoryChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
 
@@ -89,7 +107,7 @@ public class HouseholdActor extends AbstractActor {
      */
     private void delegateToGetIngredientsPoolActor(GetIngredientsPoolMessage message) {
         LOGGER.info("Getting ingredients pool with message {}", message.getId());
-        getRecipesPoolChild.forward(message, getContext());
+        getIngredientsPoolChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
 
@@ -113,7 +131,7 @@ public class HouseholdActor extends AbstractActor {
      */
     private void delegateToGetShoppingListActor(GetShoppingListMessage message) {
         LOGGER.info("Getting shopping list with message {}", message.getId());
-        getRecipesPoolChild.forward(message, getContext());
+        getShoppingListChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
 }

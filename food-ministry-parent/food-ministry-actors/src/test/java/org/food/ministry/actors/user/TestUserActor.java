@@ -15,6 +15,8 @@ import org.food.ministry.actors.user.messages.RegisterMessage;
 import org.food.ministry.actors.user.messages.RegisterResultMessage;
 import org.food.ministry.actors.user.messages.RemoveHouseholdMessage;
 import org.food.ministry.actors.user.messages.RemoveHouseholdResultMessage;
+import org.food.ministry.actors.user.util.MessageUtil;
+import org.food.ministry.actors.user.util.RedirectAnswer;
 import org.food.ministry.actors.util.Constants;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.exceptions.DataAccessException;
@@ -38,7 +40,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -47,9 +48,8 @@ import akka.testkit.TestProbe;
 @RunWith(MockitoJUnitRunner.class)
 public class TestUserActor {
 
-    private static final String CORRUPTED_DATA_SOURCE_MESSAGE = "Underlying data source not responding correctly";
     private static final long USER_ID = 0;
-    private static final long HOUSEHOLD_ID = 0;
+    private static final long HOUSEHOLD_ID = 1;
     private static final String EMAIL_ADDRESS = "email@address.com";
     private static final String USER_NAME = "MyName";
     private static final String PASSWORD = "1234";
@@ -89,18 +89,15 @@ public class TestUserActor {
     public void testSuccessfulUserLogin() throws DataAccessException {
         Mockito.when(userDao.getUser(EMAIL_ADDRESS)).thenReturn(new User(USER_ID, EMAIL_ADDRESS, USER_NAME, PASSWORD));
 
-        long loginMessageId = IDGenerator.getRandomID();
-        userActor.tell(new LoginMessage(loginMessageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new LoginMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        LoginResultMessage loginResultMessage = getLoginResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        LoginResultMessage loginResultMessage = MessageUtil.getMessageByClass(LoginResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(loginResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, loginResultMessage.getErrorMessage());
-        Assert.assertEquals(loginMessageId, loginResultMessage.getOriginId());
-        Assert.assertEquals(loginResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+        MessageUtil.checkNoErrorMessage(messageId, loginResultMessage, delegateResultMessage);
     }
 
     @Test
@@ -111,7 +108,7 @@ public class TestUserActor {
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        LoginResultMessage loginResultMessage = getLoginResultMessage(firstResultMessage, secondResultMessage);
+        LoginResultMessage loginResultMessage = MessageUtil.getMessageByClass(LoginResultMessage.class, firstResultMessage, secondResultMessage);
 
         Assert.assertFalse(loginResultMessage.isSuccessful());
         Assert.assertEquals(Constants.WRONG_CREDENTIALS_MESSAGE, loginResultMessage.getErrorMessage());
@@ -119,16 +116,18 @@ public class TestUserActor {
 
     @Test
     public void testUserLoginWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).getUser(ArgumentMatchers.any());
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).getUser(ArgumentMatchers.any());
 
-        userActor.tell(new LoginMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, "wrongPassword"), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new LoginMessage(messageId, USER_NAME, EMAIL_ADDRESS, "wrongPassword"), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        LoginResultMessage loginResultMessage = getLoginResultMessage(firstResultMessage, secondResultMessage);
+        LoginResultMessage loginResultMessage = MessageUtil.getMessageByClass(LoginResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertFalse(loginResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Login for user {0} failed: {1}", USER_NAME, CORRUPTED_DATA_SOURCE_MESSAGE), loginResultMessage.getErrorMessage());
+        String expectedErrorMessage = MessageFormat.format("Login for user {0} failed: {1}", USER_NAME, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, loginResultMessage, delegateMessage);
     }
 
     // --------------- User Registration section ---------------
@@ -138,17 +137,15 @@ public class TestUserActor {
         Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
         Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
 
-        userActor.tell(new RegisterMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RegisterMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RegisterResultMessage registrationResultMessage = getRegistrationResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        RegisterResultMessage registrationResultMessage = MessageUtil.getMessageByClass(RegisterResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(registrationResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, registrationResultMessage.getErrorMessage());
-        Assert.assertEquals(registrationResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, registrationResultMessage, delegateResultMessage);
     }
 
     @Test
@@ -156,17 +153,15 @@ public class TestUserActor {
         Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(true).thenReturn(false);
         Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
 
-        userActor.tell(new RegisterMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RegisterMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RegisterResultMessage registrationResultMessage = getRegistrationResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        RegisterResultMessage registrationResultMessage = MessageUtil.getMessageByClass(RegisterResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(registrationResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, registrationResultMessage.getErrorMessage());
-        Assert.assertEquals(registrationResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, registrationResultMessage, delegateResultMessage);
     }
 
     @Test
@@ -177,7 +172,7 @@ public class TestUserActor {
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RegisterResultMessage registrationResultMessage = getRegistrationResultMessage(firstResultMessage, secondResultMessage);
+        RegisterResultMessage registrationResultMessage = MessageUtil.getMessageByClass(RegisterResultMessage.class, firstResultMessage, secondResultMessage);
 
         Assert.assertFalse(registrationResultMessage.isSuccessful());
         Assert.assertEquals(Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE, registrationResultMessage.getErrorMessage());
@@ -185,16 +180,18 @@ public class TestUserActor {
 
     @Test
     public void testUserRegistrationWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).save(ArgumentMatchers.any());
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).save(ArgumentMatchers.any());
 
-        userActor.tell(new RegisterMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RegisterMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RegisterResultMessage registrationResultMessage = getRegistrationResultMessage(firstResultMessage, secondResultMessage);
+        RegisterResultMessage registrationResultMessage = MessageUtil.getMessageByClass(RegisterResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertFalse(registrationResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Registration of user {0} failed: {1}", USER_NAME, CORRUPTED_DATA_SOURCE_MESSAGE), registrationResultMessage.getErrorMessage());
+        String expectedErrorMessage = MessageFormat.format("Registration of user {0} failed: {1}", USER_NAME, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, registrationResultMessage, delegateMessage);
     }
 
     // --------------- User Registration and Login section ---------------
@@ -203,35 +200,31 @@ public class TestUserActor {
     public void testSuccessfulUserRegistrationAndLogin() throws DataAccessException {
         Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
         Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
-        UserContainer userContainer = new UserContainer();
-        Mockito.doAnswer(setRedirectedUserAnswer(userContainer)).when(userDao).save(ArgumentMatchers.any());
-        Mockito.when(userDao.getUser(EMAIL_ADDRESS)).then(getRedirectedUserAnswer(userContainer));
+        RedirectAnswer<User> redirectAnwser = new RedirectAnswer<>();
+        Mockito.doAnswer(redirectAnwser.setRedirectedUserAnswer()).when(userDao).save(ArgumentMatchers.any());
+        Mockito.when(userDao.getUser(EMAIL_ADDRESS)).then(redirectAnwser.getRedirectedUserAnswer());
 
         // Register User
-        userActor.tell(new RegisterMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RegisterMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RegisterResultMessage registrationResultMessage = getRegistrationResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        RegisterResultMessage registrationResultMessage = MessageUtil.getMessageByClass(RegisterResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(registrationResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, registrationResultMessage.getErrorMessage());
-        Assert.assertEquals(registrationResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, registrationResultMessage, delegateResultMessage);
 
         // Login User
-        userActor.tell(new LoginMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        messageId = IDGenerator.getRandomID();
+        userActor.tell(new LoginMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
         firstResultMessage = probe.expectMsgClass(IMessage.class);
         secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        LoginResultMessage loginResultMessage = getLoginResultMessage(firstResultMessage, secondResultMessage);
-        delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        LoginResultMessage loginResultMessage = MessageUtil.getMessageByClass(LoginResultMessage.class, firstResultMessage, secondResultMessage);
+        delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(loginResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, loginResultMessage.getErrorMessage());
-        Assert.assertEquals(loginResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, loginResultMessage, delegateResultMessage);
     }
 
     // --------------- Household section ---------------
@@ -240,39 +233,35 @@ public class TestUserActor {
     public void testSuccessfulGetEmptyHouseholds() throws DataAccessException {
         Mockito.when(userDao.get(ArgumentMatchers.anyLong())).thenReturn(new User(USER_ID, EMAIL_ADDRESS, USER_NAME, PASSWORD));
 
-        userActor.tell(new GetHouseholdsMessage(IDGenerator.getRandomID(), USER_ID), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new GetHouseholdsMessage(messageId, USER_ID), probe.ref());
 
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        GetHouseholdsResultMessage getHouseholdsResultMessage = getGetHouseholdsResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        GetHouseholdsResultMessage getHouseholdsResultMessage = MessageUtil.getMessageByClass(GetHouseholdsResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(getHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, getHouseholdsResultMessage.getErrorMessage());
-        Assert.assertEquals(getHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, getHouseholdsResultMessage, delegateResultMessage);
 
         Assert.assertTrue(getHouseholdsResultMessage.getHouseholdIdsWithName().isEmpty());
     }
 
     @Test
     public void testGetHouseholdsWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
 
-        long requestId = IDGenerator.getRandomID();
-        userActor.tell(new GetHouseholdsMessage(requestId, USER_ID), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new GetHouseholdsMessage(messageId, USER_ID), probe.ref());
 
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        GetHouseholdsResultMessage getHouseholdsResultMessage = getGetHouseholdsResultMessage(firstResultMessage, secondResultMessage);
+        GetHouseholdsResultMessage getHouseholdsResultMessage = MessageUtil.getMessageByClass(GetHouseholdsResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertFalse(getHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(requestId, getHouseholdsResultMessage.getOriginId());
-        Assert.assertEquals(MessageFormat.format("Getting households for user id {0} failed: {1}", USER_ID, CORRUPTED_DATA_SOURCE_MESSAGE),
-                getHouseholdsResultMessage.getErrorMessage());
-
+        String expectedErrorMessage = MessageFormat.format("Getting households for user id {0} failed: {1}", USER_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, getHouseholdsResultMessage, delegateMessage);
         Assert.assertTrue(getHouseholdsResultMessage.getHouseholdIdsWithName().isEmpty());
     }
 
@@ -284,34 +273,31 @@ public class TestUserActor {
         Mockito.when(shoppingListDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
         Mockito.when(ingredientsPoolDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
 
-        userActor.tell(new AddHouseholdMessage(IDGenerator.getRandomID(), USER_ID, HOUSEHOLD_NAME), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new AddHouseholdMessage(messageId, USER_ID, HOUSEHOLD_NAME), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        AddHouseholdResultMessage addHouseholdsResultMessage = getAddHouseholdResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        AddHouseholdResultMessage addHouseholdsResultMessage = MessageUtil.getMessageByClass(AddHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(addHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, addHouseholdsResultMessage.getErrorMessage());
-        Assert.assertEquals(addHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, addHouseholdsResultMessage, delegateResultMessage);
     }
 
     @Test
     public void testAddHouseholdWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
 
-        long requestId = IDGenerator.getRandomID();
-        userActor.tell(new AddHouseholdMessage(requestId, USER_ID, HOUSEHOLD_NAME), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new AddHouseholdMessage(messageId, USER_ID, HOUSEHOLD_NAME), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        AddHouseholdResultMessage addHouseholdsResultMessage = getAddHouseholdResultMessage(firstResultMessage, secondResultMessage);
+        AddHouseholdResultMessage addHouseholdsResultMessage = MessageUtil.getMessageByClass(AddHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertFalse(addHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(requestId, addHouseholdsResultMessage.getOriginId());
-        Assert.assertEquals(MessageFormat.format("Getting households for user with id {0} failed: {1}", USER_ID, CORRUPTED_DATA_SOURCE_MESSAGE),
-                addHouseholdsResultMessage.getErrorMessage());
+        String expectedErrorMessage = MessageFormat.format("Getting households for user with id {0} failed: {1}", USER_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, addHouseholdsResultMessage, delegateMessage);
     }
 
     @Test
@@ -323,16 +309,15 @@ public class TestUserActor {
         Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(household);
         Mockito.when(userDao.isHouseholdUnreferenced(household)).thenReturn(true);
 
-        userActor.tell(new RemoveHouseholdMessage(IDGenerator.getRandomID(), USER_ID, HOUSEHOLD_ID), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RemoveHouseholdMessage(messageId, USER_ID, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RemoveHouseholdResultMessage removeHouseholdsResultMessage = getRemoveHouseholdResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        RemoveHouseholdResultMessage removeHouseholdsResultMessage = MessageUtil.getMessageByClass(RemoveHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(removeHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, removeHouseholdsResultMessage.getErrorMessage());
-        Assert.assertEquals(removeHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+        MessageUtil.checkNoErrorMessage(messageId, removeHouseholdsResultMessage, delegateResultMessage);
     }
 
     @Test
@@ -344,33 +329,31 @@ public class TestUserActor {
         Mockito.when(householdDao.get(HOUSEHOLD_ID)).thenReturn(household);
         Mockito.when(userDao.isHouseholdUnreferenced(household)).thenReturn(false);
 
-        userActor.tell(new RemoveHouseholdMessage(IDGenerator.getRandomID(), USER_ID, HOUSEHOLD_ID), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RemoveHouseholdMessage(messageId, USER_ID, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RemoveHouseholdResultMessage removeHouseholdsResultMessage = getRemoveHouseholdResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        RemoveHouseholdResultMessage removeHouseholdsResultMessage = MessageUtil.getMessageByClass(RemoveHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(removeHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, removeHouseholdsResultMessage.getErrorMessage());
-        Assert.assertEquals(removeHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
+        MessageUtil.checkNoErrorMessage(messageId, removeHouseholdsResultMessage, delegateResultMessage);
     }
 
     @Test
     public void testRemoveHouseholdWithDataAccessException() throws DataAccessException {
-        Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
+        Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).get(ArgumentMatchers.anyLong());
 
-        long requestId = IDGenerator.getRandomID();
-        userActor.tell(new RemoveHouseholdMessage(requestId, USER_ID, HOUSEHOLD_ID), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new RemoveHouseholdMessage(messageId, USER_ID, HOUSEHOLD_ID), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        RemoveHouseholdResultMessage addHouseholdsResultMessage = getRemoveHouseholdResultMessage(firstResultMessage, secondResultMessage);
+        RemoveHouseholdResultMessage addHouseholdsResultMessage = MessageUtil.getMessageByClass(RemoveHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertFalse(addHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(requestId, addHouseholdsResultMessage.getOriginId());
-        Assert.assertEquals(MessageFormat.format("Deleting household with id {0} for user with id {1} failed: {2}", HOUSEHOLD_ID, USER_ID, CORRUPTED_DATA_SOURCE_MESSAGE),
-                addHouseholdsResultMessage.getErrorMessage());
+        String expectedErrorMessage = MessageFormat.format("Deleting household with id {0} for user with id {1} failed: {2}", HOUSEHOLD_ID, USER_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, addHouseholdsResultMessage, delegateMessage);
     }
 
     @Test
@@ -382,114 +365,28 @@ public class TestUserActor {
         Mockito.when(shoppingListDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
         Mockito.when(ingredientsPoolDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
 
-        userActor.tell(new AddHouseholdMessage(IDGenerator.getRandomID(), USER_ID, HOUSEHOLD_NAME), probe.ref());
+        long messageId = IDGenerator.getRandomID();
+        userActor.tell(new AddHouseholdMessage(messageId, USER_ID, HOUSEHOLD_NAME), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        AddHouseholdResultMessage addHouseholdsResultMessage = getAddHouseholdResultMessage(firstResultMessage, secondResultMessage);
-        DelegateMessage delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        AddHouseholdResultMessage addHouseholdsResultMessage = MessageUtil.getMessageByClass(AddHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
+        DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(addHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, addHouseholdsResultMessage.getErrorMessage());
-        Assert.assertEquals(addHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, addHouseholdsResultMessage, delegateResultMessage);
 
-        userActor.tell(new GetHouseholdsMessage(IDGenerator.getRandomID(), USER_ID), probe.ref());
+        messageId = IDGenerator.getRandomID();
+        userActor.tell(new GetHouseholdsMessage(messageId, USER_ID), probe.ref());
         firstResultMessage = probe.expectMsgClass(IMessage.class);
         secondResultMessage = probe.expectMsgClass(IMessage.class);
 
-        GetHouseholdsResultMessage getHouseholdsResultMessage = getGetHouseholdsResultMessage(firstResultMessage, secondResultMessage);
-        delegateResultMessage = getDelegateMessage(firstResultMessage, secondResultMessage);
+        GetHouseholdsResultMessage getHouseholdsResultMessage = MessageUtil.getMessageByClass(GetHouseholdsResultMessage.class, firstResultMessage, secondResultMessage);
+        delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        Assert.assertTrue(getHouseholdsResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.NO_ERROR_MESSAGE, getHouseholdsResultMessage.getErrorMessage());
-        Assert.assertEquals(getHouseholdsResultMessage.getOriginId(), delegateResultMessage.getOriginId());
-        Assert.assertTrue(delegateResultMessage.getOriginId() != 0);
+        MessageUtil.checkNoErrorMessage(messageId, getHouseholdsResultMessage, delegateResultMessage);
 
         Map<Long, String> households = getHouseholdsResultMessage.getHouseholdIdsWithName();
         Assert.assertEquals(1, households.size());
         Assert.assertTrue(households.containsValue(HOUSEHOLD_NAME));
-    }
-
-    // --------------- Helper functions section ---------------
-
-    private LoginResultMessage getLoginResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof LoginResultMessage) {
-            return (LoginResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof LoginResultMessage) {
-            return (LoginResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private RegisterResultMessage getRegistrationResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof RegisterResultMessage) {
-            return (RegisterResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof RegisterResultMessage) {
-            return (RegisterResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private GetHouseholdsResultMessage getGetHouseholdsResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof GetHouseholdsResultMessage) {
-            return (GetHouseholdsResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof GetHouseholdsResultMessage) {
-            return (GetHouseholdsResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private AddHouseholdResultMessage getAddHouseholdResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof AddHouseholdResultMessage) {
-            return (AddHouseholdResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof AddHouseholdResultMessage) {
-            return (AddHouseholdResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private RemoveHouseholdResultMessage getRemoveHouseholdResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof RemoveHouseholdResultMessage) {
-            return (RemoveHouseholdResultMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof RemoveHouseholdResultMessage) {
-            return (RemoveHouseholdResultMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private DelegateMessage getDelegateMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
-        if(firstResultMessage instanceof DelegateMessage) {
-            return (DelegateMessage) firstResultMessage;
-        } else if(secondResultMessage instanceof DelegateMessage) {
-            return (DelegateMessage) secondResultMessage;
-        }
-        return null;
-    }
-
-    private Answer<Object> setRedirectedUserAnswer(UserContainer userContainer) {
-        return (invocation) -> {
-            User user = (User) invocation.getArgument(0);
-            userContainer.setStoredUser(user);
-            return null;
-        };
-    }
-
-    private Answer<User> getRedirectedUserAnswer(UserContainer userContainer) {
-        return (invocation) -> {
-            return userContainer.getStoredUser();
-        };
-    }
-
-    private class UserContainer {
-        private User storedUser;
-
-        public User getStoredUser() {
-            return storedUser;
-        }
-
-        public void setStoredUser(User storedUser) {
-            this.storedUser = storedUser;
-        }
     }
 }
