@@ -14,7 +14,7 @@ public class TestFoodInventory {
     public void startUp() {
         foodInventory = new FoodInventory(0);
     }
-    
+
     @Test
     public void testGetId() {
         Assert.assertEquals(0, foodInventory.getId());

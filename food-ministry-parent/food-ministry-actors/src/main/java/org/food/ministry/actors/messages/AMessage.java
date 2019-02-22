@@ -10,8 +10,7 @@ public class AMessage implements IMessage {
     /**
      * Constructor initializing the essential member variables
      * 
-     * @param id
-     *            The ID of the message
+     * @param id The ID of the message
      */
     public AMessage(long id) {
         this.id = id;

@@ -15,7 +15,6 @@ import org.food.ministry.model.util.Util;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public abstract class AFoodStorage extends PersistenceObject {
 
@@ -27,8 +26,7 @@ public abstract class AFoodStorage extends PersistenceObject {
     /**
      * Default constructor initializing member variables
      * 
-     * @param id
-     *            The unique if of this food storage
+     * @param id The unique if of this food storage
      */
     public AFoodStorage(long id) {
         super(id);
@@ -50,10 +48,8 @@ public abstract class AFoodStorage extends PersistenceObject {
      * Once the quantity of an {@link Ingredient} reaches 0 or less the
      * {@link Ingredient} will be removed.
      * 
-     * @param ingredient
-     *            The ingredient to add/remove
-     * @param quantity
-     *            The quantity to add/remove
+     * @param ingredient The ingredient to add/remove
+     * @param quantity The quantity to add/remove
      */
     public void addIngredient(Ingredient ingredient, float quantity) {
         Util.addIngredientToMap(this.ingredients, ingredient, quantity);

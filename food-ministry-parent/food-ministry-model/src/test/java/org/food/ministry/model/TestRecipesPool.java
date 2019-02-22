@@ -2,7 +2,6 @@ package org.food.ministry.model;
 
 import java.util.HashMap;
 
-import org.food.ministry.model.exception.IngredientNotFoundException;
 import org.food.ministry.model.exception.RecipeNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +20,7 @@ public class TestRecipesPool {
     public void startUp() {
         recipesPool = new RecipesPool(0);
     }
-    
+
     @Test
     public void testGetId() {
         Assert.assertEquals(0, recipesPool.getId());

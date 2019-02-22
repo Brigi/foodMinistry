@@ -6,7 +6,6 @@ package org.food.ministry.model;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public enum Unit {
     KILOGRAMM("kg"), GRAMM("g"), MILILITER("ml"), LITER("l"), TABLESPOON("tbsp."), TEASPOON("tsp."), NONE("");

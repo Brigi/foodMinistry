@@ -9,7 +9,6 @@ import java.util.Map;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class Recipe extends PersistenceObject {
 
@@ -31,15 +30,11 @@ public class Recipe extends PersistenceObject {
     /**
      * Constructor initializing the essential elements of a recipe
      * 
-     * @param id
-     *            The unique id of the recipe
-     * @param name
-     *            The name of the recipe
-     * @param ingredients
-     *            A map containing the ingredients needed associated with the
-     *            quantity
-     * @param description
-     *            A description of this recipe
+     * @param id The unique id of the recipe
+     * @param name The name of the recipe
+     * @param ingredients A map containing the ingredients needed associated with
+     *            the quantity
+     * @param description A description of this recipe
      */
     public Recipe(long id, String name, Map<Ingredient, Float> ingredients, String description) {
         super(id);
@@ -60,8 +55,7 @@ public class Recipe extends PersistenceObject {
     /**
      * Sets the name of this recipe
      * 
-     * @param name
-     *            The name of this recipe
+     * @param name The name of this recipe
      */
     public void setName(String name) {
         this.name = name;
@@ -82,9 +76,8 @@ public class Recipe extends PersistenceObject {
      * Sets a map containing the needed ingredients for this recipe associated with
      * the quantity
      * 
-     * @param ingredients
-     *            A map containing the needed ingredients for this recipe associated
-     *            with the quantity
+     * @param ingredients A map containing the needed ingredients for this recipe
+     *            associated with the quantity
      */
     public void setIngredientsWithQuantity(Map<Ingredient, Float> ingredients) {
         this.ingredients = ingredients;
@@ -102,8 +95,7 @@ public class Recipe extends PersistenceObject {
     /**
      * Sets the description of this recipe
      * 
-     * @param description
-     *            The description of this recipe
+     * @param description The description of this recipe
      */
     public void setDescription(String description) {
         this.description = description;

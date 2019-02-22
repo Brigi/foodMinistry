@@ -10,8 +10,7 @@ public abstract class PersistenceObject {
     /**
      * Constructor setting the unique id of a persisted object
      * 
-     * @param id
-     *            A unique id for the kind of object
+     * @param id A unique id for the kind of object
      */
     public PersistenceObject(long id) {
         this.id = id;

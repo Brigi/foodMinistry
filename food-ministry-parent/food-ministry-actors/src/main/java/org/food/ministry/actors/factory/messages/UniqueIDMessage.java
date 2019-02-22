@@ -7,7 +7,6 @@ import org.food.ministry.actors.messages.IMessage;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class UniqueIDMessage implements IMessage {
 

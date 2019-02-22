@@ -17,7 +17,6 @@ import akka.japi.pf.ReceiveBuilder;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class IDGeneratorActor extends AbstractActor {
 
@@ -51,8 +50,7 @@ public class IDGeneratorActor extends AbstractActor {
      * Retrieves the next free ID and sends it back to the requester via a
      * {@link UniqueIDResultMessage}
      * 
-     * @param message
-     *            The {@link UniqueIDMessage} of the requester
+     * @param message The {@link UniqueIDMessage} of the requester
      */
     private void getNextID(UniqueIDMessage message) {
         MessageDigest mDigest = null;
@@ -70,8 +68,7 @@ public class IDGeneratorActor extends AbstractActor {
      * Converts the given byte array to a long value. The given byte array must have
      * the size of 8.
      * 
-     * @param bytes
-     *            The value in bytes to be converted to long
+     * @param bytes The value in bytes to be converted to long
      * @return The converted long value
      */
     private long byteArrayToLong(byte[] bytes) {
@@ -83,8 +80,7 @@ public class IDGeneratorActor extends AbstractActor {
     /**
      * Converts the given long value to bytes
      * 
-     * @param longValue
-     *            The value to convert to bytes
+     * @param longValue The value to convert to bytes
      * @return The converted bytes
      */
     private byte[] longToByteArray(long longValue) {

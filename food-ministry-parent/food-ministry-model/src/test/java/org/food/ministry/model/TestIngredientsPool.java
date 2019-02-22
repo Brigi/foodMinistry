@@ -18,7 +18,7 @@ public class TestIngredientsPool {
     public void startUp() {
         ingredientsPool = new IngredientsPool(0);
     }
-    
+
     @Test
     public void testGetId() {
         Assert.assertEquals(0, ingredientsPool.getId());

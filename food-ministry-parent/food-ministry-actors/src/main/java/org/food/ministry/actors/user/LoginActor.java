@@ -21,7 +21,6 @@ import akka.japi.pf.ReceiveBuilder;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class LoginActor extends AbstractActor {
 
@@ -38,8 +37,7 @@ public class LoginActor extends AbstractActor {
     /**
      * Constructor setting the data access object for users
      * 
-     * @param userDao
-     *            The data access object for users
+     * @param userDao The data access object for users
      */
     public LoginActor(UserDAO userDao) {
         this.userDao = userDao;
@@ -48,6 +46,7 @@ public class LoginActor extends AbstractActor {
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param userDao The data access object for users
      * @return The property for creating an actor of this class
      */
     public static Props props(UserDAO userDao) {
@@ -71,9 +70,8 @@ public class LoginActor extends AbstractActor {
      * Tries to login the user contained in provided the login message with the
      * contained credentials
      * 
-     * @param message
-     *            The login message containing all needed information for logging in
-     *            a user
+     * @param message The login message containing all needed information for
+     *            logging in a user
      */
     private void doLogin(LoginMessage message) {
         String userName = message.getUsername();

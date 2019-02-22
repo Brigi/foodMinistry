@@ -26,7 +26,6 @@ import akka.japi.pf.ReceiveBuilder;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class UserActor extends AbstractActor {
 
@@ -56,6 +55,15 @@ public class UserActor extends AbstractActor {
      */
     private final ActorRef removeHouseholdsChild;
 
+    /**
+     * Constructor initializing all child actors
+     * 
+     * @param userDao The data access object for users
+     * @param householdDao The data access object for households
+     * @param foodInventoryDao The data access object for food inventories
+     * @param shoppingListDao The data access object for shopping lists
+     * @param ingredientsPoolDao The data access object for ingredients pools
+     */
     public UserActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, IngredientsPoolDAO ingredientsPoolDao) {
         loginChild = getContext().actorOf(LoginActor.props(userDao), "loginActor");
         registrationChild = getContext().actorOf(RegistrationActor.props(userDao), "registrationActor");
@@ -67,15 +75,23 @@ public class UserActor extends AbstractActor {
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param userDao The data access object for users
+     * @param householdDao The data access object for households
+     * @param foodInventoryDao The data access object for food inventories
+     * @param shoppingListDao The data access object for shopping lists
+     * @param ingredientsPoolDao The data access object for ingredients pools
      * @return The property for creating an actor of this class
      */
-    public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, IngredientsPoolDAO ingredientsPoolDao) {
+    public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
+            IngredientsPoolDAO ingredientsPoolDao) {
         return Props.create(UserActor.class, () -> new UserActor(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao));
     }
 
     /**
-     * Accepts {@link LoginMessage} and {@link RegisterMessage}s and forwards those
-     * requests to the corresponding child actors
+     * Accepts {@link LoginMessage}, {@link RegisterMessage},
+     * {@link GetHouseholdsMessage}, {@link AddHouseholdMessage},
+     * {@link RemoveHouseholdMessage}s and forwards those requests to the
+     * corresponding child actors
      */
     @Override
     public Receive createReceive() {
@@ -93,8 +109,7 @@ public class UserActor extends AbstractActor {
      * Forwards the {@link LoginMessage} to the child {@link LoginActor} for further
      * processing
      * 
-     * @param message
-     *            The message from the user to attempt a login
+     * @param message The message from the user to attempt a login
      */
     private void delegateToLoginActor(LoginMessage message) {
         LOGGER.info("Login in user with message {}", message.getId());
@@ -106,8 +121,7 @@ public class UserActor extends AbstractActor {
      * Forwards the {@link RegisterMessage} to the child {@link RegistrationActor}
      * for further processing
      * 
-     * @param message
-     *            The message from the user to attempt a subscription
+     * @param message The message from the user to attempt a subscription
      */
     private void delegateToRegistrationActor(RegisterMessage message) {
         LOGGER.info("Registering user with message {}", message.getId());
@@ -116,37 +130,34 @@ public class UserActor extends AbstractActor {
     }
 
     /**
-     * Forwards the {@link GetHouseholdsMessage} to the child {@link GetHouseholdsActor}
-     * for further processing
+     * Forwards the {@link GetHouseholdsMessage} to the child
+     * {@link GetHouseholdsActor} for further processing
      * 
-     * @param message
-     *            The message from the user to get all households
+     * @param message The message from the user to get all households
      */
     private void delegateToGetHouseholdsActor(GetHouseholdsMessage message) {
         LOGGER.info("Getting households with message {}", message.getId());
         getHouseholdsChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
-    
+
     /**
-     * Forwards the {@link AddHouseholdsMessage} to the child {@link AddHouseholdActor}
-     * for further processing
+     * Forwards the {@link AddHouseholdsMessage} to the child
+     * {@link AddHouseholdActor} for further processing
      * 
-     * @param message
-     *            The message from the user to add a household
+     * @param message The message from the user to add a household
      */
     private void delegateToAddHouseholdActor(AddHouseholdMessage message) {
         LOGGER.info("Adding a household with message {}", message.getId());
         addHouseholdsChild.forward(message, getContext());
         getSender().tell(new DelegateMessage(IDGenerator.getRandomID(), message.getId()), getSelf());
     }
-    
+
     /**
-     * Forwards the {@link RemoveHouseholdMessage} to the child {@link RemoveHouseholdActor}
-     * for further processing
+     * Forwards the {@link RemoveHouseholdMessage} to the child
+     * {@link RemoveHouseholdActor} for further processing
      * 
-     * @param message
-     *            The message from the user to add a household
+     * @param message The message from the user to add a household
      */
     private void delegateToRemoveHouseholdActor(RemoveHouseholdMessage message) {
         LOGGER.info("Removing household with message {}", message.getId());

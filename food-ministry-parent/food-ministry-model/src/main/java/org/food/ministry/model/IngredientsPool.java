@@ -13,7 +13,6 @@ import org.food.ministry.model.exception.IngredientNotFoundException;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class IngredientsPool extends PersistenceObject {
 
@@ -25,8 +24,7 @@ public class IngredientsPool extends PersistenceObject {
     /**
      * Default constructor initializing member variables
      * 
-     * @param id
-     *            The unique id of this ingredients pool
+     * @param id The unique id of this ingredients pool
      */
     public IngredientsPool(long id) {
         super(id);
@@ -45,12 +43,10 @@ public class IngredientsPool extends PersistenceObject {
     /**
      * Gets the desired ingredient from the pool by name.
      * 
-     * @param name
-     *            The name of the ingredient to get
+     * @param name The name of the ingredient to get
      * @return The desired ingredient, if found
-     * @throws IngredientNotFoundException
-     *             Thrown if there exists no ingredient in this pool with the given
-     *             name
+     * @throws IngredientNotFoundException Thrown if there exists no ingredient in
+     *             this pool with the given name
      */
     public Ingredient getIngredient(String name) throws IngredientNotFoundException {
         if(name == null) {
@@ -69,8 +65,7 @@ public class IngredientsPool extends PersistenceObject {
      * Adds the given ingredient to this pool. If the ingredient is already present
      * in this pool, nothing happens.
      * 
-     * @param ingredient
-     *            The ingredient to add
+     * @param ingredient The ingredient to add
      */
     public void addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
@@ -80,8 +75,7 @@ public class IngredientsPool extends PersistenceObject {
      * Removes the given ingredient from the pool. If the ingredient did not exist,
      * nothing happens.
      * 
-     * @param ingredient
-     *            The ingredient to remove
+     * @param ingredient The ingredient to remove
      */
     public void removeIngredient(Ingredient ingredient) {
         this.ingredients.remove(ingredient);

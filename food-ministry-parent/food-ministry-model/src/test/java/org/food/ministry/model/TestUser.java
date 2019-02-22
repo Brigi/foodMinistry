@@ -16,7 +16,7 @@ public class TestUser {
     public void startUp() {
         user = new User(0, EMAIL_ADDRESS, NAME, PASSWORD);
     }
-    
+
     @Test
     public void testGetId() {
         Assert.assertEquals(0, user.getId());

@@ -6,7 +6,6 @@ package org.food.ministry.data.access.exceptions;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class DataAccessException extends Exception {
 
@@ -25,8 +24,7 @@ public class DataAccessException extends Exception {
     /**
      * Constructor accepting an additional error message
      * 
-     * @param message
-     *            The additional error message
+     * @param message The additional error message
      */
     public DataAccessException(String message) {
         super(message);
@@ -36,8 +34,7 @@ public class DataAccessException extends Exception {
      * Constructor accepting a throwable, which was the actual root cause of this
      * exception
      * 
-     * @param throwable
-     *            The actual root cause
+     * @param throwable The actual root cause
      */
     public DataAccessException(Throwable throwable) {
         super(throwable);
@@ -47,10 +44,8 @@ public class DataAccessException extends Exception {
      * Constructor accepting an additional error message and a throwable, which was
      * the actual root cause of this exception
      * 
-     * @param message
-     *            The additional error message
-     * @param throwable
-     *            The actual root cause
+     * @param message The additional error message
+     * @param throwable The actual root cause
      */
     public DataAccessException(String message, Throwable throwable) {
         super(message, throwable);

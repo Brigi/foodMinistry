@@ -7,7 +7,6 @@ import org.food.ministry.actors.messages.IMessage;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class UniqueIDErrorMessage implements IMessage {
 
@@ -19,8 +18,7 @@ public class UniqueIDErrorMessage implements IMessage {
     /**
      * Constructor setting the error message
      * 
-     * @param errorMessage
-     *            The error message
+     * @param errorMessage The error message
      */
     public UniqueIDErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;

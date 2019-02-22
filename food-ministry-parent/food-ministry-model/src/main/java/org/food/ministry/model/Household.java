@@ -1,9 +1,5 @@
 package org.food.ministry.model;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * This class represents the household of the user. It contains all elements
  * needed for this application to work and serves as entry point to apply
@@ -13,7 +9,6 @@ import java.util.Set;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class Household extends PersistenceObject {
 
@@ -47,8 +42,7 @@ public class Household extends PersistenceObject {
      * Constructor initializing this class. It accepts a name to which this
      * household should be associated.
      * 
-     * @param name
-     *            The name of this household
+     * @param name The name of this household
      */
     public Household(long id, FoodInventory foodInventory, ShoppingList shoppingList, IngredientsPool ingredientsPool, RecipesPool recipesPool, String name) {
         super(id);
@@ -71,8 +65,7 @@ public class Household extends PersistenceObject {
     /**
      * Sets the ingredients pool of this household
      * 
-     * @param ingredientsPool
-     *            The ingredients pool to set
+     * @param ingredientsPool The ingredients pool to set
      */
     public void setIngredientsPool(IngredientsPool ingredientsPool) {
         this.ingredientsPool = ingredientsPool;
@@ -90,26 +83,25 @@ public class Household extends PersistenceObject {
     /**
      * Sets the name of this household
      * 
-     * @param name
-     *            The name to set
+     * @param name The name to set
      */
     public void setName(String name) {
         this.name = name;
     }
-    
+
     /**
      * Gets the recipes pool of this household
+     * 
      * @return The recipes pool of this household
      */
     public RecipesPool getRecipesPool() {
         return this.recipesPool;
     }
-    
+
     /**
      * Sets the recipes pool of this household
      * 
-     * @param recipesPool
-     *            The recipes pool to set
+     * @param recipesPool The recipes pool to set
      */
     public void setRecipesPool(RecipesPool recipesPool) {
         this.recipesPool = recipesPool;

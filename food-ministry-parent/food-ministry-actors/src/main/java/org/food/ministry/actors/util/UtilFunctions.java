@@ -13,7 +13,6 @@ import akka.event.LoggingAdapter;
  * 
  * @author Maximilian Briglmeier
  * @since 17.02.2019
- *
  */
 public final class UtilFunctions {
 
@@ -23,8 +22,7 @@ public final class UtilFunctions {
     /**
      * Gets the stack trace of the given {@link Throwable} as {@link String}
      * 
-     * @param throwable
-     *            The throwable object to get the stack trace from
+     * @param throwable The throwable object to get the stack trace from
      * @return The stack trace in String format
      */
     public static String getStacktraceAsString(Throwable throwable) {
@@ -41,15 +39,13 @@ public final class UtilFunctions {
      * entropy this method most likely returns without the need to generate a second
      * ID.
      * 
-     * @param dao
-     *            The {@link DAO}, which checks the uniqueness of the generated IDs
-     * @param logger
-     *            The logger used for logging the rare situation when a ID collision
-     *            occurs
-     * @return
-     * @throws DataAccessException
-     *             Thrown when the underlying data source is unavailable or
-     *             corrupted
+     * @param <T> The model type of the data access object to be persisted
+     * @param dao The {@link DAO}, which checks the uniqueness of the generated IDs
+     * @param logger The logger used for logging the rare situation when a ID
+     *            collision occurs
+     * @return A unique id for the given data access object
+     * @throws DataAccessException Thrown when the underlying data source is
+     *             unavailable or corrupted
      */
     public static <T> long generateUniqueId(DAO<T> dao, LoggingAdapter logger) throws DataAccessException {
         long id = 0;

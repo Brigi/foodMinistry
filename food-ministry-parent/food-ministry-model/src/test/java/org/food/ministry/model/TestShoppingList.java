@@ -14,7 +14,7 @@ public class TestShoppingList {
     public void startUp() {
         shoppingList = new ShoppingList(0);
     }
-    
+
     @Test
     public void testGetId() {
         Assert.assertEquals(0, shoppingList.getId());

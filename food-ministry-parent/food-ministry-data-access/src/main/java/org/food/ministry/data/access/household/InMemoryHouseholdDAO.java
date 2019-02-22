@@ -17,7 +17,7 @@ public class InMemoryHouseholdDAO implements HouseholdDAO {
     @Override
     public Household get(long id) throws DataAccessException {
         if(!households.containsKey(id)) {
-            throw new DataAccessException(MessageFormat.format(NO_ID_FOUND_MESSAGE, id)); 
+            throw new DataAccessException(MessageFormat.format(NO_ID_FOUND_MESSAGE, id));
         }
         return households.get(id);
     }

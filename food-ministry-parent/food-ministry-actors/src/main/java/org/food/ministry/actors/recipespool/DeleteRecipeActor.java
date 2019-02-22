@@ -18,30 +18,56 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
+/**
+ * This actor handles an attempt for deleting recipes to a recipes pool.
+ * 
+ * @author Maximilian Briglmeier
+ * @since 22.02.2019
+ */
 public class DeleteRecipeActor extends AbstractActor {
-    
+
     /**
      * Logger logging stuff
      */
     private final LoggingAdapter LOGGER = Logging.getLogger(getContext().getSystem(), this);
 
+    /**
+     * The data access object for recipes pools
+     */
     private RecipesPoolDAO recipesPoolDao;
+    /**
+     * The data access object for recipes
+     */
     private RecipeDAO recipeDao;
-    
+
+    /**
+     * Constructor setting the data access objects
+     * 
+     * @param recipesPoolDao The data access object for recipes pools
+     * @param recipeDao The data access object for recipes
+     */
     public DeleteRecipeActor(RecipesPoolDAO recipesPoolDao, RecipeDAO recipeDao) {
         this.recipesPoolDao = recipesPoolDao;
         this.recipeDao = recipeDao;
     }
-    
+
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param recipesPoolDao The data access object for recipes pools
+     * @param recipeDao The data access object for recipes
      * @return The property for creating an actor of this class
      */
     public static Props props(RecipesPoolDAO recipesPoolDao, RecipeDAO recipeDao) {
         return Props.create(DeleteRecipeActor.class, () -> new DeleteRecipeActor(recipesPoolDao, recipeDao));
     }
-    
+
+    /**
+     * Accepts a {@link DeleteRecipeMessage} and tries to delete a recipe from the
+     * recipes pool with the given information from the message. Afterwards a
+     * {@link DeleteRecipeResultMessage} is send back to the requesting actor
+     * containing the results.
+     */
     @Override
     public Receive createReceive() {
         ReceiveBuilder receiveBuilder = receiveBuilder();
@@ -50,6 +76,13 @@ public class DeleteRecipeActor extends AbstractActor {
         return receiveBuilder.build();
     }
 
+    /**
+     * Tries to delete a recipe from the recipes pool contained in provided the
+     * message with the contained user id
+     * 
+     * @param message The message containing all needed information for deleting a
+     *            recipe from a recipes pool
+     */
     private void deleteRecipe(DeleteRecipeMessage message) {
         long recipesPoolId = message.getRecipesPoolId();
         long recipeId = message.getRecipeId();

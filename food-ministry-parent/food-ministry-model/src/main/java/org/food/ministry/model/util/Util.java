@@ -9,7 +9,6 @@ import org.food.ministry.model.Ingredient;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public final class Util {
 
@@ -22,13 +21,10 @@ public final class Util {
      * existing quantity in the map. Is the quantity reduced to 0 or below, then the
      * ingredient will be removed from the given map.
      * 
-     * @param map
-     *            A map containing ingredients with their quantity. This map get
+     * @param map A map containing ingredients with their quantity. This map get
      *            altered in this method
-     * @param ingredient
-     *            The ingredient to add
-     * @param quantity
-     *            The quantity to add
+     * @param ingredient The ingredient to add
+     * @param quantity The quantity to add
      */
     public static void addIngredientToMap(Map<Ingredient, Float> map, Ingredient ingredient, float quantity) {
         if(map.containsKey(ingredient)) {

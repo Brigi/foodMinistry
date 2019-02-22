@@ -5,7 +5,6 @@ package org.food.ministry.actors.util;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public final class Constants {
 

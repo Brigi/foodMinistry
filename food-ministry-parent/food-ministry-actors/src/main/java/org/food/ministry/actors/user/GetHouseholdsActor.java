@@ -20,6 +20,12 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
+/**
+ * This actor handles an attempt for getting households from a user.
+ * 
+ * @author Maximilian Briglmeier
+ * @since 16.02.2019
+ */
 public class GetHouseholdsActor extends AbstractActor {
 
     /**
@@ -27,8 +33,16 @@ public class GetHouseholdsActor extends AbstractActor {
      */
     private final LoggingAdapter LOGGER = Logging.getLogger(getContext().getSystem(), this);
 
+    /**
+     * The data access object for users
+     */
     private UserDAO userDao;
 
+    /**
+     * Constructor setting the data access objects
+     * 
+     * @param userDao The data access object for users
+     */
     public GetHouseholdsActor(UserDAO userDao) {
         this.userDao = userDao;
     }
@@ -36,12 +50,19 @@ public class GetHouseholdsActor extends AbstractActor {
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param userDao The data access object for users
      * @return The property for creating an actor of this class
      */
     public static Props props(UserDAO userDao) {
         return Props.create(GetHouseholdsActor.class, () -> new GetHouseholdsActor(userDao));
     }
 
+    /**
+     * Accepts a {@link GetHouseholdsMessage} and tries to get a household from the
+     * user with the given information from the message. Afterwards a
+     * {@link GetHouseholdsResultMessage} is send back to the requesting actor
+     * containing the results.
+     */
     @Override
     public Receive createReceive() {
         ReceiveBuilder receiveBuilder = receiveBuilder();
@@ -54,8 +75,7 @@ public class GetHouseholdsActor extends AbstractActor {
      * Tries to get all households for the user contained in provided the message
      * with the contained user id
      * 
-     * @param message
-     *            The message containing all needed information for getting all
+     * @param message The message containing all needed information for getting all
      *            households for a user
      */
     private void getHouseholds(GetHouseholdsMessage message) {

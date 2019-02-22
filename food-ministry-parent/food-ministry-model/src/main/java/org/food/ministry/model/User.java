@@ -9,7 +9,6 @@ import java.util.Set;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class User extends PersistenceObject {
 
@@ -36,14 +35,10 @@ public class User extends PersistenceObject {
     /**
      * Constructor setting essential member variables of the user
      * 
-     * @param id
-     *            The unique id of the user
-     * @param emailAddress
-     *            The email address of the user
-     * @param name
-     *            The name of the user
-     * @param password
-     *            The password of the user
+     * @param id The unique id of the user
+     * @param emailAddress The email address of the user
+     * @param name The name of the user
+     * @param password The password of the user
      */
     public User(long id, String emailAddress, String name, String password) {
         super(id);
@@ -65,8 +60,7 @@ public class User extends PersistenceObject {
     /**
      * Sets the email address of the user
      * 
-     * @param emailAddress
-     *            The email address of the user
+     * @param emailAddress The email address of the user
      */
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
@@ -84,8 +78,7 @@ public class User extends PersistenceObject {
     /**
      * Sets the name of the user
      * 
-     * @param name
-     *            The name of the user
+     * @param name The name of the user
      */
     public void setName(String name) {
         this.name = name;
@@ -103,8 +96,7 @@ public class User extends PersistenceObject {
     /**
      * Set the password of the user
      * 
-     * @param password
-     *            The password to set
+     * @param password The password to set
      */
     public void setPassword(String password) {
         this.password = password;
@@ -122,8 +114,7 @@ public class User extends PersistenceObject {
     /**
      * Adds a household to the set households of this user to manage
      * 
-     * @param household
-     *            The household to add
+     * @param household The household to add
      */
     public void addHousehold(Household household) {
         this.households.add(household);
@@ -132,8 +123,7 @@ public class User extends PersistenceObject {
     /**
      * Removes the given household from the set of households the user manages
      * 
-     * @param household
-     *            The household to remove
+     * @param household The household to remove
      */
     public void removeHousehold(Household household) {
         this.households.remove(household);

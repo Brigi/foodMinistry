@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestRecipe {
-    
+
     @Test
     public void testGetId() {
         final String name = "Al forno";

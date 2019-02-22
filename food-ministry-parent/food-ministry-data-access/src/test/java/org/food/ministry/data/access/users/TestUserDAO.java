@@ -40,7 +40,7 @@ public abstract class TestUserDAO {
     public void testSaveUser() throws DataAccessException {
         testUserDao.save(testUser);
     }
-    
+
     @Test
     public void testGet() throws DataAccessException {
         testUserDao.save(testUser);
@@ -52,7 +52,7 @@ public abstract class TestUserDAO {
         testUserDao.save(testUser);
         Assert.assertEquals(testUser, testUserDao.getUser(EMAIL_ADDRESS));
     }
-    
+
     @Test
     public void testUpdateUser() throws DataAccessException {
         final String newEmailAddress = "new@mail.com";
@@ -71,7 +71,7 @@ public abstract class TestUserDAO {
         testUserDao.update(testUser);
         Assert.assertEquals(testUser, testUserDao.getUser(newEmailAddress));
     }
-    
+
     @Test
     public void testDeleteUser() throws DataAccessException {
         testUserDao.save(testUser);
@@ -102,20 +102,20 @@ public abstract class TestUserDAO {
         testUserDao.save(testUser);
         Assert.assertFalse(testUserDao.doesEmailAddressExist("other@email.com"));
     }
-    
+
     @Test
     public void testIsHouseholdReferenced() throws DataAccessException {
         testUser.addHousehold(testHousehold);
         testUserDao.save(testUser);
         Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
     }
-    
+
     @Test
     public void testIsHouseholdNotReferencedInitially() throws DataAccessException {
         testUserDao.save(testUser);
         Assert.assertFalse(testUserDao.isHouseholdUnreferenced(testHousehold));
     }
-    
+
     @Test
     public void testIsHouseholdNotReferencedAfterRemoving() throws DataAccessException {
         testUser.addHousehold(testHousehold);
@@ -125,7 +125,7 @@ public abstract class TestUserDAO {
         testUserDao.update(testUser);
         Assert.assertFalse(testUserDao.isHouseholdUnreferenced(testHousehold));
     }
-    
+
     @Test
     public void testIsHouseholdReferencedAfterRemovingWithTwoUsers() throws DataAccessException {
         User secondUser = new User(1, "other@mail.com", "OtherName", "pw");
@@ -145,14 +145,14 @@ public abstract class TestUserDAO {
         expectedException.expectMessage(MessageFormat.format(UserDAO.NO_ID_FOUND_MESSAGE, 0));
         testUserDao.get(0);
     }
-    
+
     @Test
     public void testGetNonExistingUser() throws DataAccessException {
         expectedException.expect(DataAccessException.class);
         expectedException.expectMessage(MessageFormat.format(UserDAO.NO_USER_WITH_EMAIL_ADDRESS_FOUND_MESSAGE, EMAIL_ADDRESS));
         testUserDao.getUser(EMAIL_ADDRESS);
     }
-    
+
     @Test
     public void testUpdateNonExistingUser() throws DataAccessException {
         expectedException.expect(DataAccessException.class);

@@ -20,28 +20,49 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
+/**
+ * This actor handles an attempt for getting recipes from a recipes pool.
+ * 
+ * @author Maximilian Briglmeier
+ * @since 22.02.2019
+ */
 public class GetRecipesActor extends AbstractActor {
-    
+
     /**
      * Logger logging stuff
      */
     private final LoggingAdapter LOGGER = Logging.getLogger(getContext().getSystem(), this);
 
+    /**
+     * The data access object for recipes pools
+     */
     private RecipesPoolDAO recipesPoolDao;
-    
+
+    /**
+     * Constructor setting the data access objects
+     * 
+     * @param recipesPoolDao The data access object for recipes pools
+     */
     public GetRecipesActor(RecipesPoolDAO recipesPoolDao) {
         this.recipesPoolDao = recipesPoolDao;
     }
-    
+
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param recipesPoolDao The data access object for recipes pools
      * @return The property for creating an actor of this class
      */
     public static Props props(RecipesPoolDAO recipesPoolDao) {
         return Props.create(GetRecipesActor.class, () -> new GetRecipesActor(recipesPoolDao));
     }
-    
+
+    /**
+     * Accepts a {@link GetRecipesMessage} and tries to get a recipe from the
+     * recipes pool with the given information from the message. Afterwards a
+     * {@link GetRecipesResultMessage} is send back to the requesting actor
+     * containing the results.
+     */
     @Override
     public Receive createReceive() {
         ReceiveBuilder receiveBuilder = receiveBuilder();
@@ -50,6 +71,13 @@ public class GetRecipesActor extends AbstractActor {
         return receiveBuilder.build();
     }
 
+    /**
+     * Tries to get a recipe from the recipes pool contained in provided the message
+     * with the contained user id
+     * 
+     * @param message The message containing all needed information for getting a
+     *            recipe from a recipes pool
+     */
     private void getRecipes(GetRecipesMessage message) {
         long recipesPoolId = message.getRecipesPoolId();
         LOGGER.info("Getting all recipes of recipes pool with id {}", recipesPoolId);

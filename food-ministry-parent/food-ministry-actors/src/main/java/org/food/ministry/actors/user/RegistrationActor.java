@@ -21,7 +21,6 @@ import akka.japi.pf.ReceiveBuilder;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class RegistrationActor extends AbstractActor {
 
@@ -38,8 +37,7 @@ public class RegistrationActor extends AbstractActor {
     /**
      * Constructor setting the data access object for users
      * 
-     * @param userDao
-     *            The data access object for users
+     * @param userDao The data access object for users
      */
     public RegistrationActor(UserDAO userDao) {
         this.userDao = userDao;
@@ -48,6 +46,7 @@ public class RegistrationActor extends AbstractActor {
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param userDao The data access object for users
      * @return The property for creating an actor of this class
      */
     public static Props props(UserDAO userDao) {
@@ -71,8 +70,7 @@ public class RegistrationActor extends AbstractActor {
     /**
      * Tries to register the user contained in the provided register message
      * 
-     * @param message
-     *            The register message containing all needed information for
+     * @param message The register message containing all needed information for
      *            registering a user
      */
     private void register(RegisterMessage message) {

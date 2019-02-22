@@ -10,7 +10,6 @@ import java.text.MessageFormat;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class Ingredient extends PersistenceObject {
 
@@ -32,14 +31,10 @@ public class Ingredient extends PersistenceObject {
     /**
      * Constructor initializing the essential member variables
      * 
-     * @param id
-     *            The unique id of this ingredient
-     * @param name
-     *            The name of this ingredient
-     * @param unit
-     *            The unit in which this ingredient gets measured
-     * @param isBasic
-     *            Determines, if this ingredient is a basic ingredient. Basic
+     * @param id The unique id of this ingredient
+     * @param name The name of this ingredient
+     * @param unit The unit in which this ingredient gets measured
+     * @param isBasic Determines, if this ingredient is a basic ingredient. Basic
      *            ingredients don't get added to the shopping list if needed by a
      *            recipe.
      */
@@ -62,8 +57,7 @@ public class Ingredient extends PersistenceObject {
     /**
      * Sets the name of this ingredient
      * 
-     * @param name
-     *            The name of this ingredient
+     * @param name The name of this ingredient
      */
     public void setName(String name) {
         this.name = name;
@@ -81,8 +75,7 @@ public class Ingredient extends PersistenceObject {
     /**
      * Sets the unit in which this ingredient gets measured
      * 
-     * @param unit
-     *            The unit in which this ingredient gets measured
+     * @param unit The unit in which this ingredient gets measured
      */
     public void setUnit(Unit unit) {
         this.unit = unit;
@@ -101,9 +94,8 @@ public class Ingredient extends PersistenceObject {
      * Sets this ingredient to be a basic ingredient or not depending on the passed
      * value
      * 
-     * @param isBasic
-     *            If true, this ingredient is handled as a basic ingredient; else
-     *            this ingredient is handled as a non basic ingredient
+     * @param isBasic If true, this ingredient is handled as a basic ingredient;
+     *            else this ingredient is handled as a non basic ingredient
      */
     public void setBasic(boolean isBasic) {
         this.isBasic = isBasic;

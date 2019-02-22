@@ -7,7 +7,6 @@ import org.food.ministry.actors.messages.IMessage;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class UniqueIDResultMessage implements IMessage {
 
@@ -19,8 +18,7 @@ public class UniqueIDResultMessage implements IMessage {
     /**
      * Constructor setting the ID, which was requested before
      * 
-     * @param nextId
-     *            the ID
+     * @param nextId the ID
      */
     public UniqueIDResultMessage(long nextId) {
         this.nextId = nextId;

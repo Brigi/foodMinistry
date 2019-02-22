@@ -7,12 +7,11 @@ import java.util.Set;
 import org.food.ministry.model.exception.RecipeNotFoundException;
 
 /**
- * This class contains all available {@link Recipe}s of one {@link Household} and serves as an
- * collection to retrieve single {@link Recipe}s. 
+ * This class contains all available {@link Recipe}s of one {@link Household}
+ * and serves as an collection to retrieve single {@link Recipe}s.
  * 
  * @author Maximilian Briglmeier
  * @since 20.02.2019
- *
  */
 public class RecipesPool extends PersistenceObject {
 
@@ -24,8 +23,7 @@ public class RecipesPool extends PersistenceObject {
     /**
      * Default constructor initializing member variables
      * 
-     * @param id
-     *            The unique id of this recipes pool
+     * @param id The unique id of this recipes pool
      */
     public RecipesPool(long id) {
         super(id);
@@ -44,12 +42,10 @@ public class RecipesPool extends PersistenceObject {
     /**
      * Gets the desired recipe from the pool by name.
      * 
-     * @param name
-     *            The name of the recipe to get
+     * @param name The name of the recipe to get
      * @return The desired recipe, if found
-     * @throws RecipeNotFoundException
-     *             Thrown if there exists no recipe in this pool with the given
-     *             name
+     * @throws RecipeNotFoundException Thrown if there exists no recipe in this pool
+     *             with the given name
      */
     public Recipe getRecipe(String name) throws RecipeNotFoundException {
         if(name == null) {
@@ -65,22 +61,20 @@ public class RecipesPool extends PersistenceObject {
     }
 
     /**
-     * Adds the given recipe to this pool. If the recipe is already present
-     * in this pool, nothing happens.
+     * Adds the given recipe to this pool. If the recipe is already present in this
+     * pool, nothing happens.
      * 
-     * @param recipe
-     *            The recipe to add
+     * @param recipe The recipe to add
      */
     public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
     }
 
     /**
-     * Removes the given recipe from the pool. If the recipe did not exist,
-     * nothing happens.
+     * Removes the given recipe from the pool. If the recipe did not exist, nothing
+     * happens.
      * 
-     * @param recipe
-     *            The recipe to remove
+     * @param recipe The recipe to remove
      */
     public void removeRecipe(Recipe recipe) {
         this.recipes.remove(recipe);

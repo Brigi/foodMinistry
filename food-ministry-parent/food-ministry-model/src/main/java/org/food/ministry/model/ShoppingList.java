@@ -7,15 +7,13 @@ package org.food.ministry.model;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class ShoppingList extends AFoodStorage {
 
     /**
      * Constructor setting essential member variables
      * 
-     * @param id
-     *            The unique id of this shopping list
+     * @param id The unique id of this shopping list
      */
     public ShoppingList(long id) {
         super(id);

@@ -25,6 +25,12 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
+/**
+ * This actor handles an attempt for adding households to a user.
+ * 
+ * @author Maximilian Briglmeier
+ * @since 16.02.2019
+ */
 public class AddHouseholdActor extends AbstractActor {
 
     /**
@@ -32,12 +38,36 @@ public class AddHouseholdActor extends AbstractActor {
      */
     private final LoggingAdapter LOGGER = Logging.getLogger(getContext().getSystem(), this);
 
+    /**
+     * The data access object for users
+     */
     private UserDAO userDao;
+    /**
+     * The data access object for households
+     */
     private HouseholdDAO householdDao;
+    /**
+     * The data access object for food inventories
+     */
     private FoodInventoryDAO foodInventoryDao;
+    /**
+     * The data access object for shopping lists
+     */
     private ShoppingListDAO shoppingListDao;
+    /**
+     * The data access object for ingredients pools
+     */
     private IngredientsPoolDAO ingredientsPoolDao;
 
+    /**
+     * Constructor setting the data access objects
+     * 
+     * @param userDao The data access object for users
+     * @param householdDao The data access object for households
+     * @param foodInventoryDao The data access object for food inventories
+     * @param shoppingListDao The data access object for shopping lists
+     * @param ingredientsPoolDao The data access object for ingredients pools
+     */
     public AddHouseholdActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
             IngredientsPoolDAO ingredientsPoolDao) {
         this.userDao = userDao;
@@ -50,6 +80,11 @@ public class AddHouseholdActor extends AbstractActor {
     /**
      * Gets the property to create an actor of this class
      * 
+     * @param userDao The data access object for users
+     * @param householdDao The data access object for households
+     * @param foodInventoryDao The data access object for food inventories
+     * @param shoppingListDao The data access object for shopping lists
+     * @param ingredientsPoolDao The data access object for ingredients pools
      * @return The property for creating an actor of this class
      */
     public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
@@ -57,6 +92,12 @@ public class AddHouseholdActor extends AbstractActor {
         return Props.create(AddHouseholdActor.class, () -> new AddHouseholdActor(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao));
     }
 
+    /**
+     * Accepts a {@link AddHouseholdMessage} and tries to add a household to the
+     * user with the given information from the message. Afterwards a
+     * {@link AddHouseholdResultMessage} is send back to the requesting actor
+     * containing the results.
+     */
     @Override
     public Receive createReceive() {
         ReceiveBuilder receiveBuilder = receiveBuilder();
@@ -69,8 +110,7 @@ public class AddHouseholdActor extends AbstractActor {
      * Tries to add a household for the user contained in provided the message with
      * the contained user id
      * 
-     * @param message
-     *            The message containing all needed information for adding a
+     * @param message The message containing all needed information for adding a
      *            household for a user
      */
     private void addHousehold(AddHouseholdMessage message) {

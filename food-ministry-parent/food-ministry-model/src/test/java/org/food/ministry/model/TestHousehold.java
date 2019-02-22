@@ -1,9 +1,5 @@
 package org.food.ministry.model;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +23,7 @@ public class TestHousehold {
     public void testGetId() {
         Assert.assertEquals(0, household.getId());
     }
-    
+
     @Test
     public void testGetName() {
         Assert.assertEquals(HOUSEHOLD_NAME, household.getName());
@@ -60,12 +56,12 @@ public class TestHousehold {
         household.setIngredientsPool(new IngredientsPool(1));
         Assert.assertNotEquals(defaultPool, household.getIngredientsPool());
     }
-    
+
     @Test
     public void testRecipePoolNotNull() {
         Assert.assertNotNull(HOUSEHOLD_NAME, household.getRecipesPool());
     }
-    
+
     @Test
     public void testSetRecipesPool() {
         RecipesPool defaultPool = household.getRecipesPool();

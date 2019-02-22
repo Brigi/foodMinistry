@@ -5,7 +5,6 @@ package org.food.ministry.actors.messages;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class DelegateMessage extends AMessage {
 
@@ -17,10 +16,8 @@ public class DelegateMessage extends AMessage {
     /**
      * Constructor initializing the essential member variables
      * 
-     * @param id
-     *            The ID of this message
-     * @param originId
-     *            The ID of the original message
+     * @param id The ID of this message
+     * @param originId The ID of the original message
      */
     public DelegateMessage(long id, long originId) {
         super(id);

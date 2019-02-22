@@ -40,13 +40,13 @@ public abstract class TestHouseholdDAO {
     public void testSaveHousehold() throws DataAccessException {
         testHouseholdDao.save(testHousehold);
     }
-    
+
     @Test
     public void testGet() throws DataAccessException {
         testHouseholdDao.save(testHousehold);
         Assert.assertEquals(testHousehold, testHouseholdDao.get(testHousehold.getId()));
     }
-    
+
     @Test
     public void testUpdateHousehold() throws DataAccessException {
         final String newName = "newHouseholdName";
@@ -70,7 +70,7 @@ public abstract class TestHouseholdDAO {
         long amountOfHouseholdsWithNewName = households.stream().filter(element -> element.getName().equals(newName)).count();
         Assert.assertEquals(1, amountOfHouseholdsWithNewName);
     }
-    
+
     @Test
     public void testDeleteHousehold() throws DataAccessException {
         testHouseholdDao.save(testHousehold);
@@ -96,7 +96,7 @@ public abstract class TestHouseholdDAO {
         expectedException.expectMessage(MessageFormat.format(HouseholdDAO.NO_ID_FOUND_MESSAGE, 0));
         testHouseholdDao.get(0);
     }
-    
+
     @Test
     public void testUpdateNonExistingHousehold() throws DataAccessException {
         expectedException.expect(DataAccessException.class);

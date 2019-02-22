@@ -5,7 +5,6 @@ package org.food.ministry.actors.messages;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public class AResultMessage extends AMessage {
     /**
@@ -24,14 +23,11 @@ public class AResultMessage extends AMessage {
     /**
      * Constructor initializing the essential member variables
      * 
-     * @param id
-     *            The ID of the message
-     * @param originId
-     *            The ID of the requesting message
-     * @param successful
-     *            Determines if the requesting message was successfully processed
-     * @param errorMessage
-     *            Error message in case something went wrong
+     * @param id The ID of the message
+     * @param originId The ID of the requesting message
+     * @param successful Determines if the requesting message was successfully
+     *            processed
+     * @param errorMessage Error message in case something went wrong
      */
     public AResultMessage(long id, long originId, boolean successful, String errorMessage) {
         super(id);

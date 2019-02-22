@@ -21,7 +21,6 @@ import scala.concurrent.duration.Duration;
  * 
  * @author Maximilian Briglmeier
  * @since 16.02.2019
- *
  */
 public final class IDGenerator {
 
@@ -36,8 +35,8 @@ public final class IDGenerator {
     /**
      * Initializes the actor for a unique ID generation.
      * 
-     * @param actorSystem
-     *            The actor system in which the ID generator should be generated.
+     * @param actorSystem The actor system in which the ID generator should be
+     *            generated.
      */
     public static void initializeGeneratorActor(ActorSystem actorSystem) {
         generatorActor = actorSystem.actorOf(IDGeneratorActor.props(), "generator-actor");

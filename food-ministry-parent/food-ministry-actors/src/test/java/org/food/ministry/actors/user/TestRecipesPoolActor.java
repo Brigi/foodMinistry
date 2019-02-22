@@ -172,11 +172,11 @@ public class TestRecipesPoolActor {
         Assert.assertEquals(messageId, addRecipeResultMessage.getOriginId());
         Assert.assertEquals(addRecipeResultMessage.getOriginId(), delegateResultMessage.getOriginId());
     }
-    
+
     @Test
     public void testSuccessfulAddRecipeWithDataAccessException() throws DataAccessException {
         Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(recipesPoolDao).get(RECIPES_POOL_ID);
-        
+
         long messageId = IDGenerator.getRandomID();
         recipesPoolActor.tell(new AddRecipeMessage(messageId, RECIPES_POOL_ID, "MyRecipe", new HashMap<>(), "MyDescription"), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
@@ -185,9 +185,10 @@ public class TestRecipesPoolActor {
         AddRecipeResultMessage addRecipeResultMessage = getAddRecipeResultMessage(firstResultMessage, secondResultMessage);
 
         Assert.assertFalse(addRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Adding a recipe to recipes pool id {0} failed: {1}", RECIPES_POOL_ID, CORRUPTED_DATA_SOURCE_MESSAGE), addRecipeResultMessage.getErrorMessage());
+        Assert.assertEquals(MessageFormat.format("Adding a recipe to recipes pool id {0} failed: {1}", RECIPES_POOL_ID, CORRUPTED_DATA_SOURCE_MESSAGE),
+                addRecipeResultMessage.getErrorMessage());
     }
-    
+
     @Test
     public void testSuccessfulDeleteRecipe() throws DataAccessException {
         Recipe recipe = new Recipe(0, "MyRecipe", new HashMap<>(), "MyDescription");
@@ -207,7 +208,7 @@ public class TestRecipesPoolActor {
         Assert.assertEquals(messageId, deleteRecipeResultMessage.getOriginId());
         Assert.assertEquals(deleteRecipeResultMessage.getOriginId(), delegateResultMessage.getOriginId());
     }
-    
+
     @Test
     public void testDeleteRecipeWithDataAccessException() throws DataAccessException {
         Mockito.doThrow(new DataAccessException(CORRUPTED_DATA_SOURCE_MESSAGE)).when(recipesPoolDao).get(RECIPES_POOL_ID);
@@ -221,7 +222,8 @@ public class TestRecipesPoolActor {
         DeleteRecipeResultMessage deleteRecipeResultMessage = getDeleteRecipeResultMessage(firstResultMessage, secondResultMessage);
 
         Assert.assertFalse(deleteRecipeResultMessage.isSuccessful());
-        Assert.assertEquals(MessageFormat.format("Deleting of recipe with {0} from recipes pool with id {1} failed: {2}", RECIPES_POOL_ID, recipeId, CORRUPTED_DATA_SOURCE_MESSAGE), deleteRecipeResultMessage.getErrorMessage());
+        Assert.assertEquals(MessageFormat.format("Deleting of recipe with {0} from recipes pool with id {1} failed: {2}", RECIPES_POOL_ID, recipeId, CORRUPTED_DATA_SOURCE_MESSAGE),
+                deleteRecipeResultMessage.getErrorMessage());
     }
 
     // --------------- Helper functions section ---------------
@@ -243,7 +245,7 @@ public class TestRecipesPoolActor {
         }
         return null;
     }
-    
+
     private DeleteRecipeResultMessage getDeleteRecipeResultMessage(IMessage firstResultMessage, IMessage secondResultMessage) {
         if(firstResultMessage instanceof DeleteRecipeResultMessage) {
             return (DeleteRecipeResultMessage) firstResultMessage;

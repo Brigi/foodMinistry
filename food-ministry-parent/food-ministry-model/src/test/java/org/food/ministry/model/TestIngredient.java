@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestIngredient {
-    
+
     @Test
     public void testGetId() {
         final String ingredientName = "Cucumber";
@@ -102,7 +102,7 @@ public class TestIngredient {
         Ingredient salt2 = new Ingredient(1, "Salt", Unit.TEASPOON, true);
         Assert.assertFalse(salt1.equals(salt2));
     }
-    
+
     @Test
     public void testIdentityHashCode() {
         Ingredient zucchini = new Ingredient(0, "Zucchini", Unit.NONE, false);
@@ -157,7 +157,7 @@ public class TestIngredient {
         Ingredient salt2 = new Ingredient(1, "Salt", Unit.TEASPOON, true);
         Assert.assertNotEquals(salt1.hashCode(), salt2.hashCode());
     }
-    
+
     @Test
     public void testEqualsNull() {
         Ingredient zucchini = new Ingredient(0, "Zucchini", Unit.NONE, false);
