@@ -90,7 +90,7 @@ public class AddRecipeActor extends AbstractActor {
 
     /**
      * Tries to add a recipe to the recipes pool contained in provided the message
-     * with the contained user id
+     * with the contained recipes pool id
      * 
      * @param message The message containing all needed information for adding a
      *            recipe to a recipes pool

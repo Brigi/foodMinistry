@@ -78,7 +78,7 @@ public class DeleteRecipeActor extends AbstractActor {
 
     /**
      * Tries to delete a recipe from the recipes pool contained in provided the
-     * message with the contained user id
+     * message with the contained recipes pool id
      * 
      * @param message The message containing all needed information for deleting a
      *            recipe from a recipes pool

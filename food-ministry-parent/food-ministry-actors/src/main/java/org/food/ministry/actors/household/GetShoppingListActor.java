@@ -69,7 +69,7 @@ public class GetShoppingListActor extends AbstractActor {
 
     /**
      * Tries to get a shopping list from the household contained in provided the
-     * message with the contained user id
+     * message with the contained household id
      * 
      * @param message The message containing all needed information for getting a
      *            shopping list from a household

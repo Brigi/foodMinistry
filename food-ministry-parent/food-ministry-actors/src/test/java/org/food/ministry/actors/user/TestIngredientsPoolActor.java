@@ -59,7 +59,7 @@ public class TestIngredientsPoolActor {
 
     @After
     public void teardown() {
-        system = null;
+        system.terminate();
     }
 
     // --------------- Ingredients Pool section ---------------

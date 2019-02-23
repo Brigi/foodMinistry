@@ -72,7 +72,7 @@ public class TestHouseholdActor {
 
     @After
     public void teardown() {
-        system = null;
+        system.terminate();
     }
 
     // --------------- Household section ---------------

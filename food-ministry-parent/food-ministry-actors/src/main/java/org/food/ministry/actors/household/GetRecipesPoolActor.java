@@ -69,7 +69,7 @@ public class GetRecipesPoolActor extends AbstractActor {
 
     /**
      * Tries to get a recipes pool from the household contained in provided the
-     * message with the contained user id
+     * message with the contained household id
      * 
      * @param message The message containing all needed information for getting a
      *            recipes pool from a household

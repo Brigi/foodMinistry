@@ -64,7 +64,7 @@ public class TestRecipesPoolActor {
 
     @After
     public void teardown() {
-        system = null;
+        system.terminate();
     }
 
     // --------------- Recipes Pool section ---------------

@@ -78,9 +78,9 @@ public class DeleteIngredientActor extends AbstractActor {
 
     /**
      * Tries to delete an ingredient from the ingredients pool contained in provided the
-     * message with the contained user id
+     * message with the contained ingredients pool id
      * 
-     * @param message The message containing all needed information for deleting a
+     * @param message The message containing all needed information for deleting an
      *            ingredient from a ingredients pool
      */
     private void deleteIngredinet(DeleteIngredientMessage message) {

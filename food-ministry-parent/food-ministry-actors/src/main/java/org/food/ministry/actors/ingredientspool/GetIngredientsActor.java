@@ -20,7 +20,7 @@ import akka.event.LoggingAdapter;
 import akka.japi.pf.ReceiveBuilder;
 
 /**
- * This actor handles an attempt for getting ingredients from an ingredients pool.
+ * This actor handles an attempt for getting all ingredients from an ingredients pool.
  * 
  * @author Maximilian Briglmeier
  * @since 22.02.2019
@@ -72,9 +72,9 @@ public class GetIngredientsActor extends AbstractActor {
 
     /**
      * Tries to get an ingredient from the ingredients pool contained in provided the message
-     * with the contained user id
+     * with the contained ingredients pool id
      * 
-     * @param message The message containing all needed information for getting a
+     * @param message The message containing all needed information for getting an
      *            ingredient from a ingredients pool
      */
     private void getIngredients(GetIngredientsMessage message) {

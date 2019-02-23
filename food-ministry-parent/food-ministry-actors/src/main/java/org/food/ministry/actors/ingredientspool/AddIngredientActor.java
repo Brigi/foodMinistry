@@ -78,9 +78,9 @@ public class AddIngredientActor extends AbstractActor {
 
     /**
      * Tries to add a ingredient to the ingredients pool contained in provided the message
-     * with the contained user id
+     * with the contained ingredients pool id
      * 
-     * @param message The message containing all needed information for adding a
+     * @param message The message containing all needed information for adding an
      *            ingredient to a ingredients pool
      */
     private void addIngredient(AddIngredientMessage message) {

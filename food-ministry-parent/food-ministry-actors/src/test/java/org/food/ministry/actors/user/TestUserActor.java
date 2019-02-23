@@ -80,7 +80,7 @@ public class TestUserActor {
 
     @After
     public void teardown() {
-        system = null;
+        system.terminate();
     }
 
     // --------------- User Login section ---------------

@@ -19,7 +19,7 @@ public class GetIngredientsMessage extends AMessage {
      * Constructor initializing essential member variables
      * 
      * @param id The id of the message
-     * @param ingredientsPoolId The id of the recipes pool
+     * @param ingredientsPoolId The id of the ingredients pool
      */
     public GetIngredientsMessage(long id, long ingredientsPoolId) {
         super(id);
