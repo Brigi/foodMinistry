@@ -1,5 +1,6 @@
 package org.food.ministry.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -44,6 +45,18 @@ public class TestShoppingList {
         Map<Ingredient, Float> ingredientList = shoppingList.getIngredientsWithQuantity();
         Assert.assertEquals(1, ingredientList.size());
         Assert.assertEquals(1.0f, ingredientList.get(zucchini), 0.00001);
+    }
+    
+    @Test
+    public void testSetIngredients() {
+        Ingredient zucchini = new Ingredient(0, "Zucchini", Unit.NONE, false);
+        Map<Ingredient, Float> ingredientList = new HashMap<>();
+        ingredientList.put(zucchini, 1f);
+        shoppingList.setIngredientsWithQuantity(ingredientList);
+
+        Map<Ingredient, Float> ingredientListToTest = shoppingList.getIngredientsWithQuantity();
+        Assert.assertEquals(1, ingredientListToTest.size());
+        Assert.assertEquals(1f, ingredientListToTest.get(zucchini), 0.00001);
     }
 
     @Test

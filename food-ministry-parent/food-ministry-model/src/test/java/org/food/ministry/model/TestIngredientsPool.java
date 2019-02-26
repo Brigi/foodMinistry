@@ -1,5 +1,8 @@
 package org.food.ministry.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.food.ministry.model.exception.IngredientNotFoundException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,6 +43,17 @@ public class TestIngredientsPool {
         ingredientsPool.addIngredient(ingredient);
         Assert.assertEquals(ingredientName, ingredientsPool.getIngredient(ingredientName).getName());
         Assert.assertEquals(1, ingredientsPool.getIngredients().size());
+    }
+    
+    @Test
+    public void testSetIngredients() throws IngredientNotFoundException {
+        final String ingredientName = "Zucchini";
+        Ingredient ingredient = new Ingredient(0, ingredientName, Unit.NONE, false);
+        Set<Ingredient> ingredients = new HashSet<>();
+        ingredients.add(ingredient);
+        
+        ingredientsPool.setIngredients(ingredients);
+        Assert.assertEquals(ingredientName, ingredientsPool.getIngredient(ingredientName).getName());
     }
 
     @Test

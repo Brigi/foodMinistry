@@ -6,5 +6,4 @@ public class TestInMemoryHouseholdDAO extends TestHouseholdDAO {
     protected HouseholdDAO getHouseholdDao() {
         return new InMemoryHouseholdDAO();
     }
-
 }

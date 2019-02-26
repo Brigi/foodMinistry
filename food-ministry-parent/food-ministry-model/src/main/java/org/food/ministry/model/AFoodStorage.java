@@ -41,6 +41,15 @@ public abstract class AFoodStorage extends PersistenceObject {
     public Map<Ingredient, Float> getIngredientsWithQuantity() {
         return this.ingredients;
     }
+    
+    /**
+     * Sets a map of {@link Ingredient}s with their associated quantity
+     * 
+     * @param ingredients A map of {@link Ingredient}s with their associated quantity
+     */
+    public void setIngredientsWithQuantity(Map<Ingredient, Float> ingredients) {
+        this.ingredients = ingredients;
+    }
 
     /**
      * Adds the given {@link Ingredient} with the given quantity to this food

@@ -2,6 +2,8 @@ package org.food.ministry.data.access.users;
 
 import java.text.MessageFormat;
 
+import org.food.ministry.data.access.DAO;
+import org.food.ministry.data.access.TestBaseDAO;
 import org.food.ministry.data.access.exceptions.DataAccessException;
 import org.food.ministry.model.FoodInventory;
 import org.food.ministry.model.Household;
@@ -11,159 +13,134 @@ import org.food.ministry.model.ShoppingList;
 import org.food.ministry.model.User;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-public abstract class TestUserDAO {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+public abstract class TestUserDAO extends TestBaseDAO<User> {
 
     private static final String USER_NAME = "MyName";
     private static final String EMAIL_ADDRESS = "my@mail.com";
     private static final String PASSWORD = "password";
-    private User testUser;
     private Household testHousehold;
-    private UserDAO testUserDao;
 
     protected abstract UserDAO getUserDao();
 
     @Before
     public void startUp() {
-        testUser = new User(0, EMAIL_ADDRESS, USER_NAME, PASSWORD);
+        super.startUp();
         testHousehold = new Household(0, new FoodInventory(0), new ShoppingList(0), new IngredientsPool(0), new RecipesPool(0), "MyHousehold");
-        testUserDao = getUserDao();
     }
 
-    @Test
-    public void testSaveUser() throws DataAccessException {
-        testUserDao.save(testUser);
+    @Override
+    protected User getPersistenceObject() {
+        return new User(0, EMAIL_ADDRESS, USER_NAME, PASSWORD);
     }
 
-    @Test
-    public void testGet() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertEquals(testUser, testUserDao.get(testUser.getId()));
+    @Override
+    protected DAO<User> getDao() {
+        return getUserDao();
     }
 
     @Test
     public void testGetUser() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertEquals(testUser, testUserDao.getUser(EMAIL_ADDRESS));
+        final User testUser = getPersistenceObject();
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(testUser);
+        Assert.assertEquals(testUser, userDao.getUser(EMAIL_ADDRESS));
     }
 
     @Test
     public void testUpdateUser() throws DataAccessException {
+        final User testUser = getPersistenceObject();
         final String newEmailAddress = "new@mail.com";
-        testUserDao.save(testUser);
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(testUser);
         testUser.setEmailAddress(newEmailAddress);
-        testUserDao.update(testUser);
-        Assert.assertEquals(testUser, testUserDao.getUser(newEmailAddress));
+        userDao.update(testUser);
+        Assert.assertEquals(testUser, userDao.getUser(newEmailAddress));
     }
 
     @Test
     public void testUpdateWithMultipleUserContained() throws DataAccessException {
+        final User testUser = getPersistenceObject();
         final String newEmailAddress = "new@mail.com";
-        testUserDao.save(testUser);
-        testUserDao.save(new User(1, "other@mail.com", "OtherName", "otherPassword"));
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(testUser);
+        userDao.save(new User(1, "other@mail.com", "OtherName", "otherPassword"));
         testUser.setEmailAddress(newEmailAddress);
-        testUserDao.update(testUser);
-        Assert.assertEquals(testUser, testUserDao.getUser(newEmailAddress));
-    }
-
-    @Test
-    public void testDeleteUser() throws DataAccessException {
-        testUserDao.save(testUser);
-        testUserDao.delete(testUser);
-        Assert.assertTrue(testUserDao.getAll().isEmpty());
-    }
-
-    @Test
-    public void testDoesIdExistsPositive() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertTrue(testUserDao.doesIdExist(0));
-    }
-
-    @Test
-    public void testDoesIdExistsNegative() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertFalse(testUserDao.doesIdExist(1));
+        userDao.update(testUser);
+        Assert.assertEquals(testUser, userDao.getUser(newEmailAddress));
     }
 
     @Test
     public void testDoesEmailAddressExistPositive() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertTrue(testUserDao.doesEmailAddressExist(EMAIL_ADDRESS));
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(getPersistenceObject());
+        Assert.assertTrue(userDao.doesEmailAddressExist(EMAIL_ADDRESS));
     }
 
     @Test
     public void testDoesEmailAddressExistNegative() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertFalse(testUserDao.doesEmailAddressExist("other@email.com"));
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(getPersistenceObject());
+        Assert.assertFalse(userDao.doesEmailAddressExist("other@email.com"));
     }
 
     @Test
     public void testIsHouseholdReferenced() throws DataAccessException {
+        final User testUser = getPersistenceObject();
+        final UserDAO userDao = getUserDao();
+        
         testUser.addHousehold(testHousehold);
-        testUserDao.save(testUser);
-        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
+        userDao.save(testUser);
+        Assert.assertTrue(userDao.isHouseholdUnreferenced(testHousehold));
     }
 
     @Test
     public void testIsHouseholdNotReferencedInitially() throws DataAccessException {
-        testUserDao.save(testUser);
-        Assert.assertFalse(testUserDao.isHouseholdUnreferenced(testHousehold));
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(getPersistenceObject());
+        Assert.assertFalse(userDao.isHouseholdUnreferenced(testHousehold));
     }
 
     @Test
     public void testIsHouseholdNotReferencedAfterRemoving() throws DataAccessException {
+        final User testUser = getPersistenceObject();
+        final UserDAO userDao = getUserDao();
+        
         testUser.addHousehold(testHousehold);
-        testUserDao.save(testUser);
-        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
+        userDao.save(testUser);
+        Assert.assertTrue(userDao.isHouseholdUnreferenced(testHousehold));
         testUser.removeHousehold(testHousehold);
-        testUserDao.update(testUser);
-        Assert.assertFalse(testUserDao.isHouseholdUnreferenced(testHousehold));
+        userDao.update(testUser);
+        Assert.assertFalse(userDao.isHouseholdUnreferenced(testHousehold));
     }
 
     @Test
     public void testIsHouseholdReferencedAfterRemovingWithTwoUsers() throws DataAccessException {
-        User secondUser = new User(1, "other@mail.com", "OtherName", "pw");
+        final User testUser = getPersistenceObject();        
+        final User secondUser = new User(1, "other@mail.com", "OtherName", "pw");
+        final UserDAO userDao = getUserDao();
+        
         testUser.addHousehold(testHousehold);
         secondUser.addHousehold(testHousehold);
-        testUserDao.save(testUser);
-        testUserDao.save(secondUser);
-        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
+        userDao.save(testUser);
+        userDao.save(secondUser);
+        Assert.assertTrue(userDao.isHouseholdUnreferenced(testHousehold));
         testUser.removeHousehold(testHousehold);
-        testUserDao.update(testUser);
-        Assert.assertTrue(testUserDao.isHouseholdUnreferenced(testHousehold));
-    }
-
-    @Test
-    public void testGetNonExistingID() throws DataAccessException {
-        expectedException.expect(DataAccessException.class);
-        expectedException.expectMessage(MessageFormat.format(UserDAO.NO_ID_FOUND_MESSAGE, 0));
-        testUserDao.get(0);
+        userDao.update(testUser);
+        Assert.assertTrue(userDao.isHouseholdUnreferenced(testHousehold));
     }
 
     @Test
     public void testGetNonExistingUser() throws DataAccessException {
         expectedException.expect(DataAccessException.class);
         expectedException.expectMessage(MessageFormat.format(UserDAO.NO_USER_WITH_EMAIL_ADDRESS_FOUND_MESSAGE, EMAIL_ADDRESS));
-        testUserDao.getUser(EMAIL_ADDRESS);
-    }
-
-    @Test
-    public void testUpdateNonExistingUser() throws DataAccessException {
-        expectedException.expect(DataAccessException.class);
-        expectedException.expectMessage(MessageFormat.format(UserDAO.INSUFFICIENT_AMOUNT_MESSAGE, 0));
-        testUserDao.update(testUser);
-    }
-
-    @Test
-    public void testDeleteNonExistingUser() throws DataAccessException {
-        expectedException.expect(DataAccessException.class);
-        expectedException.expectMessage(MessageFormat.format(UserDAO.NO_USER_FOUND_MESSAGE, USER_NAME));
-        testUserDao.delete(testUser);
+        getUserDao().getUser(EMAIL_ADDRESS);
     }
 }

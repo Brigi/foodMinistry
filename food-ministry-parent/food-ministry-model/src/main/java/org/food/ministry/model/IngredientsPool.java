@@ -39,6 +39,15 @@ public class IngredientsPool extends PersistenceObject {
     public Set<Ingredient> getIngredients() {
         return Collections.unmodifiableSet(this.ingredients);
     }
+    
+    /**
+     * Sets an unmodifiable set of current ingredients in this pool
+     * 
+     * @param ingredients The ingredients to set for this pool
+     */
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 
     /**
      * Gets the desired ingredient from the pool by name.

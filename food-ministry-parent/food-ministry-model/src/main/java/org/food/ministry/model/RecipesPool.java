@@ -38,6 +38,15 @@ public class RecipesPool extends PersistenceObject {
     public Set<Recipe> getRecipes() {
         return Collections.unmodifiableSet(this.recipes);
     }
+    
+    /**
+     * Sets an unmodifiable set of current recipes in this pool
+     * 
+     * @param recipes The recipes to set
+     */
+    public void setRecipes(Set<Recipe> recipes) {
+        this.recipes = recipes;
+    }
 
     /**
      * Gets the desired recipe from the pool by name.

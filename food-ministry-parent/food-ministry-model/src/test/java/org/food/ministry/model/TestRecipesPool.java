@@ -1,6 +1,8 @@
 package org.food.ministry.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.food.ministry.model.exception.RecipeNotFoundException;
 import org.junit.Assert;
@@ -42,6 +44,18 @@ public class TestRecipesPool {
         recipesPool.addRecipe(recipe);
         Assert.assertEquals(recipeName, recipesPool.getRecipe(recipeName).getName());
         Assert.assertEquals(1, recipesPool.getRecipes().size());
+    }
+    
+    @Test
+    public void testSetRecipes() throws RecipeNotFoundException {
+        final String recipeName = "Al forno";
+        final String recipeDescription = "Tasty";
+        Recipe recipe = new Recipe(0, recipeName, new HashMap<Ingredient, Float>(), recipeDescription);
+        Set<Recipe> recipes = new HashSet<>();
+        recipes.add(recipe);
+        
+        recipesPool.setRecipes(recipes);
+        Assert.assertEquals(recipeName, recipesPool.getRecipe(recipeName).getName());
     }
 
     @Test
