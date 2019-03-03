@@ -3,6 +3,7 @@ package org.food.ministry.actors.recipespool.messages;
 import java.util.Map;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * The message for adding a recipe to a recipes pool.
@@ -10,7 +11,7 @@ import org.food.ministry.actors.messages.AMessage;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class AddRecipeMessage extends AMessage {
+public class AddRecipeMessage extends AMessage implements IRequestMessage {
 
     /**
      * The id of the recipes pool

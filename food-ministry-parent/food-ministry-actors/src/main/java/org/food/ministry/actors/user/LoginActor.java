@@ -74,23 +74,22 @@ public class LoginActor extends AbstractActor {
      *            logging in a user
      */
     private void doLogin(LoginMessage message) {
-        String userName = message.getUsername();
-        LOGGER.info("Logging in user {}", userName);
+        String emailAddress = message.getEmailAddress();
+        LOGGER.info("Logging in user {}", emailAddress);
         try {
-            String emailAddress = message.getEmailAddress();
             String password = message.getPassword();
-            LOGGER.info("Retrieving user data for user {}", userName);
+            LOGGER.info("Retrieving user data for user {}", emailAddress);
             User user = userDao.getUser(emailAddress);
             if(user.getPassword().equals(password)) {
                 getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
-                LOGGER.info("Successfully logged in user {}", userName);
+                LOGGER.info("Successfully logged in user {}", emailAddress);
             } else {
-                final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", userName, Constants.WRONG_CREDENTIALS_MESSAGE);
+                final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", emailAddress, Constants.WRONG_CREDENTIALS_MESSAGE);
                 LOGGER.info(errorMessage);
                 getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, Constants.WRONG_CREDENTIALS_MESSAGE), getSelf());
             }
         } catch(Exception e) {
-            final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", userName, e.getMessage());
+            final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", emailAddress, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
             getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage), getSelf());
         }

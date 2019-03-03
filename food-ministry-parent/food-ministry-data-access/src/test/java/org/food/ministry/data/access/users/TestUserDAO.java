@@ -50,6 +50,18 @@ public abstract class TestUserDAO extends TestBaseDAO<User> {
     }
 
     @Test
+    public void testSaveItemTwice() throws DataAccessException {
+        expectedException.expect(DataAccessException.class);
+        expectedException.expectMessage(MessageFormat.format(UserDAO.USER_WITH_EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE, EMAIL_ADDRESS));
+        final User testUser = getPersistenceObject();
+        final User existingEmailAddressUser = new User(1, EMAIL_ADDRESS, "OtherName", "OtherPassword");
+        final UserDAO userDao = getUserDao();
+        
+        userDao.save(testUser);
+        userDao.save(existingEmailAddressUser);
+    }
+    
+    @Test
     public void testUpdateUser() throws DataAccessException {
         final User testUser = getPersistenceObject();
         final String newEmailAddress = "new@mail.com";

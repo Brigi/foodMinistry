@@ -1,32 +1,31 @@
 package org.food.ministry.rest.util;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.food.ministry.rest.FoodMinistryServer;
 
-import akka.http.javadsl.server.PathMatchers;
+import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.server.Route;
 
 public class RouteUtil {
 
-    public static Route createGetRoute(FoodMinistryServer server, String path, Supplier<Route> route) {
-        return server.path(path, () -> server.get(route));
+    private RouteUtil() { /* Static class */ }
+    
+    public static <T> Route createGetRoute(FoodMinistryServer server, String path, Class<T> marshellingClass, Function<T, Route> getLogic) {
+        return server.pathPrefix(path,
+                () -> server.get(
+                        () -> server.entity(Jackson.unmarshaller(marshellingClass), getLogic)));
+    }
+    
+    public static <T> Route createPutRoute(FoodMinistryServer server, String path, Class<T> marshellingClass, Function<T, Route> putLogic) {
+        return server.pathPrefix(path,
+                () -> server.put(
+                        () -> server.entity(Jackson.unmarshaller(marshellingClass), putLogic)));
     }
 
-    public static Route createGetRouteWithPrefix(FoodMinistryServer server, String prefix, Function<Long, Route> route) {
-        return server.pathPrefix(prefix, () -> server.path(PathMatchers.longSegment(), (Long id) -> server.get(() -> route.apply(id))));
-    }
-
-    public static Route createPostRoute(FoodMinistryServer server, String path, Supplier<Route> route) {
-        return server.path(path, () -> server.post(route));
-    }
-
-    public static Route createPutRoute(FoodMinistryServer server, String path, Supplier<Route> route) {
-        return server.path(path, () -> server.put(route));
-    }
-
-    public static Route createDeleteRoute(FoodMinistryServer server, String path, Supplier<Route> route) {
-        return server.path(path, () -> server.delete(route));
+    public static <T> Route createDeleteRoute(FoodMinistryServer server, String path, Class<T> marshellingClass, Function<T, Route> deleteLogic) {
+        return server.pathPrefix(path,
+                () -> server.delete(
+                        () -> server.entity(Jackson.unmarshaller(marshellingClass), deleteLogic)));
     }
 }

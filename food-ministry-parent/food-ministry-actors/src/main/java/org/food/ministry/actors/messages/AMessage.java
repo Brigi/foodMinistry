@@ -1,6 +1,6 @@
 package org.food.ministry.actors.messages;
 
-public class AMessage implements IMessage {
+public class AMessage {
 
     /**
      * The ID of this message

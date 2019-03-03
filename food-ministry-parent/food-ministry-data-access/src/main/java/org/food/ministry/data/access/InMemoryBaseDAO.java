@@ -33,7 +33,11 @@ public abstract class InMemoryBaseDAO<T extends PersistenceObject> implements DA
 
     @Override
     public void save(T item) throws DataAccessException {
-        items.put(item.getId(), item);
+        long id = item.getId();
+        if(items.containsKey(id)) {
+            throw new DataAccessException(MessageFormat.format(ITEM_ALREADY_EXISTS_MESSAGE, id));
+        }
+        items.put(id, item);
     }
     
     protected T getItemToUpdate(T item) throws DataAccessException {

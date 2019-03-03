@@ -90,7 +90,7 @@ public class TestUserActor {
         Mockito.when(userDao.getUser(EMAIL_ADDRESS)).thenReturn(new User(USER_ID, EMAIL_ADDRESS, USER_NAME, PASSWORD));
 
         long messageId = IDGenerator.getRandomID();
-        userActor.tell(new LoginMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        userActor.tell(new LoginMessage(messageId, EMAIL_ADDRESS, PASSWORD), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
@@ -104,7 +104,7 @@ public class TestUserActor {
     public void testUserLoginWithWrongPassword() throws DataAccessException {
         Mockito.when(userDao.getUser(EMAIL_ADDRESS)).thenReturn(new User(USER_ID, EMAIL_ADDRESS, USER_NAME, PASSWORD));
 
-        userActor.tell(new LoginMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, "wrongPassword"), probe.ref());
+        userActor.tell(new LoginMessage(IDGenerator.getRandomID(), EMAIL_ADDRESS, "wrongPassword"), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
@@ -119,14 +119,14 @@ public class TestUserActor {
         Mockito.doThrow(new DataAccessException(MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE)).when(userDao).getUser(ArgumentMatchers.any());
 
         long messageId = IDGenerator.getRandomID();
-        userActor.tell(new LoginMessage(messageId, USER_NAME, EMAIL_ADDRESS, "wrongPassword"), probe.ref());
+        userActor.tell(new LoginMessage(messageId, EMAIL_ADDRESS, "wrongPassword"), probe.ref());
         IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
         IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
 
         LoginResultMessage loginResultMessage = MessageUtil.getMessageByClass(LoginResultMessage.class, firstResultMessage, secondResultMessage);
         DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        String expectedErrorMessage = MessageFormat.format("Login for user {0} failed: {1}", USER_NAME, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        String expectedErrorMessage = MessageFormat.format("Login for user {0} failed: {1}", EMAIL_ADDRESS, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
         MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, loginResultMessage, delegateMessage);
     }
 
@@ -135,7 +135,6 @@ public class TestUserActor {
     @Test
     public void testSuccessfulUserRegistration() throws DataAccessException {
         Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
-        Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
 
         long messageId = IDGenerator.getRandomID();
         userActor.tell(new RegisterMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
@@ -151,7 +150,6 @@ public class TestUserActor {
     @Test
     public void testSuccessfulUserRegistrationIncludingDuplicatedIdGeneration() throws DataAccessException {
         Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(true).thenReturn(false);
-        Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
 
         long messageId = IDGenerator.getRandomID();
         userActor.tell(new RegisterMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
@@ -162,20 +160,6 @@ public class TestUserActor {
         DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
         MessageUtil.checkNoErrorMessage(messageId, registrationResultMessage, delegateResultMessage);
-    }
-
-    @Test
-    public void testUserRegistrationWithExistingEmailAddress() throws DataAccessException {
-        Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(true);
-
-        userActor.tell(new RegisterMessage(IDGenerator.getRandomID(), USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
-        IMessage firstResultMessage = probe.expectMsgClass(IMessage.class);
-        IMessage secondResultMessage = probe.expectMsgClass(IMessage.class);
-
-        RegisterResultMessage registrationResultMessage = MessageUtil.getMessageByClass(RegisterResultMessage.class, firstResultMessage, secondResultMessage);
-
-        Assert.assertFalse(registrationResultMessage.isSuccessful());
-        Assert.assertEquals(Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE, registrationResultMessage.getErrorMessage());
     }
 
     @Test
@@ -199,7 +183,6 @@ public class TestUserActor {
     @Test
     public void testSuccessfulUserRegistrationAndLogin() throws DataAccessException {
         Mockito.when(userDao.doesIdExist(ArgumentMatchers.anyLong())).thenReturn(false);
-        Mockito.when(userDao.doesEmailAddressExist(EMAIL_ADDRESS)).thenReturn(false);
         RedirectAnswer<User> redirectAnwser = new RedirectAnswer<>();
         Mockito.doAnswer(redirectAnwser.setRedirectedUserAnswer()).when(userDao).save(ArgumentMatchers.any());
         Mockito.when(userDao.getUser(EMAIL_ADDRESS)).then(redirectAnwser.getRedirectedUserAnswer());
@@ -217,7 +200,7 @@ public class TestUserActor {
 
         // Login User
         messageId = IDGenerator.getRandomID();
-        userActor.tell(new LoginMessage(messageId, USER_NAME, EMAIL_ADDRESS, PASSWORD), probe.ref());
+        userActor.tell(new LoginMessage(messageId, EMAIL_ADDRESS, PASSWORD), probe.ref());
         firstResultMessage = probe.expectMsgClass(IMessage.class);
         secondResultMessage = probe.expectMsgClass(IMessage.class);
 

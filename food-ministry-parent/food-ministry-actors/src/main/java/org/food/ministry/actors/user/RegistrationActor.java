@@ -79,10 +79,10 @@ public class RegistrationActor extends AbstractActor {
         String password = message.getPassword();
         LOGGER.info("Registering user {}", userName);
         try {
-            if(userDao.doesEmailAddressExist(emailAddress)) {
-                LOGGER.info("Registration of user {} failed due to already existing email address", userName);
-                getSender().tell(new RegisterResultMessage(IDGenerator.getRandomID(), message.getId(), false, Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE), getSelf());
-            }
+//            if(userDao.doesEmailAddressExist(emailAddress)) {
+//                LOGGER.info("Registration of user {} failed due to already existing email address", userName);
+//                getSender().tell(new RegisterResultMessage(IDGenerator.getRandomID(), message.getId(), false, Constants.EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE), getSelf());
+//            }
             long id = UtilFunctions.generateUniqueId(userDao, LOGGER);
             userDao.save(new User(id, emailAddress, userName, password));
             getSender().tell(new RegisterResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());

@@ -2,6 +2,7 @@ package org.food.ministry.actors.foodinventory;
 
 import org.food.ministry.actors.foodinventory.messages.AddIngredientMessage;
 import org.food.ministry.actors.foodinventory.messages.GetIngredientsMessage;
+import org.food.ministry.actors.ingredientspool.messages.DeleteIngredientMessage;
 import org.food.ministry.actors.messages.DelegateMessage;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.foodinventory.FoodInventoryDAO;

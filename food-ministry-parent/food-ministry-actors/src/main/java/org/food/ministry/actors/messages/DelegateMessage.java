@@ -6,7 +6,7 @@ package org.food.ministry.actors.messages;
  * @author Maximilian Briglmeier
  * @since 16.02.2019
  */
-public class DelegateMessage extends AMessage {
+public class DelegateMessage extends AMessage implements IMessage {
 
     /**
      * The ID of the original message

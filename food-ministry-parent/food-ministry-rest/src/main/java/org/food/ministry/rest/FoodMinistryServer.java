@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
+import org.food.ministry.actors.util.IDGenerator;
+import org.food.ministry.data.access.StorageType;
+import org.food.ministry.data.access.factory.DAOFactory;
 import org.food.ministry.rest.shutdown.ShutdownEndpoint;
 import org.food.ministry.rest.user.UserEndpoint;
 
@@ -30,15 +33,19 @@ public class FoodMinistryServer extends AllDirectives {
     private final LoggingAdapter logger;
     
     private final ActorSystem system;
+    
+    private final DAOFactory daoFactory;
 
     private final Set<IEndpoint> endpoints;
     
     private CompletionStage<ServerBinding> binding;
     
-    public FoodMinistryServer() {
+    public FoodMinistryServer(StorageType storageType) {
         this.system = ActorSystem.create("food-ministry-actor-system");
         logger = Logging.getLogger(system, this);
-        this.endpoints = new HashSet<>();
+        IDGenerator.initializeGeneratorActor(system);
+        this.daoFactory = DAOFactory.getDAOFactory(storageType);
+        this.endpoints = new HashSet<>();        
     }
 
     public ActorSystem getSystem() {
@@ -49,14 +56,14 @@ public class FoodMinistryServer extends AllDirectives {
         return this.binding;
     }
 
-    public void start() {
+    public void start(String hostAddress, int port) {
         logger.info("Starting server...");
         Http http = Http.get(system);
         ActorMaterializer materializer = ActorMaterializer.create(system);
         createUserEndpoint();
         createShutdownEndpoint();
         Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = prepareRoutes().flow(system, materializer);
-        binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost("localhost", 8080), materializer);
+        binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost(hostAddress, port), materializer);
         logger.info("Server successfully started");
     }
     
@@ -75,7 +82,7 @@ public class FoodMinistryServer extends AllDirectives {
 
     private void createUserEndpoint() {
         logger.info("Creating user endpoint...");
-        endpoints.add(new UserEndpoint(this, null, null ,null, null, null));
+        endpoints.add(new UserEndpoint(this, daoFactory.getUserDAO(), daoFactory.getHouseholdDAO(), daoFactory.getFoodInventoryDAO(), daoFactory.getShoppingListDAO(), daoFactory.getIngredientsPoolDAO()));
         logger.info("User endpoint successfully created");
     }
 

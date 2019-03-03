@@ -31,6 +31,14 @@ public abstract class TestBaseDAO<T extends PersistenceObject> {
     public void testSaveItem() throws DataAccessException {
         testDao.save(testPersistenceObject);
     }
+    
+    @Test
+    public void testSaveItemTwice() throws DataAccessException {
+        expectedException.expect(DataAccessException.class);
+        expectedException.expectMessage(MessageFormat.format(DAO.ITEM_ALREADY_EXISTS_MESSAGE, getPersistenceObject().getId()));
+        testDao.save(testPersistenceObject);
+        testDao.save(testPersistenceObject);
+    }
 
     @Test
     public void testGet() throws DataAccessException {

@@ -20,7 +20,7 @@ public class Recipe extends PersistenceObject {
     /**
      * The ingredients needed for this recipe with its associated quantity
      */
-    private Map<Ingredient, Float> ingredients;
+    private Map<Ingredient, Float> ingredientsWithQuantity;
 
     /**
      * The description for this recipe
@@ -32,14 +32,14 @@ public class Recipe extends PersistenceObject {
      * 
      * @param id The unique id of the recipe
      * @param name The name of the recipe
-     * @param ingredients A map containing the ingredients needed associated with
+     * @param ingredientsWithQuantity A map containing the ingredients needed associated with
      *            the quantity
      * @param description A description of this recipe
      */
-    public Recipe(long id, String name, Map<Ingredient, Float> ingredients, String description) {
+    public Recipe(long id, String name, Map<Ingredient, Float> ingredientsWithQuantity, String description) {
         super(id);
         this.name = name;
-        this.ingredients = ingredients;
+        this.ingredientsWithQuantity = ingredientsWithQuantity;
         this.description = description;
     }
 
@@ -69,7 +69,7 @@ public class Recipe extends PersistenceObject {
      *         with the quantity
      */
     public Map<Ingredient, Float> getIngredientsWithQuantity() {
-        return ingredients;
+        return ingredientsWithQuantity;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Recipe extends PersistenceObject {
      *            associated with the quantity
      */
     public void setIngredientsWithQuantity(Map<Ingredient, Float> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredientsWithQuantity = ingredients;
     }
 
     /**

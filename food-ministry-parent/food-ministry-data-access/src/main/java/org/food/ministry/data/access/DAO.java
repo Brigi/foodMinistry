@@ -10,6 +10,11 @@ public interface DAO<T> {
      * Generic message for indicating that no item was found for a given id
      */
     public static final String NO_ID_FOUND_MESSAGE = "Item with id {0} not found";
+    
+    /**
+     * Generic message for indicating that none unique item was found
+     */
+    public static final String ITEM_ALREADY_EXISTS_MESSAGE = "Item with id {0} already exists";
 
     /**
      * Generic message for indicating that none unique item was found

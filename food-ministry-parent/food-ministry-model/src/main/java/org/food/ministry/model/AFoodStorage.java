@@ -21,7 +21,7 @@ public abstract class AFoodStorage extends PersistenceObject {
     /**
      * A map containing {@link Ingredient}s with their quantity
      */
-    private Map<Ingredient, Float> ingredients;
+    private Map<Ingredient, Float> ingredientsWithQuantity;
 
     /**
      * Default constructor initializing member variables
@@ -30,7 +30,7 @@ public abstract class AFoodStorage extends PersistenceObject {
      */
     public AFoodStorage(long id) {
         super(id);
-        this.ingredients = new HashMap<>();
+        this.ingredientsWithQuantity = new HashMap<>();
     }
 
     /**
@@ -39,7 +39,7 @@ public abstract class AFoodStorage extends PersistenceObject {
      * @return A map of {@link Ingredient}s with their associated quantity
      */
     public Map<Ingredient, Float> getIngredientsWithQuantity() {
-        return this.ingredients;
+        return this.ingredientsWithQuantity;
     }
     
     /**
@@ -48,7 +48,7 @@ public abstract class AFoodStorage extends PersistenceObject {
      * @param ingredients A map of {@link Ingredient}s with their associated quantity
      */
     public void setIngredientsWithQuantity(Map<Ingredient, Float> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredientsWithQuantity = ingredients;
     }
 
     /**
@@ -61,7 +61,7 @@ public abstract class AFoodStorage extends PersistenceObject {
      * @param quantity The quantity to add/remove
      */
     public void addIngredient(Ingredient ingredient, float quantity) {
-        Util.addIngredientToMap(this.ingredients, ingredient, quantity);
+        Util.addIngredientToMap(this.ingredientsWithQuantity, ingredient, quantity);
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class AFoodStorage extends PersistenceObject {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         TreeMap<Ingredient, Float> sortedMap = new TreeMap<>(getIngredientComparator());
-        sortedMap.putAll(ingredients);
+        sortedMap.putAll(ingredientsWithQuantity);
         sortedMap.forEach((ingredient, quantity) -> stringBuilder.append(MessageFormat.format("{0}: {1} {2}\r\n", ingredient.getName(), quantity, ingredient.getUnit())));
 
         return stringBuilder.toString();

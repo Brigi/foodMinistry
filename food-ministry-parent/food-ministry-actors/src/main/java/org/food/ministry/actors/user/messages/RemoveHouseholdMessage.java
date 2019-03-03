@@ -1,6 +1,7 @@
 package org.food.ministry.actors.user.messages;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * The message for removing a household from a user.
@@ -8,7 +9,7 @@ import org.food.ministry.actors.messages.AMessage;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class RemoveHouseholdMessage extends AMessage {
+public class RemoveHouseholdMessage extends AMessage implements IRequestMessage {
 
     /**
      * The id of the user

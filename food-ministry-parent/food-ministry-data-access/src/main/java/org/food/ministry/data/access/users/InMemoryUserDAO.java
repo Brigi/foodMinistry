@@ -20,6 +20,14 @@ import org.food.ministry.model.User;
 public class InMemoryUserDAO extends InMemoryBaseDAO<User> implements UserDAO {
 
     @Override
+    public void save(User user) throws DataAccessException {
+        if(!getItems().values().parallelStream().filter(item -> item.getEmailAddress().equals(user.getEmailAddress())).findAny().isEmpty()) {
+            throw new DataAccessException(MessageFormat.format(USER_WITH_EMAIL_ADDRESS_ALREADY_EXISTS_MESSAGE, user.getEmailAddress()));
+        }
+        super.save(user);
+    }
+    
+    @Override
     public User getUser(String emailAddress) throws DataAccessException {
         List<User> correctUsers = getItems().values().parallelStream().filter(element -> element.getEmailAddress().equals(emailAddress)).collect(Collectors.toList());
         if(correctUsers.size() == 0) {

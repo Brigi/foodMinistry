@@ -12,21 +12,21 @@ import org.food.ministry.data.access.users.UserDAO;
 
 public abstract class DAOFactory {
 
-    abstract FoodInventoryDAO getFoodInventoryDAO();
+    public abstract FoodInventoryDAO getFoodInventoryDAO();
     
-    abstract HouseholdDAO getHouseholdDAO();
+    public abstract HouseholdDAO getHouseholdDAO();
     
-    abstract IngredientDAO getIngredientDAO();
+    public abstract IngredientDAO getIngredientDAO();
     
-    abstract IngredientsPoolDAO getIngredientsPoolDAO();
+    public abstract IngredientsPoolDAO getIngredientsPoolDAO();
     
-    abstract RecipeDAO getRecipeDAO();
+    public abstract RecipeDAO getRecipeDAO();
     
-    abstract RecipesPoolDAO getRecipesPoolDAO();
+    public abstract RecipesPoolDAO getRecipesPoolDAO();
     
-    abstract ShoppingListDAO getShoppingListDAO();
+    public abstract ShoppingListDAO getShoppingListDAO();
     
-    abstract UserDAO getUserDAO();
+    public abstract UserDAO getUserDAO();
     
     public static DAOFactory getDAOFactory(StorageType storageType) {
         switch(storageType) {

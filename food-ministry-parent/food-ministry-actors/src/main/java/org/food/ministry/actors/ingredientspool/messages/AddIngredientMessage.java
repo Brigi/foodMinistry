@@ -1,6 +1,7 @@
 package org.food.ministry.actors.ingredientspool.messages;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 import org.food.ministry.model.Unit;
 
 /**
@@ -9,7 +10,7 @@ import org.food.ministry.model.Unit;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class AddIngredientMessage extends AMessage {
+public class AddIngredientMessage extends AMessage implements IRequestMessage {
 
     /**
      * The id of the ingredients pool

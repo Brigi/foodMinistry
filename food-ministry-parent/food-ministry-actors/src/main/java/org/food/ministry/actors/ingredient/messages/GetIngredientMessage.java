@@ -1,6 +1,7 @@
 package org.food.ministry.actors.ingredient.messages;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * The message for requesting the id of an ingredient.
@@ -8,7 +9,7 @@ import org.food.ministry.actors.messages.AMessage;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class GetIngredientMessage extends AMessage {
+public class GetIngredientMessage extends AMessage implements IRequestMessage {
     
     /**
      * The id of the ingredient

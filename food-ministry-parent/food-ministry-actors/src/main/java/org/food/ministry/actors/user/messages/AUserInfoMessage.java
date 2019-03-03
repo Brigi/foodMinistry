@@ -2,6 +2,7 @@ package org.food.ministry.actors.user.messages;
 
 import org.food.ministry.actors.messages.AMessage;
 import org.food.ministry.actors.messages.IMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * An abstract implementation of {@link IMessage} for requesting user
@@ -10,12 +11,8 @@ import org.food.ministry.actors.messages.IMessage;
  * @author Maximilian Briglmeier
  * @since 16.02.2019
  */
-public class AUserInfoMessage extends AMessage {
-
-    /**
-     * The name of the user requesting information
-     */
-    private final String username;
+public class AUserInfoMessage extends AMessage implements IRequestMessage {
+    
     /**
      * The email address of the user requesting information
      */
@@ -29,24 +26,13 @@ public class AUserInfoMessage extends AMessage {
      * Constructor initializing the message with essential member variables
      * 
      * @param id The ID of this message
-     * @param username The name of the user requesting information
      * @param emailAddress The email address of the user requesting information
      * @param password The password of the user needed for user actions
      */
-    public AUserInfoMessage(long id, String username, String emailAddress, String password) {
+    public AUserInfoMessage(long id, String emailAddress, String password) {
         super(id);
-        this.username = username;
         this.emailAddress = emailAddress;
         this.password = password;
-    }
-
-    /**
-     * Gets the name of the user requesting information
-     * 
-     * @return The name of the user requesting information
-     */
-    public String getUsername() {
-        return username;
     }
 
     /**

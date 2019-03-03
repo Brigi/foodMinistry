@@ -1,6 +1,7 @@
 package org.food.ministry.actors.household.messages;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * The message for requesting the id of a ingredients pool.
@@ -8,7 +9,7 @@ import org.food.ministry.actors.messages.AMessage;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class GetIngredientsPoolMessage extends AMessage {
+public class GetIngredientsPoolMessage extends AMessage implements IRequestMessage {
 
     /**
      * The id of the household requesting the ingredients pool

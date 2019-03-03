@@ -40,42 +40,42 @@ public class InMemoryDAOFactory extends DAOFactory {
     }
     
     @Override
-    FoodInventoryDAO getFoodInventoryDAO() {
+    public FoodInventoryDAO getFoodInventoryDAO() {
         return foodInventoryDao;
     }
 
     @Override
-    HouseholdDAO getHouseholdDAO() {
+    public HouseholdDAO getHouseholdDAO() {
         return householdDao;
     }
 
     @Override
-    IngredientDAO getIngredientDAO() {
+    public IngredientDAO getIngredientDAO() {
         return ingredientDao;
     }
 
     @Override
-    IngredientsPoolDAO getIngredientsPoolDAO() {
+    public IngredientsPoolDAO getIngredientsPoolDAO() {
         return ingredientsPoolDao;
     }
 
     @Override
-    RecipeDAO getRecipeDAO() {
+    public RecipeDAO getRecipeDAO() {
         return recipeDao;
     }
 
     @Override
-    RecipesPoolDAO getRecipesPoolDAO() {
+    public RecipesPoolDAO getRecipesPoolDAO() {
         return recipesPoolDao;
     }
 
     @Override
-    ShoppingListDAO getShoppingListDAO() {
+    public ShoppingListDAO getShoppingListDAO() {
         return shoppingListDao;
     }
 
     @Override
-    UserDAO getUserDAO() {
+    public UserDAO getUserDAO() {
         return userDao;
     }
 

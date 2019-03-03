@@ -1,6 +1,7 @@
 package org.food.ministry.actors.user.messages;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * The message for adding a household to a user.
@@ -8,7 +9,7 @@ import org.food.ministry.actors.messages.AMessage;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class AddHouseholdMessage extends AMessage {
+public class AddHouseholdMessage extends AMessage implements IRequestMessage {
 
     /**
      * The id of the user

@@ -1,6 +1,7 @@
 package org.food.ministry.actors.recipespool.messages;
 
 import org.food.ministry.actors.messages.AMessage;
+import org.food.ministry.actors.messages.IRequestMessage;
 
 /**
  * The message for requesting the id of a recipes.
@@ -8,7 +9,7 @@ import org.food.ministry.actors.messages.AMessage;
  * @author Maximilian Briglmeier
  * @since 22.02.2019
  */
-public class GetRecipesMessage extends AMessage {
+public class GetRecipesMessage extends AMessage implements IRequestMessage {
 
     /**
      * The id of the recipes pool

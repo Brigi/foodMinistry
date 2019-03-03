@@ -6,7 +6,7 @@ package org.food.ministry.actors.messages;
  * @author Maximilian Briglmeier
  * @since 16.02.2019
  */
-public class AResultMessage extends AMessage {
+public class AResultMessage extends AMessage implements IResultMessage {
     /**
      * The ID of the requesting message
      */
