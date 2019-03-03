@@ -81,17 +81,17 @@ public class LoginActor extends AbstractActor {
             LOGGER.info("Retrieving user data for user {}", emailAddress);
             User user = userDao.getUser(emailAddress);
             if(user.getPassword().equals(password)) {
-                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE), getSelf());
+                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE, user.getId()), getSelf());
                 LOGGER.info("Successfully logged in user {}", emailAddress);
             } else {
                 final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", emailAddress, Constants.WRONG_CREDENTIALS_MESSAGE);
                 LOGGER.info(errorMessage);
-                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, Constants.WRONG_CREDENTIALS_MESSAGE), getSelf());
+                getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, Constants.WRONG_CREDENTIALS_MESSAGE, 0), getSelf());
             }
         } catch(Exception e) {
             final String errorMessage = MessageFormat.format("Login for user {0} failed: {1}", emailAddress, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
-            getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage), getSelf());
+            getSender().tell(new LoginResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage, 0), getSelf());
         }
     }
 

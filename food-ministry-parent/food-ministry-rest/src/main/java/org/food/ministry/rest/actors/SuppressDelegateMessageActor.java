@@ -44,7 +44,6 @@ public class SuppressDelegateMessageActor extends AbstractActor {
     }
     
     private void forwardToActor(IRequestMessage message) {
-        LOGGER.info("Request ID: {}", message.getId());
         requesters.put(message.getId(), getSender());
         LOGGER.info("Forwarding request message to {}", actorToForward.toString());
         actorToForward.tell(message, getSelf());
@@ -55,9 +54,7 @@ public class SuppressDelegateMessageActor extends AbstractActor {
     }
     
     private void acceptResultMessage(IResultMessage message) {
-        LOGGER.info("Result ID: {}, Origin Request ID: {}", message.getId(), message.getOriginId());
         ActorRef requester = requesters.remove(message.getOriginId());
-        LOGGER.info("Sender: {}, Requester: {}", getSender(), requester);
         LOGGER.info("Result message from {} sending back to {}", getSender().toString(), requester.toString());
         requester.tell(message, actorToForward);
     }

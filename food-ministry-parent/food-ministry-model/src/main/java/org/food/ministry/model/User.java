@@ -110,6 +110,15 @@ public class User extends PersistenceObject {
     public Set<Household> getHouseholds() {
         return this.households;
     }
+    
+    /**
+     * Sets a set of households the user manages
+     * 
+     * @param households A set of households
+     */
+    public void setHouseholds(Set<Household> households) {
+        this.households = households;
+    }
 
     /**
      * Adds a household to the set households of this user to manage

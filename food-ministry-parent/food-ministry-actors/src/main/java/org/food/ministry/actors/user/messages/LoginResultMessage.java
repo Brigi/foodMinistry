@@ -12,6 +12,11 @@ import org.food.ministry.actors.messages.AResultMessage;
 public class LoginResultMessage extends AResultMessage {
 
     /**
+     * The id of the logged in user
+     */
+    private final long userId;
+    
+    /**
      * Constructor initializing the essential member variables
      * 
      * @param id The ID of the message
@@ -20,8 +25,16 @@ public class LoginResultMessage extends AResultMessage {
      *            processed
      * @param errorMessage Error message in case something went wrong
      */
-    public LoginResultMessage(long id, long originId, boolean successful, String errorMessage) {
+    public LoginResultMessage(long id, long originId, boolean successful, String errorMessage, long userId) {
         super(id, originId, successful, errorMessage);
+        this.userId = userId;
     }
 
+    /**
+     * Getting user id of the logged in user
+     * @return The user id of the logged in user
+     */
+    public long getUserId() {
+        return userId;
+    }
 }

@@ -124,8 +124,10 @@ public class AddHouseholdActor extends AbstractActor {
             long ingredientsPoolId = UtilFunctions.generateUniqueId(ingredientsPoolDao, LOGGER);
             long recipesPoolId = UtilFunctions.generateUniqueId(ingredientsPoolDao, LOGGER);
 
-            user.addHousehold(new Household(householdId, new FoodInventory(foodInventoryId), new ShoppingList(shoppingListId), new IngredientsPool(ingredientsPoolId),
-                    new RecipesPool(recipesPoolId), message.getName()));
+            Household household = new Household(householdId, new FoodInventory(foodInventoryId), new ShoppingList(shoppingListId), new IngredientsPool(ingredientsPoolId),
+                    new RecipesPool(recipesPoolId), message.getName());
+            user.addHousehold(household);
+            householdDao.save(household);
             userDao.update(user);
             AddHouseholdResultMessage resultMessage = new AddHouseholdResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE);
             getSender().tell(resultMessage, getSelf());

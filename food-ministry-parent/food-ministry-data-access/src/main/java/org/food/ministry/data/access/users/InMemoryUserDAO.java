@@ -42,6 +42,7 @@ public class InMemoryUserDAO extends InMemoryBaseDAO<User> implements UserDAO {
         User userToUpdate = getItemToUpdate(user);
         userToUpdate.setName(user.getName());
         userToUpdate.setEmailAddress(user.getEmailAddress());
+        userToUpdate.setHouseholds(user.getHouseholds());
     }
 
     @Override

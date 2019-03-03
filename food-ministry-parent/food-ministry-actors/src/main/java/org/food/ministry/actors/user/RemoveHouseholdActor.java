@@ -101,7 +101,7 @@ public class RemoveHouseholdActor extends AbstractActor {
             getSender().tell(resultMessage, getSelf());
             LOGGER.info("Successfully added a household for user with id {}", userId);
         } catch(Exception e) {
-            final String errorMessage = MessageFormat.format("Deleting household with id {0} for user with id {1} failed: {2}", householdId, userId, e.getMessage());
+            final String errorMessage = MessageFormat.format("Removing household with id {0} for user with id {1} failed: {2}", householdId, userId, e.getMessage());
             LOGGER.info("{}\r\n{}", errorMessage, UtilFunctions.getStacktraceAsString(e));
             getSender().tell(new RemoveHouseholdResultMessage(IDGenerator.getRandomID(), message.getId(), false, errorMessage), getSelf());
         }

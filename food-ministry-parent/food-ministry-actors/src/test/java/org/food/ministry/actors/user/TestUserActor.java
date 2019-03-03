@@ -48,7 +48,7 @@ import akka.testkit.TestProbe;
 @RunWith(MockitoJUnitRunner.class)
 public class TestUserActor {
 
-    private static final long USER_ID = 0;
+    private static final long USER_ID = 100;
     private static final long HOUSEHOLD_ID = 1;
     private static final String EMAIL_ADDRESS = "email@address.com";
     private static final String USER_NAME = "MyName";
@@ -98,6 +98,7 @@ public class TestUserActor {
         DelegateMessage delegateResultMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
         MessageUtil.checkNoErrorMessage(messageId, loginResultMessage, delegateResultMessage);
+        Assert.assertEquals(USER_ID, loginResultMessage.getUserId());
     }
 
     @Test
@@ -335,7 +336,7 @@ public class TestUserActor {
         RemoveHouseholdResultMessage addHouseholdsResultMessage = MessageUtil.getMessageByClass(RemoveHouseholdResultMessage.class, firstResultMessage, secondResultMessage);
         DelegateMessage delegateMessage = MessageUtil.getMessageByClass(DelegateMessage.class, firstResultMessage, secondResultMessage);
 
-        String expectedErrorMessage = MessageFormat.format("Deleting household with id {0} for user with id {1} failed: {2}", HOUSEHOLD_ID, USER_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
+        String expectedErrorMessage = MessageFormat.format("Removing household with id {0} for user with id {1} failed: {2}", HOUSEHOLD_ID, USER_ID, MessageUtil.CORRUPTED_DATA_SOURCE_MESSAGE);
         MessageUtil.checkForErrorMessage(messageId, expectedErrorMessage, addHouseholdsResultMessage, delegateMessage);
     }
 
