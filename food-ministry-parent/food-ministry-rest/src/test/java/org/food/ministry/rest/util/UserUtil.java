@@ -52,7 +52,7 @@ public class UserUtil {
     
     public static HttpResponse addHousehold(long userId, String householdName) throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, ExecutionException {
         AddHouseholdJSON addHouseholdJSON = new AddHouseholdJSON(userId, householdName);
-        HttpRequest request = HttpRequest.PUT(ServerUtil.HOST_ROOT_URL + "user/" + userId + "/households")
+        HttpRequest request = HttpRequest.PUT(ServerUtil.HOST_ROOT_URL + "user/household")
                 .withEntity(HttpEntities.create(ContentTypes.APPLICATION_JSON, new ObjectMapper().writeValueAsString(addHouseholdJSON).getBytes("UTF-8")));
         CompletionStage<HttpResponse> response = Http.get(ActorSystem.create()).singleRequest(request);
         HttpResponse httpResponse = response.toCompletableFuture().get();
@@ -65,7 +65,7 @@ public class UserUtil {
     
     public static HttpResponse getHouseholds(long userId) throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, ExecutionException {
         GetHouseholdsJSON addHouseholdJSON = new GetHouseholdsJSON(userId);
-        HttpRequest request = HttpRequest.GET(ServerUtil.HOST_ROOT_URL + "user/" + userId + "/households")
+        HttpRequest request = HttpRequest.GET(ServerUtil.HOST_ROOT_URL + "user/household")
                 .withEntity(HttpEntities.create(ContentTypes.APPLICATION_JSON, new ObjectMapper().writeValueAsString(addHouseholdJSON).getBytes("UTF-8")));
         CompletionStage<HttpResponse> response = Http.get(ActorSystem.create()).singleRequest(request);
         HttpResponse httpResponse = response.toCompletableFuture().get();
@@ -78,7 +78,7 @@ public class UserUtil {
     
     public static HttpResponse removeHousehold(long userId, long householdId) throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, ExecutionException {
         RemoveHouseholdJSON removeHouseholdJSON = new RemoveHouseholdJSON(userId, householdId);
-        HttpRequest request = HttpRequest.DELETE(ServerUtil.HOST_ROOT_URL + "user/" + userId + "/households")
+        HttpRequest request = HttpRequest.DELETE(ServerUtil.HOST_ROOT_URL + "user/household")
                 .withEntity(HttpEntities.create(ContentTypes.APPLICATION_JSON, new ObjectMapper().writeValueAsString(removeHouseholdJSON).getBytes("UTF-8")));
         CompletionStage<HttpResponse> response = Http.get(ActorSystem.create()).singleRequest(request);
         HttpResponse httpResponse = response.toCompletableFuture().get();

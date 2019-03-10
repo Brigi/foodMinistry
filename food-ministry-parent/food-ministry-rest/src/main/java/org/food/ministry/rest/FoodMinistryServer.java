@@ -8,6 +8,7 @@ import java.util.concurrent.CompletionStage;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.StorageType;
 import org.food.ministry.data.access.factory.DAOFactory;
+import org.food.ministry.rest.household.HouseholdEndpoint;
 import org.food.ministry.rest.shutdown.ShutdownEndpoint;
 import org.food.ministry.rest.user.UserEndpoint;
 
@@ -60,8 +61,9 @@ public class FoodMinistryServer extends AllDirectives {
         logger.info("Starting server...");
         Http http = Http.get(system);
         ActorMaterializer materializer = ActorMaterializer.create(system);
-        createUserEndpoint();
         createShutdownEndpoint();
+        createHouseholdEndpoint();
+        createUserEndpoint();
         Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = prepareRoutes().flow(system, materializer);
         binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost(hostAddress, port), materializer);
         logger.info("Server successfully started");
@@ -90,5 +92,11 @@ public class FoodMinistryServer extends AllDirectives {
         logger.info("Creating shutdown endpoint...");
         endpoints.add(new ShutdownEndpoint(this));
         logger.info("Shutdown endpoint successfully created");
+    }
+    
+    private void createHouseholdEndpoint() {
+        logger.info("Creating household endpoint...");
+        endpoints.add(new HouseholdEndpoint(this, daoFactory.getHouseholdDAO()));
+        logger.info("Household endpoint successfully created");
     }
 }

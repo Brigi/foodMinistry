@@ -36,7 +36,7 @@ import org.food.ministry.rest.util.RouteUtil;
 import akka.actor.ActorRef;
 import akka.http.javadsl.marshallers.jackson.Jackson;
 import akka.http.javadsl.model.StatusCodes;
-import akka.http.javadsl.server.PathMatcher1;
+import akka.http.javadsl.server.PathMatcher0;
 import akka.http.javadsl.server.PathMatchers;
 import akka.http.javadsl.server.Route;
 import akka.pattern.Patterns;
@@ -90,7 +90,7 @@ public class UserEndpoint extends AEndpoint {
     
     private Route createAddHouseholdRoute() {
         getLogger().info("Creating add household endpoint");
-        PathMatcher1<Long> pathMatcher = PathMatchers.segment("user").slash(PathMatchers.longSegment()).slash("households");
+        PathMatcher0 pathMatcher = PathMatchers.segment("user").slash("household");
         return RouteUtil.createPutRoute(getServer(), pathMatcher, AddHouseholdJSON.class, this::addHousehold);
     }
     
@@ -106,7 +106,7 @@ public class UserEndpoint extends AEndpoint {
     
     private Route createGetHouseholdsRoute() {
         getLogger().info("Creating get households endpoint");
-        PathMatcher1<Long> pathMatcher = PathMatchers.segment("user").slash(PathMatchers.longSegment()).slash("households");
+        PathMatcher0 pathMatcher = PathMatchers.segment("user").slash("household");
         return RouteUtil.createGetRoute(getServer(), pathMatcher, GetHouseholdsJSON.class, this::getHouseholds);
     }
     
@@ -123,7 +123,7 @@ public class UserEndpoint extends AEndpoint {
     
     private Route createRemoveHouseholdRoute() {
         getLogger().info("Creating remove households endpoint");
-        PathMatcher1<Long> pathMatcher = PathMatchers.segment("user").slash(PathMatchers.longSegment()).slash("households");
+        PathMatcher0 pathMatcher = PathMatchers.segment("user").slash("household");
         return RouteUtil.createDeleteRoute(getServer(), pathMatcher, RemoveHouseholdJSON.class, this::removeHousehold);
     }
     
