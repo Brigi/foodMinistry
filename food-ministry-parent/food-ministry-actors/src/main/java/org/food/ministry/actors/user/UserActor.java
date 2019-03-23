@@ -10,6 +10,7 @@ import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.foodinventory.FoodInventoryDAO;
 import org.food.ministry.data.access.household.HouseholdDAO;
 import org.food.ministry.data.access.ingredientspool.IngredientsPoolDAO;
+import org.food.ministry.data.access.recipespool.RecipesPoolDAO;
 import org.food.ministry.data.access.shoppinglist.ShoppingListDAO;
 import org.food.ministry.data.access.users.UserDAO;
 
@@ -62,13 +63,14 @@ public class UserActor extends AbstractActor {
      * @param householdDao The data access object for households
      * @param foodInventoryDao The data access object for food inventories
      * @param shoppingListDao The data access object for shopping lists
+     * @param recipesPoolDao The data access object for recipes pools
      * @param ingredientsPoolDao The data access object for ingredients pools
      */
-    public UserActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, IngredientsPoolDAO ingredientsPoolDao) {
+    public UserActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, RecipesPoolDAO recipesPoolDao, IngredientsPoolDAO ingredientsPoolDao) {
         loginChild = getContext().actorOf(LoginActor.props(userDao), "loginActor");
         registrationChild = getContext().actorOf(RegistrationActor.props(userDao), "registrationActor");
         getHouseholdsChild = getContext().actorOf(GetHouseholdsActor.props(userDao), "getHouseholdsActor");
-        addHouseholdsChild = getContext().actorOf(AddHouseholdActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao), "addHouseholdActor");
+        addHouseholdsChild = getContext().actorOf(AddHouseholdActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, recipesPoolDao, ingredientsPoolDao), "addHouseholdActor");
         removeHouseholdsChild = getContext().actorOf(RemoveHouseholdActor.props(userDao, householdDao), "removeHouseholdActor");
     }
 
@@ -79,12 +81,13 @@ public class UserActor extends AbstractActor {
      * @param householdDao The data access object for households
      * @param foodInventoryDao The data access object for food inventories
      * @param shoppingListDao The data access object for shopping lists
+     * @param recipesPoolDao The data access object for recipes pools
      * @param ingredientsPoolDao The data access object for ingredients pools
      * @return The property for creating an actor of this class
      */
-    public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
+    public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, RecipesPoolDAO recipesPoolDao,
             IngredientsPoolDAO ingredientsPoolDao) {
-        return Props.create(UserActor.class, () -> new UserActor(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao));
+        return Props.create(UserActor.class, () -> new UserActor(userDao, householdDao, foodInventoryDao, shoppingListDao, recipesPoolDao, ingredientsPoolDao));
     }
 
     /**

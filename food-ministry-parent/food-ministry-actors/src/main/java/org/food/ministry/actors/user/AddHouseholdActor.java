@@ -10,6 +10,7 @@ import org.food.ministry.actors.util.UtilFunctions;
 import org.food.ministry.data.access.foodinventory.FoodInventoryDAO;
 import org.food.ministry.data.access.household.HouseholdDAO;
 import org.food.ministry.data.access.ingredientspool.IngredientsPoolDAO;
+import org.food.ministry.data.access.recipespool.RecipesPoolDAO;
 import org.food.ministry.data.access.shoppinglist.ShoppingListDAO;
 import org.food.ministry.data.access.users.UserDAO;
 import org.food.ministry.model.FoodInventory;
@@ -55,6 +56,10 @@ public class AddHouseholdActor extends AbstractActor {
      */
     private ShoppingListDAO shoppingListDao;
     /**
+     * The data access object for recipe pools
+     */
+    private RecipesPoolDAO recipesPoolDao;
+    /**
      * The data access object for ingredients pools
      */
     private IngredientsPoolDAO ingredientsPoolDao;
@@ -68,12 +73,13 @@ public class AddHouseholdActor extends AbstractActor {
      * @param shoppingListDao The data access object for shopping lists
      * @param ingredientsPoolDao The data access object for ingredients pools
      */
-    public AddHouseholdActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
+    public AddHouseholdActor(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, RecipesPoolDAO recipesPoolDao,
             IngredientsPoolDAO ingredientsPoolDao) {
         this.userDao = userDao;
         this.householdDao = householdDao;
         this.foodInventoryDao = foodInventoryDao;
         this.shoppingListDao = shoppingListDao;
+        this.recipesPoolDao = recipesPoolDao;
         this.ingredientsPoolDao = ingredientsPoolDao;
     }
 
@@ -87,9 +93,9 @@ public class AddHouseholdActor extends AbstractActor {
      * @param ingredientsPoolDao The data access object for ingredients pools
      * @return The property for creating an actor of this class
      */
-    public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
+    public static Props props(UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, RecipesPoolDAO recipesPoolDao,
             IngredientsPoolDAO ingredientsPoolDao) {
-        return Props.create(AddHouseholdActor.class, () -> new AddHouseholdActor(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao));
+        return Props.create(AddHouseholdActor.class, () -> new AddHouseholdActor(userDao, householdDao, foodInventoryDao, shoppingListDao, recipesPoolDao, ingredientsPoolDao));
     }
 
     /**
@@ -124,10 +130,17 @@ public class AddHouseholdActor extends AbstractActor {
             long ingredientsPoolId = UtilFunctions.generateUniqueId(ingredientsPoolDao, LOGGER);
             long recipesPoolId = UtilFunctions.generateUniqueId(ingredientsPoolDao, LOGGER);
 
-            Household household = new Household(householdId, new FoodInventory(foodInventoryId), new ShoppingList(shoppingListId), new IngredientsPool(ingredientsPoolId),
-                    new RecipesPool(recipesPoolId), message.getName());
+            FoodInventory foodInventory = new FoodInventory(foodInventoryId);
+            ShoppingList shoppingList = new ShoppingList(shoppingListId);
+            IngredientsPool ingredientsPool = new IngredientsPool(ingredientsPoolId);
+            RecipesPool recipesPool = new RecipesPool(recipesPoolId);
+            Household household = new Household(householdId, foodInventory, shoppingList, ingredientsPool, recipesPool, message.getName());
             user.addHousehold(household);
-            householdDao.save(household);
+            foodInventoryDao.save(foodInventory);
+            ingredientsPoolDao.save(ingredientsPool);
+            recipesPoolDao.save(recipesPool);
+            shoppingListDao.save(shoppingList);
+            householdDao.save(household);            
             userDao.update(user);
             AddHouseholdResultMessage resultMessage = new AddHouseholdResultMessage(IDGenerator.getRandomID(), message.getId(), true, Constants.NO_ERROR_MESSAGE);
             getSender().tell(resultMessage, getSelf());

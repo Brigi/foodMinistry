@@ -23,6 +23,7 @@ import org.food.ministry.data.access.exceptions.DataAccessException;
 import org.food.ministry.data.access.foodinventory.FoodInventoryDAO;
 import org.food.ministry.data.access.household.HouseholdDAO;
 import org.food.ministry.data.access.ingredientspool.IngredientsPoolDAO;
+import org.food.ministry.data.access.recipespool.RecipesPoolDAO;
 import org.food.ministry.data.access.shoppinglist.ShoppingListDAO;
 import org.food.ministry.data.access.users.UserDAO;
 import org.food.ministry.model.FoodInventory;
@@ -64,6 +65,8 @@ public class TestUserActor {
     @Mock
     private ShoppingListDAO shoppingListDao;
     @Mock
+    private RecipesPoolDAO recipesPoolDao;
+    @Mock
     private IngredientsPoolDAO ingredientsPoolDao;
 
     private ActorSystem system;
@@ -75,7 +78,7 @@ public class TestUserActor {
         system = ActorSystem.create("user-system");
         probe = new TestProbe(system);
         IDGenerator.initializeGeneratorActor(system);
-        userActor = system.actorOf(UserActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao), "user-actor");
+        userActor = system.actorOf(UserActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, recipesPoolDao, ingredientsPoolDao), "user-actor");
     }
 
     @After

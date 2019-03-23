@@ -61,8 +61,8 @@ public class HouseholdEndpoint extends AEndpoint{
     
     private Route getShoppingList(GetShoppingListJSON getShoppingListJSON) {
         getLogger().info("Getting shopping list from user with id {}", getShoppingListJSON.getUserId());
-        CompletableFuture<Object> getRecipesPoolFuture = Patterns.ask(householdActorSuppressDelegate, new GetShoppingListMessage(IDGenerator.getRandomID(), getShoppingListJSON.getHouseholdId()), Duration.ofMillis(1000)).toCompletableFuture();
-        GetShoppingListResultMessage resultMessage = (GetShoppingListResultMessage) getRecipesPoolFuture.join();
+        CompletableFuture<Object> getShoppingListFuture = Patterns.ask(householdActorSuppressDelegate, new GetShoppingListMessage(IDGenerator.getRandomID(), getShoppingListJSON.getHouseholdId()), Duration.ofMillis(1000)).toCompletableFuture();
+        GetShoppingListResultMessage resultMessage = (GetShoppingListResultMessage) getShoppingListFuture.join();
         if(resultMessage.isSuccessful()) {
             GetShoppingListResultJSON resultJSON = new GetShoppingListResultJSON(resultMessage.getShoppingListId());
             return getServer().complete(StatusCodes.OK, resultJSON, Jackson.<GetShoppingListResultJSON>marshaller());

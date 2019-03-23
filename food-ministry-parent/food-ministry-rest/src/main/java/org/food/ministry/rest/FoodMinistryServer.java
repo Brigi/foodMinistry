@@ -8,7 +8,10 @@ import java.util.concurrent.CompletionStage;
 import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.StorageType;
 import org.food.ministry.data.access.factory.DAOFactory;
+import org.food.ministry.rest.foodinventory.FoodInventoryEndpoint;
 import org.food.ministry.rest.household.HouseholdEndpoint;
+import org.food.ministry.rest.ingredient.IngredientEndpoint;
+import org.food.ministry.rest.ingredientspool.IngredientsPoolEndpoint;
 import org.food.ministry.rest.shutdown.ShutdownEndpoint;
 import org.food.ministry.rest.user.UserEndpoint;
 
@@ -64,6 +67,9 @@ public class FoodMinistryServer extends AllDirectives {
         createShutdownEndpoint();
         createHouseholdEndpoint();
         createUserEndpoint();
+        createFoodInventoryEndpoint();
+        createIngredientsPoolEndpoint();
+        createIngredientEndpoint();
         Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = prepareRoutes().flow(system, materializer);
         binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost(hostAddress, port), materializer);
         logger.info("Server successfully started");
@@ -84,7 +90,7 @@ public class FoodMinistryServer extends AllDirectives {
 
     private void createUserEndpoint() {
         logger.info("Creating user endpoint...");
-        endpoints.add(new UserEndpoint(this, daoFactory.getUserDAO(), daoFactory.getHouseholdDAO(), daoFactory.getFoodInventoryDAO(), daoFactory.getShoppingListDAO(), daoFactory.getIngredientsPoolDAO()));
+        endpoints.add(new UserEndpoint(this, daoFactory.getUserDAO(), daoFactory.getHouseholdDAO(), daoFactory.getFoodInventoryDAO(), daoFactory.getShoppingListDAO(), daoFactory.getRecipesPoolDAO(), daoFactory.getIngredientsPoolDAO()));
         logger.info("User endpoint successfully created");
     }
 
@@ -98,5 +104,23 @@ public class FoodMinistryServer extends AllDirectives {
         logger.info("Creating household endpoint...");
         endpoints.add(new HouseholdEndpoint(this, daoFactory.getHouseholdDAO()));
         logger.info("Household endpoint successfully created");
+    }
+    
+    private void createFoodInventoryEndpoint() {
+        logger.info("Creating food inventory endpoint...");
+        endpoints.add(new FoodInventoryEndpoint(this, daoFactory.getFoodInventoryDAO(), daoFactory.getIngredientDAO()));
+        logger.info("Food inventory endpoint successfully created");
+    }
+    
+    private void createIngredientsPoolEndpoint() {
+        logger.info("Creating ingredients pool endpoint...");
+        endpoints.add(new IngredientsPoolEndpoint(this, daoFactory.getIngredientsPoolDAO(), daoFactory.getIngredientDAO()));
+        logger.info("Ingredients pool endpoint successfully created");
+    }
+    
+    private void createIngredientEndpoint() {
+        logger.info("Creating ingredient endpoint...");
+        endpoints.add(new IngredientEndpoint(this, daoFactory.getIngredientDAO()));
+        logger.info("Ingredient endpoint successfully created");
     }
 }

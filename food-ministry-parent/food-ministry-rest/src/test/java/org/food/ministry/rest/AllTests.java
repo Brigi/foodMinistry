@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestShutdownEndpoint.class, TestUserEndpoint.class })
+@Suite.SuiteClasses({ TestShutdownEndpoint.class, TestUserEndpoint.class, TestHouseholdEndpoint.class, TestFoodInventoryEndpoint.class })
 public class AllTests {
 
 }

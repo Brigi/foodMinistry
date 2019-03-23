@@ -18,6 +18,7 @@ import org.food.ministry.actors.util.IDGenerator;
 import org.food.ministry.data.access.foodinventory.FoodInventoryDAO;
 import org.food.ministry.data.access.household.HouseholdDAO;
 import org.food.ministry.data.access.ingredientspool.IngredientsPoolDAO;
+import org.food.ministry.data.access.recipespool.RecipesPoolDAO;
 import org.food.ministry.data.access.shoppinglist.ShoppingListDAO;
 import org.food.ministry.data.access.users.UserDAO;
 import org.food.ministry.rest.AEndpoint;
@@ -45,10 +46,10 @@ public class UserEndpoint extends AEndpoint {
 
     private ActorRef userActorSuppressDelegate;
     
-    public UserEndpoint(FoodMinistryServer server, UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao,
+    public UserEndpoint(FoodMinistryServer server, UserDAO userDao, HouseholdDAO householdDao, FoodInventoryDAO foodInventoryDao, ShoppingListDAO shoppingListDao, RecipesPoolDAO recipesPoolDao,
             IngredientsPoolDAO ingredientsPoolDao) {
         super(server);
-        ActorRef userActor = server.getSystem().actorOf(UserActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, ingredientsPoolDao), "user-actor");
+        ActorRef userActor = server.getSystem().actorOf(UserActor.props(userDao, householdDao, foodInventoryDao, shoppingListDao, recipesPoolDao, ingredientsPoolDao), "user-actor");
         userActorSuppressDelegate = server.getSystem().actorOf(SuppressDelegateMessageActor.props(userActor), "user-actor-suppressed-delegate");
         
     }
