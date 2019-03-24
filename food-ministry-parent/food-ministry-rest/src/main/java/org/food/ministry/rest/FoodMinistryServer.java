@@ -12,6 +12,8 @@ import org.food.ministry.rest.foodinventory.FoodInventoryEndpoint;
 import org.food.ministry.rest.household.HouseholdEndpoint;
 import org.food.ministry.rest.ingredient.IngredientEndpoint;
 import org.food.ministry.rest.ingredientspool.IngredientsPoolEndpoint;
+import org.food.ministry.rest.recipe.RecipeEndpoint;
+import org.food.ministry.rest.recipespool.RecipesPoolEndpoint;
 import org.food.ministry.rest.shutdown.ShutdownEndpoint;
 import org.food.ministry.rest.user.UserEndpoint;
 
@@ -70,6 +72,8 @@ public class FoodMinistryServer extends AllDirectives {
         createFoodInventoryEndpoint();
         createIngredientsPoolEndpoint();
         createIngredientEndpoint();
+        createRecipesPoolEndpoint();
+        createRecipeEndpoint();
         Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = prepareRoutes().flow(system, materializer);
         binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost(hostAddress, port), materializer);
         logger.info("Server successfully started");
@@ -122,5 +126,17 @@ public class FoodMinistryServer extends AllDirectives {
         logger.info("Creating ingredient endpoint...");
         endpoints.add(new IngredientEndpoint(this, daoFactory.getIngredientDAO()));
         logger.info("Ingredient endpoint successfully created");
+    }
+    
+    private void createRecipesPoolEndpoint() {
+        logger.info("Creating recipes pool endpoint...");
+        endpoints.add(new RecipesPoolEndpoint(this, daoFactory.getRecipesPoolDAO(), daoFactory.getRecipeDAO(), daoFactory.getIngredientDAO()));
+        logger.info("Recipes pool endpoint successfully created");
+    }
+    
+    private void createRecipeEndpoint() {
+        logger.info("Creating recipe endpoint...");
+        endpoints.add(new RecipeEndpoint(this, daoFactory.getRecipeDAO()));
+        logger.info("Recipe endpoint successfully created");
     }
 }

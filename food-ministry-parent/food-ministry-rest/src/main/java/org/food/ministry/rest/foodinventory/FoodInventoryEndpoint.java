@@ -15,7 +15,6 @@ import org.food.ministry.rest.AEndpoint;
 import org.food.ministry.rest.FoodMinistryServer;
 import org.food.ministry.rest.actors.SuppressDelegateMessageActor;
 import org.food.ministry.rest.foodinventory.json.AddIngredientJSON;
-import org.food.ministry.rest.foodinventory.json.AddIngredientResultJSON;
 import org.food.ministry.rest.foodinventory.json.GetIngredientsJSON;
 import org.food.ministry.rest.foodinventory.json.GetIngredientsResultJSON;
 import org.food.ministry.rest.util.MessageUtil;
@@ -56,8 +55,7 @@ public class FoodInventoryEndpoint extends AEndpoint{
         CompletableFuture<Object> getRecipesPoolFuture = Patterns.ask(foodInventoryActorSuppressDelegate, new AddIngredientMessage(IDGenerator.getRandomID(), addIngredientsJSON.getFoodInventoryId(), addIngredientsJSON.getIngredient(), addIngredientsJSON.getAmount()), Duration.ofMillis(1000)).toCompletableFuture();
         AddIngredientResultMessage resultMessage = (AddIngredientResultMessage) getRecipesPoolFuture.join();
         if(resultMessage.isSuccessful()) {
-            AddIngredientResultJSON resultJSON = new AddIngredientResultJSON();
-            return getServer().complete(StatusCodes.CREATED, resultJSON, Jackson.<AddIngredientResultJSON>marshaller());
+            return getServer().complete(StatusCodes.CREATED);
         }
         return MessageUtil.createErrorResponse(getServer(), resultMessage.getErrorMessage());
     }

@@ -8,8 +8,10 @@ public class AddIngredientJSON extends BaseFoodInventoryRequestJSON {
     
     public AddIngredientJSON() { }
     
-    public AddIngredientJSON(long userId, long foodInventoryId) {
+    public AddIngredientJSON(long userId, long foodInventoryId, long ingredientId, float amount) {
         super(userId, foodInventoryId);
+        this.ingredientId = ingredientId;
+        this.amount = amount;
     }
 
     public long getIngredient() {

@@ -6,8 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 
-import org.food.ministry.rest.ingredient.json.GetIngredientJSON;
 import org.food.ministry.rest.json.BaseRequestJSON;
+import org.food.ministry.rest.recipe.json.GetRecipeJSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,12 +19,12 @@ import akka.http.javadsl.model.HttpEntities;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 
-public class IngredientUtil {
+public class RecipeUtil {
 
-    public static final String BASE_URL = ServerUtil.HOST_ROOT_URL + "user/ingredient";
+    public static final String BASE_URL = ServerUtil.HOST_ROOT_URL + "user/recipe";
     
-    public static HttpResponse getIngredient(long userId, long ingredient) throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, ExecutionException {
-        return sendRequest(new GetIngredientJSON(userId, ingredient));
+    public static HttpResponse getRecipe(long userId, long recipeId) throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, ExecutionException {
+        return sendRequest(new GetRecipeJSON(userId, recipeId));
     }
     
     private static HttpResponse sendRequest(BaseRequestJSON requestJSON) throws UnsupportedEncodingException, JsonProcessingException, InterruptedException, ExecutionException {

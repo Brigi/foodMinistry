@@ -4,7 +4,7 @@ public class GetIngredientsJSON extends BaseIngredientsPoolRequestJSON {
     
     public GetIngredientsJSON() { }
     
-    public GetIngredientsJSON(long userId, long householdId) {
-        super(userId, householdId);
+    public GetIngredientsJSON(long userId, long ingredientsPoolId) {
+        super(userId, ingredientsPoolId);
     }
 }
