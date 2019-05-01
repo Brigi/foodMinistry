@@ -1,0 +1,20 @@
+.round-div label {
+    color: white;
+    font-size: 16px;
+}
+
+.navbarheader {
+    background-color: black;
+}
+
+.round-div {
+    border-radius: 25px;
+    padding: 20px;
+    background-color: rgba(0,0,0,0.5) !important;
+}
+
+h1 {
+    color: wheat;
+    font-family: 'Great Vibes';
+    font-size: 48px;
+}
