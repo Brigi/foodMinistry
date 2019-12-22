@@ -10,7 +10,14 @@
 .round-div {
     border-radius: 25px;
     padding: 20px;
-    background-color: rgba(0,0,0,0.5) !important;
+}
+
+.transparent-black {
+  background-color: rgba(0,0,0,0.5) !important;
+}
+
+.white {
+  background-color: rgba(255, 255, 255, 1) !important;
 }
 
 h1 {
