@@ -23,6 +23,12 @@
   display: block;
 }
 
+.hint {
+  color: grey;
+  font-size: small;
+  font-style: italic;
+}
+
 h1 {
     color: wheat;
     font-family: 'Great Vibes';

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigatorService } from '../navigator/navigator.service';
+import { IngredientService } from '../ingredient/ingredient.service';
 import { Ingredient } from './ingredient';
 import { INGREDIENTS } from './mock-ingredients';
 
@@ -10,17 +11,29 @@ import { INGREDIENTS } from './mock-ingredients';
 })
 export class IngredientsComponent implements OnInit {
   navigatorService: NavigatorService;
+  ingredientService: IngredientService;
 
-  ingredients = INGREDIENTS;
+  ingredients: Ingredient[] = INGREDIENTS;
 
-  constructor(navigatorService: NavigatorService) {
+  constructor(navigatorService: NavigatorService, ingredientService: IngredientService) {
     this.navigatorService = navigatorService;
+    this.ingredientService = ingredientService;
   }
 
   ngOnInit() {
   }
 
-  onIngredientSelect(): void {
+  onIngredientSelect(): void;
+  onIngredientSelect(name?: string, unit?: string, isBasic?: boolean): void {
+    if (arguments.length === 0) {
+      this.ingredientService.setName('Name');
+      this.ingredientService.setUnit('none');
+      this.ingredientService.setBasic(false);
+    } else {
+      this.ingredientService.setName(name);
+      this.ingredientService.setUnit(unit);
+      this.ingredientService.setBasic(isBasic);
+    }
     this.navigatorService.setIngredientDialogStage();
   }
 }
