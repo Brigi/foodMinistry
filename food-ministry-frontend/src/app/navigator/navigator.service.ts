@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 
 enum Stage {
   Login,
-  Home
+  Home,
+  Ingredients,
+  IngredientDialog
 }
 
 @Injectable({
@@ -21,11 +23,27 @@ export class NavigatorService {
     return this.stage === Stage.Home;
   }
 
+  get isIngredientsStage() {
+    return this.stage === Stage.Ingredients;
+  }
+
+  get isIngredientDialogStage() {
+    return this.stage === Stage.IngredientDialog;
+  }
+
   setLoginStage() {
     this.stage = Stage.Login;
   }
 
   setHomeStage() {
     this.stage = Stage.Home;
+  }
+
+  setIngredientsStage() {
+    this.stage = Stage.Ingredients;
+  }
+
+  setIngredientDialogStage() {
+    this.stage = Stage.IngredientDialog;
   }
 }

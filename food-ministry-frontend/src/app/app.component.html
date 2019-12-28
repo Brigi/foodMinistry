@@ -8,5 +8,7 @@
   </nav>
   <app-login *ngIf="navigatorService.isLoginStage"></app-login>
   <app-home *ngIf="navigatorService.isHomeStage"></app-home>
+  <app-ingredients *ngIf="navigatorService.isIngredientsStage"></app-ingredients>
+  <app-ingredient-dialog *ngIf="navigatorService.isIngredientDialogStage"></app-ingredient-dialog>
 </div>
 

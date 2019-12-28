@@ -1,6 +1,5 @@
-.round-div label {
-    color: white;
-    font-size: 16px;
+.home-wrapper {
+  width: 45%;
 }
 
 .navbarheader {
@@ -20,8 +19,16 @@
   background-color: rgba(255, 255, 255, 1) !important;
 }
 
+.image-placeholder {
+  display: block;
+}
+
 h1 {
     color: wheat;
     font-family: 'Great Vibes';
     font-size: 48px;
+}
+
+h2 {
+  color: wheat;
 }

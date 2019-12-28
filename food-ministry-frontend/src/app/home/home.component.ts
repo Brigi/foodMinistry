@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigatorService } from '../navigator/navigator.service';
 
 @Component({
   selector: 'app-home',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['../app.component.css', './home.component.css']
 })
 export class HomeComponent implements OnInit {
+  navigatorService: NavigatorService;
 
-  constructor() { }
+  constructor(navigatorService: NavigatorService) {
+    this.navigatorService = navigatorService;
+  }
 
   ngOnInit() {
   }
 
+  onIngredientsSelect(): void {
+    this.navigatorService.setIngredientsStage();
+  }
 }
