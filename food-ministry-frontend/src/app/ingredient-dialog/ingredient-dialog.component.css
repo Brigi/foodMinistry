@@ -17,13 +17,24 @@
 
 .ingredient-image {
   display: inline-block;
-  vertical-align:top;
-  width: 33%;
+  vertical-align: top;
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 .ingredient-details {
   display: inline-block;
-  width: 66%;
+  width: 100%;
+}
+
+@media only screen and (min-width: 1200px) {
+  .ingredient-image {
+    width: 33%;
+  }
+
+  .ingredient-details {
+    width: 66%;
+  }
 }
 
 .ingredient-detail {

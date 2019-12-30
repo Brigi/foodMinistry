@@ -27,6 +27,10 @@ export class IngredientsComponent implements OnInit {
   ngOnInit() {
   }
 
+  onBack(): void {
+    this.navigatorService.setHomeStage();
+  }
+
   onIngredientSelect(): void;
   onIngredientSelect(id?: number, name?: string, unit?: string, isBasic?: boolean): void {
     if (arguments.length === 0) {

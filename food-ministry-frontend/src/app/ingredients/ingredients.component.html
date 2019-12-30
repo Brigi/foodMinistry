@@ -1,5 +1,6 @@
 <div class="container home-wrapper round-div transparent-black">
-  <h2 class="container">Ingredients</h2>
+  <h2 class="container" style="display: inline">Ingredients</h2>
+  <img class="container image-placeholder back-button" src="assets/img/back-button.png" (click)="onBack()">
   <div class="container ingredients-wrapper">
     <div *ngFor="let ingredient of ingredients.values()" class="container round-div ingredient" (click)="onIngredientSelect(ingredient.id, ingredient.name, ingredient.unit, ingredient.isBasic)">
       <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">

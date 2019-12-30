@@ -1,6 +1,13 @@
 .home-wrapper {
-  width: 45%;
+  width: 95%;
 }
+
+@media only screen and (min-width: 576px) {
+  .home-wrapper {
+    width: 45%;
+  }
+}
+
 
 .navbarheader {
     background-color: black;
@@ -27,6 +34,12 @@
   color: grey;
   font-size: small;
   font-style: italic;
+}
+
+.back-button {
+  height: 2rem;
+  width: auto;
+  float: right;
 }
 
 h1 {
