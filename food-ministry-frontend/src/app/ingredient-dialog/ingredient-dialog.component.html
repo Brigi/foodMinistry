@@ -1,5 +1,5 @@
 <div class="container home-wrapper round-div transparent-black">
-  <h2 class="container">Ingredient</h2>
+  <h2 class="container">{{name}}</h2>
   <div class="container round-div dialog white">
     <form class="container ingredient-dialog">
       <img class="container ingredient-image" src="assets/img/ingredient-placeholder.png">
@@ -7,7 +7,7 @@
         <div class="container ingredient-detail">
           <label>Name:</label>
           <div class="gap"></div>
-          <input type="text" name="name" value="{{name}}">
+          <input type="text" name="name" [(ngModel)]="name">
         </div>
         <div class="container ingredient-detail">
           <label>Unit:</label>
@@ -18,20 +18,22 @@
             <mat-option value="kg">Kilogramm (kg)</mat-option>
             <mat-option value="l">Liter (l)</mat-option>
             <mat-option value="ml">Milliliter (ml)</mat-option>
+            <mat-option value="tbsp.">Tablespoon (tbsp.)</mat-option>
+            <mat-option value="tsp.">Teaspoon (tsp.)</mat-option>
           </mat-select>
         </div>
         <div class="container ingredient-detail">
           <label>Basic:</label>
           <div class="gap"></div>
-          <input type="checkbox" name="isBasic" value="true">
+          <input type="checkbox" name="isBasic" [checked]="isBasic" [(ngModel)]="isBasic">
         </div>
         <div class="container ingredient-detail">
           <label class="hint">Basic ingredients will be considered to be available all the time and hence don't appear in your shopping list</label>
         </div>
         <div class="container ingredient-detail">
-          <input class="btn btn-danger" type="submit" value="Cancel">
+          <input class="btn btn-danger" type="submit" value="Cancel" (click)="onCancel()">
           <div class="gap"></div>
-          <input class="btn btn-success" type="submit" value="Save">
+          <input class="btn btn-success" type="submit" value="Save" (click)="onSave()">
         </div>
       </div>
     </form>

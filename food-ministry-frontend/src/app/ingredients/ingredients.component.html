@@ -1,7 +1,7 @@
 <div class="container home-wrapper round-div transparent-black">
   <h2 class="container">Ingredients</h2>
   <div class="container ingredients-wrapper">
-    <div *ngFor="let ingredient of ingredients" class="container round-div ingredient">
+    <div *ngFor="let ingredient of ingredients.values()" class="container round-div ingredient" (click)="onIngredientSelect(ingredient.id, ingredient.name, ingredient.unit, ingredient.isBasic)">
       <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
       <label>{{ingredient.name}}</label>
     </div>

@@ -4,11 +4,16 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class IngredientService {
+  id: number;
   name: string;
   unit: string;
   isIngredientBasic: boolean;
 
   constructor() { }
+
+  getId(): number {
+    return this.id;
+  }
 
   getName(): string {
     return this.name;
@@ -20,6 +25,10 @@ export class IngredientService {
 
   isBasic(): boolean {
     return this.isIngredientBasic;
+  }
+
+  setId(id: number): void {
+    this.id = id;
   }
 
   setName(name: string): void {
