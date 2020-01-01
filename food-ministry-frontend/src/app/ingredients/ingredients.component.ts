@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NavigatorService } from '../navigator/navigator.service';
 import { IngredientService } from '../ingredient/ingredient.service';
 import { IngredientsService } from './ingredients.service';
-import { Ingredient } from './ingredient';
-import { INGREDIENTS } from './mock-ingredients';
+import { Ingredient } from '../ingredient/ingredient';
 
 @Component({
   selector: 'app-ingredients',
@@ -13,18 +12,20 @@ import { INGREDIENTS } from './mock-ingredients';
 export class IngredientsComponent implements OnInit {
   navigatorService: NavigatorService;
   ingredientService: IngredientService;
-  ingredientsService: IngredientsService;
 
   ingredients: Map<number, Ingredient>;
 
   constructor(navigatorService: NavigatorService, ingredientService: IngredientService, ingredientsService: IngredientsService) {
     this.navigatorService = navigatorService;
     this.ingredientService = ingredientService;
-    this.ingredientsService = ingredientsService;
     this.ingredients = ingredientsService.getIngredients();
   }
 
   ngOnInit() {
+  }
+
+  getIngredientsAsArray(): Ingredient[] {
+    return Array.from(this.ingredients.values());
   }
 
   onBack(): void {
@@ -32,17 +33,11 @@ export class IngredientsComponent implements OnInit {
   }
 
   onIngredientSelect(): void;
-  onIngredientSelect(id?: number, name?: string, unit?: string, isBasic?: boolean): void {
+  onIngredientSelect(ingredientId?: number, ingredientName?: string, ingredientUnit?: string, ingredientIsBasic?: boolean): void {
     if (arguments.length === 0) {
-      this.ingredientService.setId(-1);
-      this.ingredientService.setName('New Ingredient');
-      this.ingredientService.setUnit('none');
-      this.ingredientService.setBasic(false);
+      this.ingredientService.setIngredient({id: -1, name: 'New Ingredient', unit: 'none', isBasic: false});
     } else {
-      this.ingredientService.setId(id);
-      this.ingredientService.setName(name);
-      this.ingredientService.setUnit(unit);
-      this.ingredientService.setBasic(isBasic);
+      this.ingredientService.setIngredient({id: ingredientId, name: ingredientName, unit: ingredientUnit, isBasic: ingredientIsBasic});
     }
     console.log('Id: ' + this.ingredientService.getId());
     console.log('Name: ' + this.ingredientService.getName());

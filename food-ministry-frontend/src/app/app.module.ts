@@ -9,6 +9,8 @@ import { IngredientsComponent } from './ingredients/ingredients.component';
 import { IngredientDialogComponent } from './ingredient-dialog/ingredient-dialog.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSelectModule } from '@angular/material/select';
+import { PantryComponent } from './pantry/pantry.component';
+import { PantryDialogComponent } from './pantry-dialog/pantry-dialog.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { MatSelectModule } from '@angular/material/select';
     LoginComponent,
     HomeComponent,
     IngredientsComponent,
-    IngredientDialogComponent
+    IngredientDialogComponent,
+    PantryComponent,
+    PantryDialogComponent
   ],
   imports: [
     BrowserModule,

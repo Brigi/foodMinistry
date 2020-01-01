@@ -1,10 +1,11 @@
 <div class="container home-wrapper round-div transparent-black">
-  <h2 class="container" style="display: inline">Ingredients</h2>
+  <h2 class="container" style="display: inline">Pantry</h2>
   <img class="container image-placeholder back-button" src="assets/img/back-button.png" (click)="onBack()">
   <div class="container ingredients-wrapper">
-    <div *ngFor="let ingredient of getIngredientsAsArray()" class="container round-div ingredient" (click)="onIngredientSelect(ingredient.id, ingredient.name, ingredient.unit, ingredient.isBasic)">
+    <div *ngFor="let ingredient of ingredients" class="container round-div ingredient"
+     (click)="onIngredientSelect(ingredient[0].id, ingredient[0].name, ingredient[0].unit, ingredient[0].isBasic)">
       <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
-      <label>{{ingredient.name}}</label>
+      <label>{{getLabel(ingredient[0], ingredient[1])}}</label>
     </div>
     <div class="container round-div ingredient">
       <img class="container image-placeholder add-ingredient" src="assets/img/add.png" (click)="onIngredientSelect()">

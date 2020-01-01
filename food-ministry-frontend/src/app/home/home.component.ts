@@ -16,6 +16,10 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
   }
 
+  onPantrySelect(): void {
+    this.navigatorService.setPantryStage();
+  }
+
   onIngredientsSelect(): void {
     this.navigatorService.setIngredientsStage();
   }

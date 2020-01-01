@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigatorService } from '../navigator/navigator.service';
 import { IngredientService } from '../ingredient/ingredient.service';
 import { IngredientsService } from '../ingredients/ingredients.service';
-import { Ingredient } from '../ingredients/ingredient';
+import { Ingredient } from '../ingredient/ingredient';
 
 @Component({
   selector: 'app-ingredient-dialog',

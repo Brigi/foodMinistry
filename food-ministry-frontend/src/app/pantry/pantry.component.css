@@ -1,0 +1,34 @@
+.ingredients-wrapper {
+  overflow-y: auto;
+  height: calc(100vh - (60px + 10px + 20px + 40px + 10px + 20px + 15px));
+  /* 100% -
+    (navbar
+    + navbar-margin-bottom
+    + padding-top
+    + ingredients-header
+    + margin-ingredieants-header-bottom
+    + padding-bottom
+    + gap-bottom) */
+}
+
+.add-ingredient {
+  padding: 15px;
+}
+
+.ingredient {
+  display: inline-block;
+  vertical-align: top;
+  height: 150px;
+  width: 150px;
+  background-color: white;
+  margin: 10px;
+  padding: 10px;
+}
+
+.ingredient label {
+  color: black;
+  font-size: 16px;
+  display: block;
+  text-align: center;
+  margin-top: .5rem;
+}

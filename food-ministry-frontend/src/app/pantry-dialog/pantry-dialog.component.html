@@ -1,0 +1,46 @@
+<div class="container home-wrapper round-div transparent-black">
+  <h2 class="container">{{name}}</h2>
+  <div class="container round-div dialog white">
+    <form class="container ingredient-dialog">
+      <img class="container ingredient-image" src="assets/img/ingredient-placeholder.png">
+      <div class="container ingredient-details">
+        <div class="container ingredient-detail">
+          <label>Name:</label>
+          <div class="gap"></div>
+          <ng-template [ngIf]="newIngredient" [ngIfElse]="elseBlock">
+            <mat-form-field>
+              <mat-label>Ingredient</mat-label>
+              <mat-select>
+                <mat-option *ngFor="let ingredient of getEmptyIngredients()" [value]="name" (click)="onIngredientSelect($event.value, ingredient.id)">
+                  {{ingredient.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+          <ng-template #elseBlock>
+            <label>{{name}}</label>
+          </ng-template>
+        </div>
+        <div class="container ingredient-detail">
+          <label>Amount:</label>
+          <div class="gap"></div>
+          <input type="text" name="amount" [(ngModel)]="amount" style="width: 50px;">
+          <label>{{getUnit()}}</label>
+        </div>
+        <div class="container ingredient-detail">
+          <label>Basic:</label>
+          <div class="gap"></div>
+          <input type="checkbox" name="isBasic" [checked]="isBasic" [(ngModel)]="isBasic" onclick="return false;">
+        </div>
+        <div class="container ingredient-detail">
+          <label class="hint">Basic ingredients will be considered to be available all the time and hence don't appear in your shopping list. This property can be modified in the 'Ingredients' section.</label>
+        </div>
+        <div class="container ingredient-detail">
+          <input class="btn btn-danger" type="submit" value="Cancel" (click)="onCancel()">
+          <div class="gap"></div>
+          <input class="btn btn-success" type="submit" value="Save" (click)="onSave()">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,45 +1,35 @@
 import { Injectable } from '@angular/core';
+import { Ingredient } from './ingredient';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IngredientService {
-  id: number;
-  name: string;
-  unit: string;
-  isIngredientBasic: boolean;
+  ingredient: Ingredient;
 
   constructor() { }
 
+  getIngredient(): Ingredient {
+    return this.ingredient;
+  }
+
   getId(): number {
-    return this.id;
+    return this.ingredient.id;
   }
 
   getName(): string {
-    return this.name;
+    return this.ingredient.name;
   }
 
   getUnit(): string {
-    return this.unit;
+    return this.ingredient.unit;
   }
 
   isBasic(): boolean {
-    return this.isIngredientBasic;
+    return this.ingredient.isBasic;
   }
 
-  setId(id: number): void {
-    this.id = id;
-  }
-
-  setName(name: string): void {
-    this.name = name;
-  }
-
-  setUnit(unit: string): void {
-    this.unit = unit;
-  }
-
-  setBasic(isIngredientBasic: boolean): void {
-    this.isIngredientBasic = isIngredientBasic;
+  setIngredient(ingredient: Ingredient): void {
+    this.ingredient = ingredient;
   }
 }
