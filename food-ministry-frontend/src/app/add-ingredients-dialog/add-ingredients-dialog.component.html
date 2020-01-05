@@ -1,0 +1,17 @@
+<div class="container dialog-wrapper">
+  <h2 class="container" style="display: inline; color: midnightblue;">Ingredients</h2>
+  <div class="container ingredients-wrapper">
+    <div *ngFor="let ingredient of data.ingredients"
+      [className]="isSelected(ingredient.id) ? 'container round-div ingredient ingredient-selected ' : 'container round-div ingredient ingredient-unselected'"
+      (click)="onIngredientSelect(ingredient)">
+        <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
+        <label>{{ingredient.name}}</label>
+    </div>
+  </div>
+  <hr class="horizontal-line">
+  <div class="container" style="margin-top: 10px;">
+    <input class="btn btn-danger" type="submit" value="Cancel" (click)="onCancel()">
+    <div class="gap"></div>
+    <input class="btn btn-success" type="submit" value="Save" (click)="onSelect()">
+  </div>
+</div>

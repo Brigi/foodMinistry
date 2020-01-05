@@ -18,6 +18,28 @@ export class IngredientsService {
     return this.ingredients;
   }
 
+  getMissingIngredients(availableIngredients: Ingredient[]) {
+    return this.getMissingIngredientsFromPool(availableIngredients, Array.from(this.ingredients.values()));
+  }
+
+  getMissingIngredientsFromPool(availableIngredients: Ingredient[], ingredientPool: Ingredient[]): Ingredient[] {
+    const missingIngredients: Ingredient[] = [];
+    for (const ingredient of ingredientPool) {
+      let isAvailable = false;
+      for (const availableIngredient of availableIngredients) {
+        if (ingredient.id === availableIngredient.id) {
+          isAvailable = true;
+          break;
+        }
+      }
+      if (!isAvailable) {
+        missingIngredients.push(ingredient);
+      }
+    }
+
+    return missingIngredients;
+  }
+
   submitIngredient(ingredient: Ingredient) {
     this.ingredients.set(ingredient.id, ingredient);
   }

@@ -1,0 +1,33 @@
+<div class="container background-wrapper round-div transparent-black">
+  <h2 class="container" style="display: inline">Recipes</h2>
+  <img class="container image-placeholder back-button" src="assets/img/back-button.png" (click)="onBack()">
+  <mat-tab-group>
+    <mat-tab label="All Recipes">
+      <div class="container recipes-wrapper">
+        <div *ngFor="let recipe of recipes" class="container round-div recipe" (click)="onRecipeSelect()">
+          <div class="recipe-image-wrapper">
+            <img class="container image-placeholder recipe-image" src="assets/img/ingredient-placeholder.png">
+            <label>{{recipe.name}}</label>
+          </div>
+          <div class="recipe-description">
+            {{recipe.description}}
+          </div>
+        </div>
+        <div class="container round-div recipe">
+          <img class="container image-placeholder add-recipe" src="assets/img/add.png" (click)="onRecipeSelect()">
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Recipe Finder">
+      <div class="container recipes-wrapper">
+        <div *ngFor="let ingredient of recipeFinderIngredients" class="container round-div ingredient">
+          <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
+          <label>{{ingredient.name}}</label>
+        </div>
+        <div class="container round-div ingredient">
+          <img class="container image-placeholder add-ingredient" src="assets/img/add.png" (click)="onAddIngredient()">
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

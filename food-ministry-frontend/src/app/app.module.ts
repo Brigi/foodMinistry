@@ -1,16 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { IngredientsComponent } from './ingredients/ingredients.component';
 import { IngredientDialogComponent } from './ingredient-dialog/ingredient-dialog.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule } from '@angular/material/select';
 import { PantryComponent } from './pantry/pantry.component';
 import { PantryDialogComponent } from './pantry-dialog/pantry-dialog.component';
+import { RecipesComponent } from './recipes/recipes.component';
+import { AddIngredientsDialogComponent } from './add-ingredients-dialog/add-ingredients-dialog.component';
 
 @NgModule({
   declarations: [
@@ -20,13 +24,20 @@ import { PantryDialogComponent } from './pantry-dialog/pantry-dialog.component';
     IngredientsComponent,
     IngredientDialogComponent,
     PantryComponent,
-    PantryDialogComponent
+    PantryDialogComponent,
+    RecipesComponent,
+    AddIngredientsDialogComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
-    NoopAnimationsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTabsModule,
+    MatDialogModule
+  ],
+  entryComponents: [
+    AddIngredientsDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

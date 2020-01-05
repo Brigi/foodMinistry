@@ -6,7 +6,8 @@ enum Stage {
   Ingredients,
   IngredientDialog,
   Pantry,
-  PantryDialog
+  PantryDialog,
+  Recipes
 }
 
 @Injectable({
@@ -17,51 +18,59 @@ export class NavigatorService {
 
   constructor() { }
 
-  get isLoginStage() {
+  get isLoginStage(): boolean {
     return this.stage === Stage.Login;
   }
 
-  get isHomeStage() {
+  get isHomeStage(): boolean {
     return this.stage === Stage.Home;
   }
 
-  get isIngredientsStage() {
+  get isIngredientsStage(): boolean {
     return this.stage === Stage.Ingredients;
   }
 
-  get isIngredientDialogStage() {
+  get isIngredientDialogStage(): boolean {
     return this.stage === Stage.IngredientDialog;
   }
 
-  get isPantryStage() {
+  get isPantryStage(): boolean {
     return this.stage === Stage.Pantry;
   }
 
-  get isPantryDialogStage() {
+  get isPantryDialogStage(): boolean {
     return this.stage === Stage.PantryDialog;
   }
 
-  setLoginStage() {
+  get isRecipesStage(): boolean {
+    return this.stage === Stage.Recipes;
+  }
+
+  setLoginStage(): void {
     this.stage = Stage.Login;
   }
 
-  setHomeStage() {
+  setHomeStage(): void {
     this.stage = Stage.Home;
   }
 
-  setIngredientsStage() {
+  setIngredientsStage(): void {
     this.stage = Stage.Ingredients;
   }
 
-  setIngredientDialogStage() {
+  setIngredientDialogStage(): void {
     this.stage = Stage.IngredientDialog;
   }
 
-  setPantryStage() {
+  setPantryStage(): void {
     this.stage = Stage.Pantry;
   }
 
-  setPantryDialogStage() {
+  setPantryDialogStage(): void {
     this.stage = Stage.PantryDialog;
+  }
+
+  setRecipesStage(): void {
+    this.stage = Stage.Recipes;
   }
 }

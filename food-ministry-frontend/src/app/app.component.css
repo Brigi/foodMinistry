@@ -1,9 +1,9 @@
-.home-wrapper {
+.background-wrapper {
   width: 95%;
 }
 
 @media only screen and (min-width: 576px) {
-  .home-wrapper {
+  .background-wrapper {
     width: 45%;
   }
 }
@@ -50,4 +50,13 @@ h1 {
 
 h2 {
   color: wheat;
+}
+
+.horizontal-line {
+  margin: 0px;
+  margin-inline-start: 1px;
+  margin-inline-end: 0px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: cornflowerblue;
 }

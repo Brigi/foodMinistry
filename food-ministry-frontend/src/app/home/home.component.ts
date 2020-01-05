@@ -23,4 +23,8 @@ export class HomeComponent implements OnInit {
   onIngredientsSelect(): void {
     this.navigatorService.setIngredientsStage();
   }
+
+  onRecipesSelect(): void {
+    this.navigatorService.setRecipesStage();
+  }
 }

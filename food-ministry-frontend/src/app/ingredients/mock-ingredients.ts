@@ -12,5 +12,7 @@ export const INGREDIENTS: Map<number, Ingredient> = new Map([
   [9, { id: 9, name: 'Olive Oil', unit: 'ml', isBasic: true }],
   [10, { id: 10, name: 'Egg', unit: 'none', isBasic: false }],
   [11, { id: 11, name: 'Wine', unit: 'ml', isBasic: true }],
-  [12, { id: 12, name: 'Vinegar', unit: 'ml', isBasic: true }]
+  [12, { id: 12, name: 'Vinegar', unit: 'ml', isBasic: true }],
+  [13, { id: 13, name: 'Onions', unit: 'none', isBasic: false }],
+  [14, { id: 14, name: 'Pepper', unit: 'tsp.', isBasic: true }]
 ]);

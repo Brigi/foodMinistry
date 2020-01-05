@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MatOptionSelectionChange } from '@angular/material';
 import { NavigatorService } from '../navigator/navigator.service';
 import { PantryService } from '../pantry/pantry.service';
@@ -11,7 +11,10 @@ import { Ingredient } from '../ingredient/ingredient';
   templateUrl: './pantry-dialog.component.html',
   styleUrls: ['../app.component.css', './pantry-dialog.component.css']
 })
-export class PantryDialogComponent implements OnInit {
+export class PantryDialogComponent implements OnInit, AfterViewInit {
+  static AMOUNT_REGEX: RegExp = new RegExp('/^-?\d*[.,]?\d*$/');
+  @ViewChild('amount', {static: true}) amountBox: ElementRef;
+
   navigatorService: NavigatorService;
   ingredientsService: IngredientsService;
   pantryService: PantryService;
@@ -39,25 +42,26 @@ export class PantryDialogComponent implements OnInit {
   ngOnInit() {
   }
 
-  getEmptyIngredients(): Ingredient[] {
-    const emptyIngredients: Ingredient[] = [];
-    for (const availableIngredient of Array.from(this.ingredientsService.getIngredients())) {
-      let isInPantry = false;
-      for (const pantryIngredient of this.pantryService.getIngredientsWithAmount()) {
-        if (availableIngredient[0] === pantryIngredient[0].id) {
-          isInPantry = true;
-          break;
-        }
-      }
-      if (!isInPantry) {
-        emptyIngredients.push(availableIngredient[1]);
-      }
-    }
-    return emptyIngredients;
+  ngAfterViewInit() {
+
+  }
+
+  checkAmountInput(evt: KeyboardEvent): void {
+    console.log('checking input');
+    PantryDialogComponent.AMOUNT_REGEX.test('' + this.amount);
+  }
+
+  getMissingIngredients(): Ingredient[] {
+    return this.ingredientsService.getMissingIngredients(this.pantryService.getIngredients());
   }
 
   getUnit(): string {
     return this.unit === 'none' ? '' : this.unit;
+  }
+
+  isInvalidInput(): boolean {
+    console.log('isInvalidInput called with following parameters: id: ' + this.id + ', this.amount: ' + this.amount);
+    return this.id <= 0 || this.amount <= 0 || this.amount === undefined;
   }
 
   onIngredientSelect(event: MatOptionSelectionChange, selectedId: number): void {
