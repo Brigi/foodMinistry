@@ -3,6 +3,7 @@ import { NavigatorService } from '../navigator/navigator.service';
 import { IngredientService } from '../ingredient/ingredient.service';
 import { Ingredient } from '../ingredient/ingredient';
 import { PantryService } from './pantry.service';
+import { IngredientsService } from '../ingredients/ingredients.service';
 
 @Component({
   selector: 'app-pantry',
@@ -12,16 +13,19 @@ import { PantryService } from './pantry.service';
 export class PantryComponent implements OnInit {
   navigatorService: NavigatorService;
   ingredientService: IngredientService;
-
-  ingredients: [Ingredient, number][];
+  pantryService: PantryService;
 
   constructor(navigatorService: NavigatorService, ingredientService: IngredientService, pantryService: PantryService) {
     this.navigatorService = navigatorService;
     this.ingredientService = ingredientService;
-    this.ingredients = pantryService.getIngredientsWithAmount();
+    this.pantryService = pantryService;
   }
 
   ngOnInit() {
+  }
+
+  getIngredients(): [Ingredient, number][] {
+    return this.pantryService.getIngredientsWithAmount();
   }
 
   getLabel(ingredient: Ingredient, amount: number): string {
@@ -34,6 +38,10 @@ export class PantryComponent implements OnInit {
 
   onBack(): void {
     this.navigatorService.setHomeStage();
+  }
+
+  onRemove(id: number): void {
+    this.pantryService.removeIngredient(id);
   }
 
   onIngredientSelect(): void;

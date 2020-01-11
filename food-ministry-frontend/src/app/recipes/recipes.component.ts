@@ -20,8 +20,7 @@ export class RecipesComponent implements OnInit {
   navigatorService: NavigatorService;
   recipesService: RecipesService;
   ingredientsService: IngredientsService;
-  recipes: Recipe[];
-  recipeFinderIngredients: Ingredient[] = RECIPE_FINDER_INGREDIENTS;
+  recipeFinderIngredients: Map<number, Ingredient> = RECIPE_FINDER_INGREDIENTS;
 
   constructor(navigatorService: NavigatorService, recipesService: RecipesService,
               ingredientsService: IngredientsService, dialog: MatDialog) {
@@ -29,14 +28,25 @@ export class RecipesComponent implements OnInit {
     this.recipesService = recipesService;
     this.ingredientsService = ingredientsService;
     this.dialog = dialog;
-    this.recipes = recipesService.getRecipes();
   }
 
   ngOnInit() {
   }
 
+  getRecipes(): Recipe[] {
+    return this.recipesService.getRecipes();
+  }
+
+  getRecipeFinderIngredients(): Ingredient[] {
+    return Array.from(this.recipeFinderIngredients.values());
+  }
+
   onBack(): void {
     this.navigatorService.setHomeStage();
+  }
+
+  onRemove(id: number): void {
+    this.recipeFinderIngredients.delete(id);
   }
 
   onRecipeSelect(): void {
@@ -45,7 +55,7 @@ export class RecipesComponent implements OnInit {
 
   onAddIngredient(): void {
     console.log('Ingredient selected');
-    const dialogData: DialogData = {ingredients: this.ingredientsService.getMissingIngredients(this.recipeFinderIngredients)};
+    const dialogData: DialogData = {ingredients: this.ingredientsService.getMissingIngredients(this.getRecipeFinderIngredients())};
     const dialogRef = this.dialog.open(AddIngredientsDialogComponent, {
       data: dialogData
     });
@@ -55,9 +65,8 @@ export class RecipesComponent implements OnInit {
       if (result) {
         for (const ingredient of result as Ingredient[]) {
           console.log('Adding ingredient: ' + ingredient.name);
-          this.recipeFinderIngredients.push(ingredient);
+          this.recipeFinderIngredients.set(ingredient.id, ingredient);
         }
-        //this.recipeFinderIngredients.push(result);
       }
     });
   }

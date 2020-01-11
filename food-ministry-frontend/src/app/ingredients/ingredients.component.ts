@@ -12,20 +12,19 @@ import { Ingredient } from '../ingredient/ingredient';
 export class IngredientsComponent implements OnInit {
   navigatorService: NavigatorService;
   ingredientService: IngredientService;
-
-  ingredients: Map<number, Ingredient>;
+  ingredientsService: IngredientsService;
 
   constructor(navigatorService: NavigatorService, ingredientService: IngredientService, ingredientsService: IngredientsService) {
     this.navigatorService = navigatorService;
     this.ingredientService = ingredientService;
-    this.ingredients = ingredientsService.getIngredients();
+    this.ingredientsService = ingredientsService;
   }
 
   ngOnInit() {
   }
 
   getIngredientsAsArray(): Ingredient[] {
-    return Array.from(this.ingredients.values());
+    return Array.from(this.ingredientsService.getIngredients().values());
   }
 
   onBack(): void {
@@ -44,5 +43,9 @@ export class IngredientsComponent implements OnInit {
     console.log('Unit: ' + this.ingredientService.getUnit());
     console.log('IsBasic: ' + this.ingredientService.isBasic());
     this.navigatorService.setIngredientDialogStage();
+  }
+
+  onRemove(id: number): void {
+    this.ingredientsService.removeIngredient(id);
   }
 }

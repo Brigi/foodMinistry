@@ -1,9 +1,15 @@
 <div class="container background-wrapper round-div transparent-black">
   <h2 class="container" style="display: inline">Ingredients</h2>
   <img class="container image-placeholder back-button" src="assets/img/back-button.png" (click)="onBack()">
-  <div class="container ingredients-wrapper">
+  <div class="container ingredients-wrapper custom-scrollbar ">
     <div *ngFor="let ingredient of getIngredientsAsArray()" class="container round-div ingredient" (click)="onIngredientSelect(ingredient.id, ingredient.name, ingredient.unit, ingredient.isBasic)">
-      <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
+      <div class="all-in-one-image-container container">
+        <img class="background-image" src="assets/img/ingredient-placeholder.png">
+        <img class="delete-button" src="assets/img/remove.png"
+          onmouseover="this.src='assets/img/remove-hoverover.png';"
+          onmouseout="this.src='assets/img/remove.png';"
+          (click)="onRemove(ingredient.id)">
+      </div>
       <label>{{ingredient.name}}</label>
     </div>
     <div class="container round-div ingredient">

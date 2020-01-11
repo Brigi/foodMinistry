@@ -22,6 +22,11 @@ export class PantryService {
     return Array.from(this.ingredients.values());
   }
 
+  removeIngredient(id: number): void {
+    console.log('Calling on ' + this.ingredients);
+    this.ingredients.delete(id);
+  }
+
   getAmount(ingredient: Ingredient): number {
     if (this.ingredients.has(ingredient.id)) {
       return this.ingredients.get(ingredient.id)[1];

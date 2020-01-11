@@ -18,6 +18,10 @@ export class IngredientsService {
     return this.ingredients;
   }
 
+  removeIngredient(id: number): void {
+    this.ingredients.delete(id);
+  }
+
   getMissingIngredients(availableIngredients: Ingredient[]) {
     return this.getMissingIngredientsFromPool(availableIngredients, Array.from(this.ingredients.values()));
   }

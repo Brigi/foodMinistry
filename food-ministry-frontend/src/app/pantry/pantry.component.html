@@ -1,10 +1,16 @@
 <div class="container background-wrapper round-div transparent-black">
   <h2 class="container" style="display: inline">Pantry</h2>
   <img class="container image-placeholder back-button" src="assets/img/back-button.png" (click)="onBack()">
-  <div class="container ingredients-wrapper">
-    <div *ngFor="let ingredient of ingredients" class="container round-div ingredient"
-     (click)="onIngredientSelect(ingredient[0].id, ingredient[0].name, ingredient[0].unit, ingredient[0].isBasic)">
-      <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
+  <div class="container ingredients-wrapper custom-scrollbar">
+    <div *ngFor="let ingredient of getIngredients()" class="container round-div ingredient">
+      <div class="all-in-one-image-container container">
+        <img class="background-image" src="assets/img/ingredient-placeholder.png"
+          (click)="onIngredientSelect(ingredient[0].id, ingredient[0].name, ingredient[0].unit, ingredient[0].isBasic)">
+        <img class="delete-button" src="assets/img/remove.png"
+          onmouseover="this.src='assets/img/remove-hoverover.png';"
+          onmouseout="this.src='assets/img/remove.png';"
+          (click)="onRemove(ingredient[0].id)">
+      </div>
       <label>{{getLabel(ingredient[0], ingredient[1])}}</label>
     </div>
     <div class="container round-div ingredient">

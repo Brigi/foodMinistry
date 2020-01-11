@@ -3,8 +3,8 @@
   <img class="container image-placeholder back-button" src="assets/img/back-button.png" (click)="onBack()">
   <mat-tab-group>
     <mat-tab label="All Recipes">
-      <div class="container recipes-wrapper">
-        <div *ngFor="let recipe of recipes" class="container round-div recipe" (click)="onRecipeSelect()">
+      <div class="container recipes-wrapper custom-scrollbar">
+        <div *ngFor="let recipe of getRecipes()" class="container round-div recipe" (click)="onRecipeSelect()">
           <div class="recipe-image-wrapper">
             <img class="container image-placeholder recipe-image" src="assets/img/ingredient-placeholder.png">
             <label>{{recipe.name}}</label>
@@ -19,9 +19,15 @@
       </div>
     </mat-tab>
     <mat-tab label="Recipe Finder">
-      <div class="container recipes-wrapper">
-        <div *ngFor="let ingredient of recipeFinderIngredients" class="container round-div ingredient">
-          <img class="container image-placeholder" src="assets/img/ingredient-placeholder.png">
+      <div class="container recipes-wrapper custom-scrollbar">
+        <div *ngFor="let ingredient of getRecipeFinderIngredients()" class="container round-div ingredient">
+          <div class="all-in-one-image-container container">
+            <img class="background-image" src="assets/img/ingredient-placeholder.png">
+            <img class="delete-button" src="assets/img/remove.png"
+              onmouseover="this.src='assets/img/remove-hoverover.png';"
+              onmouseout="this.src='assets/img/remove.png';"
+              (click)="onRemove(ingredient.id)">
+          </div>
           <label>{{ingredient.name}}</label>
         </div>
         <div class="container round-div ingredient">
