@@ -1,0 +1,20 @@
+<div class="container recipes-finder-wrapper custom-scrollbar">
+  <div *ngFor="let ingredient of getRecipeFinderIngredients()" class="container round-div ingredient">
+    <div class="all-in-one-image-container container">
+      <img class="background-image" src="assets/img/ingredient-placeholder.png">
+      <img class="delete-button" src="assets/img/remove.png"
+        onmouseover="this.src='assets/img/remove-hoverover.png';"
+        onmouseout="this.src='assets/img/remove.png';"
+        (click)="onRemove(ingredient.id)">
+    </div>
+    <label>{{ingredient.name}}</label>
+  </div>
+  <div class="container round-div ingredient">
+    <img class="container image-placeholder add-ingredient" src="assets/img/add.png" (click)="onAddIngredient()">
+  </div>
+</div>
+<div class="container" id="searchButtons" style="margin-top: 10px;">
+  <input class="btn btn-primary" type="submit" value="What can I cook?" style="float: right" (click)="onRestrictiveSearch()">
+  <div class="gap" style="float: right"></div>
+  <input class="btn btn-primary" type="submit" value="Inspire me!" style="float: right" (click)="onOpenSearch()">
+</div>

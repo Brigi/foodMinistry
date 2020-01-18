@@ -15,6 +15,8 @@ import { PantryComponent } from './pantry/pantry.component';
 import { PantryDialogComponent } from './pantry-dialog/pantry-dialog.component';
 import { RecipesComponent } from './recipes/recipes.component';
 import { AddIngredientsDialogComponent } from './add-ingredients-dialog/add-ingredients-dialog.component';
+import { ListRecipesComponent } from './list-recipes/list-recipes.component';
+import { RecipeFinderComponent } from './recipe-finder/recipe-finder.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { AddIngredientsDialogComponent } from './add-ingredients-dialog/add-ingr
     PantryComponent,
     PantryDialogComponent,
     RecipesComponent,
-    AddIngredientsDialogComponent
+    AddIngredientsDialogComponent,
+    ListRecipesComponent,
+    RecipeFinderComponent
   ],
   imports: [
     BrowserModule,

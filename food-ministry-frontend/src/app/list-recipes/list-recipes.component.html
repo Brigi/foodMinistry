@@ -1,0 +1,14 @@
+<div class="container recipes-wrapper custom-scrollbar">
+  <div *ngFor="let recipe of getRecipes()" class="container round-div recipe" (click)="onRecipeSelect()">
+    <div class="recipe-image-wrapper">
+      <img class="container image-placeholder recipe-image" src="assets/img/ingredient-placeholder.png">
+      <label>{{recipe.name}}</label>
+    </div>
+    <div class="recipe-description">
+      {{recipe.description}}
+    </div>
+  </div>
+  <div *ngIf="!readOnly" class="container round-div recipe" (click)="onAddRecipe()">
+    <img class="container image-placeholder add-recipe" src="assets/img/add.png">
+  </div>
+</div>

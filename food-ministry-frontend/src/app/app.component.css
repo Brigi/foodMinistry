@@ -8,6 +8,12 @@
   }
 }
 
+.gap {
+  display: inline-block;
+  width: 15px;
+  height: 1px;;
+}
+
 .all-in-one-image-container {
   position: relative;
   height: 100px;

@@ -10,13 +10,8 @@
   padding-right: 1px;
 }
 
-.gap {
-  display: inline-block;
-  width: 15px;
-}
-
 .btn {
-  width: 75px;
+  width: 100px;
 }
 
 .ingredients-wrapper {
